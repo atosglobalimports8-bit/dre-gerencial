@@ -223,7 +223,7 @@
         <div class="panel-box">
             <h3>Fechamento Geral Diário</h3>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px;">
-                <div><label style="font-size:12px; font-weight:600;">Data:</label><input type="date" id="day-date" class="form-control"></div>
+                <div><label style="font-size:12px; font-weight:600;">Data do Fechamento (Competência):</label><input type="date" id="day-date" class="form-control"></div>
                 <div><label style="font-size:12px; font-weight:600;">Loja:</label><select id="day-platform" class="form-control"><option value="Shopee">Shopee</option><option value="TikTok Shop">TikTok Shop</option></select></div>
                 <div><label style="font-size:12px; font-weight:600;">Faturamento:</label><input type="number" step="0.01" id="day-fat" class="form-control" value="0.00"></div>
                 <div><label style="font-size:12px; font-weight:600;">Lucro:</label><input type="number" step="0.01" id="day-lucro" class="form-control" value="0.00"></div>
@@ -232,7 +232,7 @@
         </div>
         <div class="panel-box">
             <table>
-                <thead><tr><th>Data</th><th>Plataforma</th><th>Faturamento</th><th>Lucro</th><th>IMC</th><th>Ações</th></tr></thead>
+                <thead><tr><th>Data (Competência)</th><th>Plataforma</th><th>Faturamento</th><th>Lucro</th><th>IMC</th><th>Ações</th></tr></thead>
                 <tbody id="daily-table-body"></tbody>
             </table>
         </div>
@@ -334,7 +334,7 @@
             <h3 style="color: #2980b9; border-bottom: 2px solid #2980b9; padding-bottom: 5px; margin-top: 25px;">📅 Relatórios Diários</h3>
             <div id="reports-diarios-container"><p style="color: #7f8c8d; font-size:13px;">Nenhum relatório diário salvo.</p></div>
 
-            <h3 style="color: #27ae60; border-bottom: 2px solid #27ae60; padding-bottom: 5px; margin-top: 25px;">📊 Relatórios Semanais</h3>
+            <h3 style="color: #27ae60; border-bottom: 2px solid #27ae60; padding-bottom: 5px; margin-top: 25px;">📊 Relatórios Semanais (Segunda a Domingo)</h3>
             <div id="reports-semanais-container"><p style="color: #7f8c8d; font-size:13px;">Nenhum relatório semanal salvo.</p></div>
 
             <h3 style="color: #e67e22; border-bottom: 2px solid #e67e22; padding-bottom: 5px; margin-top: 25px;">🗓️ Relatórios Mensais</h3>
@@ -691,9 +691,9 @@
     window.exportarDadosCSV = function() {
         if (relatoriosSalvos.length === 0) { alert("Não há relatórios salvos."); return; }
         let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
-        csvContent += "Tipo,Identificação,Data/Hora,Plataforma,Unidades,Faturamento Bruto,Lucro (Margem),IMC\r\n";
+        csvContent += "Tipo,Identificação,Competência Atribuída,Plataforma,Unidades,Faturamento Bruto,Lucro (Margem),IMC\r\n";
         relatoriosSalvos.forEach(r => {
-            csvContent += `"${r.tipo}","${r.nome}","${r.data}","${r.loja}","${r.unidades}","${r.faturamento}","${r.margem}","${r.imc}"\r\n`;
+            csvContent += `"${r.tipo}","${r.nome}","${r.competencia}","${r.loja}","${r.unidades}","${r.faturamento}","${r.margem}","${r.imc}"\r\n`;
         });
         const encodedUri = encodeURI(csvContent);
         const link = document.createElement("a");
@@ -707,7 +707,7 @@
     function renderizarGraficoHistorico() {
         const semanais = relatoriosSalvos.filter(r => r.tipo === 'semana');
         const ultimas4 = semanais.slice(-4);
-        const labels = ultimas4.map(r => r.nome);
+        const labels = ultimas4.map(r => r.competencia || r.nome);
         const dadosFat = ultimas4.map(r => parseBRL(r.faturamento));
         const dadosLucro = ultimas4.map(r => parseBRL(r.margem));
         const canvasEl = document.getElementById('graficoHistorico');
@@ -732,29 +732,36 @@
         const nomeMesAtual = dataAtual.toLocaleString('pt-BR', { month: 'long', year: 'numeric' });
         const lblMes = document.getElementById('lbl-mes-atual');
         if(lblMes) lblMes.innerText = nomeMesAtual;
-        const mesAtualNum = dataAtual.getMonth();
-        const anoAtualNum = dataAtual.getFullYear();
+
+        // Pega o mês atual no formato YYYY-MM para comparar com a competência atribuída
+        const anoStr = dataAtual.getFullYear();
+        const mesStr = String(dataAtual.getMonth() + 1).padStart(2, '0');
+        const competenciaMesAtual = `${anoStr}-${mesStr}`;
 
         let somaUnidades = 0, somaFaturamento = 0, somaCmv = 0, somaLucro = 0;
+
         relatoriosSalvos.forEach(rel => {
-            const partesData = rel.data.split(',')[0].split('/');
-            if (partesData.length === 3) {
-                if ((parseInt(partesData[1]) - 1) === mesAtualNum && parseInt(partesData[2]) === anoAtualNum) {
-                    somaUnidades += parseInt(rel.unidades) || 0;
-                    somaFaturamento += parseBRL(rel.faturamento);
-                    somaLucro += parseBRL(rel.margem);
-                }
+            // Se for relatório mensal e a competência bater com o mês atual
+            if (rel.tipo === 'mensal' && rel.competencia === competenciaMesAtual) {
+                somaUnidades += parseInt(rel.unidades) || 0;
+                somaFaturamento += parseBRL(rel.faturamento);
+                somaLucro += parseBRL(rel.margem);
+            }
+            // Se for semanal ou diário, verifica se a data/competência cai no mês atual
+            else if (rel.competencia && rel.competencia.startsWith(competenciaMesAtual)) {
+                somaUnidades += parseInt(rel.unidades) || 0;
+                somaFaturamento += parseBRL(rel.faturamento);
+                somaLucro += parseBRL(rel.margem);
             }
         });
+
         fechamentosDiarios.forEach(dia => {
-            if (dia.data) {
-                const dPartes = dia.data.split('-');
-                if ((parseInt(dPartes[1]) - 1) === mesAtualNum && parseInt(dPartes[0]) === anoAtualNum) {
-                    somaFaturamento += dia.faturamento;
-                    somaLucro += dia.lucro;
-                }
+            if (dia.data && dia.data.startsWith(competenciaMesAtual)) {
+                somaFaturamento += dia.faturamento;
+                somaLucro += dia.lucro;
             }
         });
+
         somaCmv = (somaFaturamento - somaLucro) * 0.70;
         let imcMensal = somaFaturamento > 0 ? (somaLucro / somaFaturamento) * 100 : 0;
         document.getElementById('dash-unidades').innerText = somaUnidades;
@@ -787,19 +794,41 @@
     }
 
     window.salvarRelatorioModal = function() {
-        salvarRelatorioGenerico('semana', 'Relatório Semanal');
+        // Pergunta a semana de Segunda a Domingo
+        let hoje = new Date();
+        let sugestaoSemana = obterSemanaSegundaDom(hoje);
+        let competenciaSemana = prompt("Atribua a semana (Segunda a Domingo) para este relatório (Ex: 2026-10-19 a 2026-10-25):", sugestaoSemana);
+        if (!competenciaSemana) return;
+        salvarRelatorioGenerico('semana', 'Relatório Semanal', competenciaSemana);
     }
 
     window.salvarRelatorioEspecifico = function(tipo) {
         if(tipo === 'diario') {
-            salvarRelatorioGenerico('diario', 'Fechamento Diário (Prod)');
+            let dataHoje = new Date().toISOString().split('T')[0];
+            let competenciaDia = prompt("Atribua a data (Dia) do fechamento (AAAA-MM-DD):", dataHoje);
+            if (!competenciaDia) return;
+            salvarRelatorioGenerico('diario', 'Fechamento Diário (Prod)', competenciaDia);
         } else if(tipo === 'mensal') {
-            salvarRelatorioGenerico('mensal', 'Fechamento Mensal (Prod)');
+            let anoAtual = new Date().getFullYear();
+            let mesAtual = String(new Date().getMonth() + 1).padStart(2, '0');
+            let competenciaMes = prompt("Atribua o mês de competência (AAAA-MM):", `${anoAtual}-${mesAtual}`);
+            if (!competenciaMes) return;
+            salvarRelatorioGenerico('mensal', 'Fechamento Mensal (Prod)', competenciaMes);
         }
     }
 
-    function salvarRelatorioGenerico(tipo, tituloPadrao) {
-        const nomeRelatorio = prompt("Nome do relatório:", tituloPadrao + " - " + new Date().toLocaleDateString());
+    function obterSemanaSegundaDom(d) {
+        let data = new Date(d);
+        let dia = data.getDay();
+        let diffParaSegunda = data.getDate() - dia + (dia === 0 ? -6 : 1);
+        let segunda = new Date(data.setDate(diffParaSegunda));
+        let domingo = new Date(segunda);
+        domingo.setDate(segunda.getDate() + 6);
+        return `${segunda.toISOString().split('T')[0]} a ${domingo.toISOString().split('T')[0]}`;
+    }
+
+    function salvarRelatorioGenerico(tipo, tituloPadrao, competenciaAtribuida) {
+        const nomeRelatorio = prompt("Nome de identificação do relatório:", `${tituloPadrao} (${competenciaAtribuida})`);
         if (!nomeRelatorio) return;
 
         let containerId = tipo === 'diario' ? 'view-calc-daily-prod' : (tipo === 'mensal' ? 'view-calc-monthly-prod' : 'view-calc');
@@ -830,7 +859,7 @@
                 }
             });
 
-            const novoRel = { id: Date.now(), tipo: 'semana', nome: nomeRelatorio, data: new Date().toLocaleString(), loja: activePlat.toUpperCase(), unidades: unidadesTot, faturamento: faturamentoTot, margem: margemTot, imc: imcTot, detalhesProdutos: produtosRelatorio };
+            const novoRel = { id: Date.now(), tipo: 'semana', nome: nomeRelatorio, competencia: competenciaAtribuida, data: new Date().toLocaleString(), loja: activePlat.toUpperCase(), unidades: unidadesTot, faturamento: faturamentoTot, margem: margemTot, imc: imcTot, detalhesProdutos: produtosRelatorio };
             relatoriosSalvos.push(novoRel);
             salvarCloud();
             carregarRelatoriosSalvos();
@@ -864,6 +893,7 @@
             id: Date.now(),
             tipo: tipo,
             nome: nomeRelatorio,
+            competencia: competenciaAtribuida,
             data: new Date().toLocaleString(),
             loja: activePlat.toUpperCase(),
             unidades: somaUn,
@@ -883,7 +913,7 @@
     window.abrirRelatorioDetalhado = function(id) {
         const rel = relatoriosSalvos.find(r => r.id === id);
         if (!rel) return;
-        document.getElementById('modal-titulo-rel').innerText = `Relatório: ${rel.nome} (${rel.loja})`;
+        document.getElementById('modal-titulo-rel').innerText = `Relatório: ${rel.nome} (Ref: ${rel.competencia || 'N/A'})`;
         document.getElementById('modalRelatorioFechado').style.display = 'flex';
         const tbody = document.getElementById('modal-tabela-produtos');
         tbody.innerHTML = '';
@@ -916,27 +946,27 @@
 
         if (listDiarios.length === 0) htmlDiarios = '<p style="color: #7f8c8d; font-size: 13px;">Nenhum relatório diário salvo.</p>';
         else {
-            htmlDiarios = `<table><thead><tr><th>Nome</th><th>Data</th><th>Loja</th><th>Unid.</th><th>Faturamento</th><th>Lucro</th><th>IMC</th><th>Ações</th></tr></thead><tbody>`;
+            htmlDiarios = `<table><thead><tr><th>Nome</th><th>Competência (Data)</th><th>Loja</th><th>Unid.</th><th>Faturamento</th><th>Lucro</th><th>IMC</th><th>Ações</th></tr></thead><tbody>`;
             listDiarios.forEach(r => {
-                htmlDiarios += `<tr><td><strong>${r.nome}</strong></td><td>${r.data}</td><td>${r.loja}</td><td>${r.unidades}</td><td>${r.faturamento}</td><td style="color:#27ae60;">${r.margem}</td><td>${r.imc}</td><td><button class="btn-action" style="padding:3px;" onclick="abrirRelatorioDetalhado(${r.id})">Ver</button> <button class="btn-small" onclick="deletarRelatorio(${r.id})">Excluir</button></td></tr>`;
+                htmlDiarios += `<tr><td><strong>${r.nome}</strong></td><td style="color:#2980b9; font-weight:bold;">${r.competencia || '-'}</td><td>${r.loja}</td><td>${r.unidades}</td><td>${r.faturamento}</td><td style="color:#27ae60;">${r.margem}</td><td>${r.imc}</td><td><button class="btn-action" style="padding:3px;" onclick="abrirRelatorioDetalhado(${r.id})">Ver</button> <button class="btn-small" onclick="deletarRelatorio(${r.id})">Excluir</button></td></tr>`;
             });
             htmlDiarios += `</tbody></table>`;
         }
 
         if (listSemanais.length === 0) htmlSemanais = '<p style="color: #7f8c8d; font-size: 13px;">Nenhum relatório semanal salvo.</p>';
         else {
-            htmlSemanais = `<table><thead><tr><th>Nome</th><th>Data</th><th>Loja</th><th>Unid.</th><th>Faturamento</th><th>Margem</th><th>IMC</th><th>Ações</th></tr></thead><tbody>`;
+            htmlSemanais = `<table><thead><tr><th>Nome</th><th>Competência (Seg - Dom)</th><th>Loja</th><th>Unid.</th><th>Faturamento</th><th>Margem</th><th>IMC</th><th>Ações</th></tr></thead><tbody>`;
             listSemanais.forEach(r => {
-                htmlSemanais += `<tr><td><strong>${r.nome}</strong></td><td>${r.data}</td><td>${r.loja}</td><td>${r.unidades}</td><td>${r.faturamento}</td><td style="color:#27ae60;">${r.margem}</td><td>${r.imc}</td><td><button class="btn-action" style="padding:3px;" onclick="abrirRelatorioDetalhado(${r.id})">Ver</button> <button class="btn-small" onclick="deletarRelatorio(${r.id})">Excluir</button></td></tr>`;
+                htmlSemanais += `<tr><td><strong>${r.nome}</strong></td><td style="color:#27ae60; font-weight:bold;">${r.competencia || '-'}</td><td>${r.loja}</td><td>${r.unidades}</td><td>${r.faturamento}</td><td style="color:#27ae60;">${r.margem}</td><td>${r.imc}</td><td><button class="btn-action" style="padding:3px;" onclick="abrirRelatorioDetalhado(${r.id})">Ver</button> <button class="btn-small" onclick="deletarRelatorio(${r.id})">Excluir</button></td></tr>`;
             });
             htmlSemanais += `</tbody></table>`;
         }
 
         if (listMensais.length === 0) htmlMensais = '<p style="color: #7f8c8d; font-size: 13px;">Nenhum relatório mensal salvo.</p>';
         else {
-            htmlMensais = `<table><thead><tr><th>Nome</th><th>Data</th><th>Loja</th><th>Unid.</th><th>Faturamento</th><th>Lucro</th><th>IMC</th><th>Ações</th></tr></thead><tbody>`;
+            htmlMensais = `<table><thead><tr><th>Nome</th><th>Competência (Mês/Ano)</th><th>Loja</th><th>Unid.</th><th>Faturamento</th><th>Margem</th><th>IMC</th><th>Ações</th></tr></thead><tbody>`;
             listMensais.forEach(r => {
-                htmlMensais += `<tr><td><strong>${r.nome}</strong></td><td>${r.data}</td><td>${r.loja}</td><td>${r.unidades}</td><td>${r.faturamento}</td><td style="color:#27ae60;">${r.margem}</td><td>${r.imc}</td><td><button class="btn-action" style="padding:3px;" onclick="abrirRelatorioDetalhado(${r.id})">Ver</button> <button class="btn-small" onclick="deletarRelatorio(${r.id})">Excluir</button></td></tr>`;
+                htmlMensais += `<tr><td><strong>${r.nome}</strong></td><td style="color:#e67e22; font-weight:bold;">${r.competencia || '-'}</td><td>${r.loja}</td><td>${r.unidades}</td><td>${r.faturamento}</td><td style="color:#27ae60;">${r.margem}</td><td>${r.imc}</td><td><button class="btn-action" style="padding:3px;" onclick="abrirRelatorioDetalhado(${r.id})">Ver</button> <button class="btn-small" onclick="deletarRelatorio(${r.id})">Excluir</button></td></tr>`;
             });
             htmlMensais += `</tbody></table>`;
         }
@@ -974,7 +1004,7 @@
         fechamentosDiarios.forEach(dia => {
             somaFat += dia.faturamento; somaLucro += dia.lucro;
             let imc = dia.faturamento > 0 ? (dia.lucro / dia.faturamento) * 100 : 0;
-            tbody.innerHTML += `<tr><td>${dia.data.split('-').reverse().join('/')}</td><td>${dia.plataforma}</td><td>${formatBRL(dia.faturamento)}</td><td style="color:#27ae60;">${formatBRL(dia.lucro)}</td><td>${imc.toFixed(2)}%</td><td><button class="btn-small" onclick="removerFechamentoDiario(${dia.id})">Excluir</button></td></tr>`;
+            tbody.innerHTML += `<tr><td><strong>${dia.data.split('-').reverse().join('/')}</strong></td><td>${dia.plataforma}</td><td>${formatBRL(dia.faturamento)}</td><td style="color:#27ae60;">${formatBRL(dia.lucro)}</td><td>${imc.toFixed(2)}%</td><td><button class="btn-small" onclick="removerFechamentoDiario(${dia.id})">Excluir</button></td></tr>`;
         });
         document.getElementById('sum-day-fat').innerText = formatBRL(somaFat);
         document.getElementById('sum-day-lucro').innerText = formatBRL(somaLucro);
@@ -1095,7 +1125,6 @@
         const margem = parseFloat(document.getElementById('new-prod-margin').value) || 0;
         if(!nome) return;
         const novoId = produtosBase.length > 0 ? Math.max(...produtosBase.map(p => p.id)) + 1 : 1;
-        produtosBase.exports = [];
         produtosBase.push({ id: novoId, nome, preco, cmv, afiliado, margem });
         salvarCloud();
         renderCards('shopee'); renderCards('tiktok'); renderSubCalculators('daily', 'shopee'); renderSubCalculators('daily', 'tiktok'); renderSubCalculators('monthly', 'shopee'); renderSubCalculators('monthly', 'tiktok'); renderProductsTable(); popularSelectProdutos(); calcularTudo();
