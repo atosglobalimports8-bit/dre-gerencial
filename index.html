@@ -198,7 +198,7 @@
                 <div class="con-item"><label>Afiliados</label><span id="res-afiliado-tot" style="color: #f39c12;">R$ 0,00</span></div>
                 <div class="con-item"><label>ADS</label><span id="res-ads">R$ 0,00</span></div>
                 <div class="con-item"><label>Cupons</label><span id="res-cupons">R$ 0,00</span></div>
-                <div class="con-item" style="border: 2px solid #2ecc71;"><label>Margem</label><span id="res-margem" style="color: #2ecc71;">R$ 0,00</span></div>
+                <div class="con-item" style="border: 2px solid #2ecc71;"><label>Margem</label><span id="res-margem" style="color: #27ae60;">R$ 0,00</span></div>
                 <div class="con-item" style="border: 2px solid #f1c40f;"><label>IMC</label><span id="res-imc" style="color: #f1c40f;">0,00%</span></div>
             </div>
         </div>
@@ -325,6 +325,7 @@
     let fechamentosDiarios = [];
     let fornecedoresDividas = [];
     let relatoriosSalvos = [];
+    let subInputsData = { daily: {}, monthly: {} };
     let currentPlatform = 'shopee';
     let meuGrafico = null;
     let graficoImcModal = null;
@@ -361,15 +362,67 @@
         if (!currentUserId) return;
         const inputsSemana = {};
         document.querySelectorAll('input[type="number"]').forEach((inp, idx) => { inputsSemana[idx] = inp.value; });
+        
+        // Coleta o estado atual dos inputs das sub-calculadoras (diária e mensal)
+        capturarSubInputsEstado();
+
         try {
             await window.setDoc(window.doc(window.firebaseDb, "empresas", currentUserId), {
                 produtos: produtosBase,
                 diarios: fechamentosDiarios,
                 fornecedores: fornecedoresDividas,
                 relatorios: relatoriosSalvos,
-                inputsSemana: inputsSemana
+                inputsSemana: inputsSemana,
+                subInputsData: subInputsData
             });
         } catch (e) { console.error("Erro ao salvar nuvem: ", e); }
+    }
+
+    function capturarSubInputsEstado() {
+        ['daily', 'monthly'].forEach(tipo => {
+            ['shopee', 'tiktok'].forEach(plat => {
+                const container = document.getElementById(`${tipo}-prod-${plat}-container`);
+                if (!container) return;
+                if (!subInputsData[tipo]) subInputsData[tipo] = {};
+                if (!subInputsData[tipo][plat]) subInputsData[tipo][plat] = {};
+
+                container.querySelectorAll('.product-card').forEach((card, idx) => {
+                    const prodId = card.querySelector('.sub-unidades').getAttribute('data-id');
+                    subInputsData[tipo][plat][prodId] = {
+                        unidades: card.querySelector('.sub-unidades').value,
+                        valor: card.querySelector('.sub-valor').value,
+                        cmv: card.querySelector('.sub-cmv').value,
+                        afiliado: card.querySelector('.sub-afiliado').value,
+                        ads: card.querySelector('.sub-ads').value
+                    };
+                });
+            });
+        });
+    }
+
+    function restaurarSubInputsEstado() {
+        if (!subInputsData) return;
+        ['daily', 'monthly'].forEach(tipo => {
+            if (!subInputsData[tipo]) return;
+            ['shopee', 'tiktok'].forEach(plat => {
+                if (!subInputsData[tipo][plat]) return;
+                const container = document.getElementById(`${tipo}-prod-${plat}-container`);
+                if (!container) return;
+
+                container.querySelectorAll('.product-card').forEach((card) => {
+                    const prodId = card.querySelector('.sub-unidades').getAttribute('data-id');
+                    const saved = subInputsData[tipo][plat][prodId];
+                    if (saved) {
+                        card.querySelector('.sub-unidades').value = saved.unidades || 0;
+                        card.querySelector('.sub-valor').value = saved.valor || 0;
+                        card.querySelector('.sub-cmv').value = saved.cmv || 0;
+                        card.querySelector('.sub-afiliado').value = saved.afiliado || 0;
+                        card.querySelector('.sub-ads').value = saved.ads || 0;
+                    }
+                });
+                calcularSubProd(tipo);
+            });
+        });
     }
 
     async function carregarDadosCloud() {
@@ -383,6 +436,8 @@
                 fechamentosDiarios = data.diarios || [];
                 fornecedoresDividas = data.fornecedores || [];
                 relatoriosSalvos = data.relatorios || [];
+                subInputsData = data.subInputsData || { daily: {}, monthly: {} };
+                
                 if (data.inputsSemana) {
                     const inp = data.inputsSemana;
                     document.querySelectorAll('input[type="number"]').forEach((input, idx) => {
@@ -396,6 +451,7 @@
             produtosBase = getDefaultProducts();
         }
         initAppAfterLoad();
+        restaurarSubInputsEstado();
     }
 
     function getDefaultProducts() {
@@ -782,7 +838,7 @@
             unidadesTot = document.getElementById('res-unidades').innerText;
             faturamentoTot = document.getElementById('res-faturamento').innerText;
             margemTot = document.getElementById('res-margem').innerText;
-            imcTot = document.getElementById('res-imc').innerText; // CORREÇÃO DO IMC SEMANAL
+            imcTot = document.getElementById('res-imc').innerText;
 
             produtosBase.forEach(prod => {
                 const un = parseFloat(document.querySelector(`.inp-unidades[data-id="${prod.id}"][data-plat="${activePlat}"]`)?.value) || 0;
@@ -841,7 +897,7 @@
             unidades: somaUn,
             faturamento: formatBRL(somaFat),
             margem: formatBRL(somaMg),
-            imc: imcTotCalc.toFixed(2) + '%', // CORREÇÃO DO IMC DIÁRIO E MENSAL
+            imc: imcTotCalc.toFixed(2) + '%',
             detalhesProdutos: produtosRelatorio
         };
 
@@ -935,7 +991,7 @@
         if (!select) return;
         select.innerHTML = '';
         produtosBase.forEach(prod => {
-            const opt = document.createElement('option');
+            const opt = document.option ? document.createElement('option') : document.createElement('option');
             opt.value = prod.id; opt.innerText = prod.nome;
             select.appendChild(opt);
         });
