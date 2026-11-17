@@ -31,6 +31,9 @@
         :root {
             --primary-shopee: #ee4d2d;
             --primary-tiktok: #00f2fe;
+            --primary-ml: #ffe600;
+            --primary-amazon: #ff9900;
+            --primary-fisica: #27ae60;
             --bg-color: #f4f6f9;
             --card-bg: #ffffff;
             --text-color: #333333;
@@ -49,14 +52,22 @@
         .main-tab-btn.active { background-color: #2980b9; box-shadow: 0 4px 10px rgba(41, 128, 185, 0.3); }
         .section-view { display: none; }
         .section-view.active { display: block; }
-        .platform-tabs { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; }
-        .tab-btn { padding: 8px 22px; font-size: 14px; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; background-color: #e0e0e0; color: #555; }
+        .platform-tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .tab-btn { padding: 8px 16px; font-size: 13px; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; background-color: #e0e0e0; color: #555; }
         .tab-btn.active.shopee { background-color: var(--primary-shopee); color: white; }
         .tab-btn.active.tiktok { background-color: #111; color: #fff; }
+        .tab-btn.active.mercadolivre { background-color: #d1b800; color: white; }
+        .tab-btn.active.amazon { background-color: var(--primary-amazon); color: white; }
+        .tab-btn.active.fisica { background-color: var(--primary-fisica); color: white; }
+        
         .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; margin-bottom: 25px; }
         .product-card { background: var(--card-bg); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-top: 4px solid #7f8c8d; overflow: hidden; display: flex; flex-direction: column; }
         .product-card.shopee-card { border-top-color: var(--primary-shopee); }
         .product-card.tiktok-card { border-top-color: #000; }
+        .product-card.mercadolivre-card { border-top-color: #e6cc00; }
+        .product-card.amazon-card { border-top-color: var(--primary-amazon); }
+        .product-card.fisica-card { border-top-color: var(--primary-fisica); }
+
         .card-header { background: #f8f9fa; padding: 10px 15px; font-weight: bold; font-size: 14px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
         .card-body { padding: 12px 15px; flex-grow: 1; }
         .input-group { margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
@@ -90,6 +101,12 @@
         .pricing-result-card { background: #e8f8f5; border: 2px solid #27ae60; border-radius: 8px; padding: 20px; margin-top: 15px; }
         .pricing-result-card h4 { margin-top: 0; color: #16a085; font-size: 16px; }
         .hidden { display: none !important; }
+        
+        /* Estilos das Faixas de Comissão */
+        .faixa-item { background: #ffffff; border: 1px solid #dcdcdc; border-radius: 6px; padding: 10px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+        .faixa-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 12px; font-weight: bold; color: #2c3e50; border-bottom: 1px dashed #eee; padding-bottom: 4px; }
+        .btn-add-tier { background: #2980b9; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; width: 100%; margin-top: 4px; transition: background 0.2s; }
+        .btn-add-tier:hover { background: #1f6391; }
     </style>
 </head>
 <body>
@@ -123,6 +140,7 @@
         <button class="main-tab-btn" onclick="switchMainTab('suppliers', this)">🤝 Fornecedores</button>
         <button class="main-tab-btn" onclick="switchMainTab('products', this)">📦 Cadastro de Produtos</button>
         <button class="main-tab-btn" onclick="switchMainTab('reports', this)">📋 Relatórios</button>
+        <button class="main-tab-btn" onclick="switchMainTab('config', this)">⚙️ Configurações</button>
     </div>
 
     <!-- DASHBOARD -->
@@ -160,9 +178,15 @@
         <div class="platform-tabs">
             <button class="tab-btn active shopee" onclick="switchPlatformSub('monthly', 'shopee')">Shopee</button>
             <button class="tab-btn tiktok" onclick="switchPlatformSub('monthly', 'tiktok')">TikTok Shop</button>
+            <button class="tab-btn mercadolivre" onclick="switchPlatformSub('monthly', 'mercadolivre')">Mercado Livre</button>
+            <button class="tab-btn amazon" onclick="switchPlatformSub('monthly', 'amazon')">Amazon</button>
+            <button class="tab-btn fisica" onclick="switchPlatformSub('monthly', 'fisica')">Loja Física</button>
         </div>
         <div id="monthly-prod-shopee-container" class="card-grid"></div>
         <div id="monthly-prod-tiktok-container" class="card-grid hidden"></div>
+        <div id="monthly-prod-mercadolivre-container" class="card-grid hidden"></div>
+        <div id="monthly-prod-amazon-container" class="card-grid hidden"></div>
+        <div id="monthly-prod-fisica-container" class="card-grid hidden"></div>
         <div class="consolidated-box">
             <h2>Consolidado Mensal de Produtos</h2>
             <div class="consolidated-grid">
@@ -180,6 +204,9 @@
         <div class="platform-tabs">
             <button class="tab-btn active shopee" onclick="switchPlatform('shopee')">Shopee</button>
             <button class="tab-btn tiktok" onclick="switchPlatform('tiktok')">TikTok Shop</button>
+            <button class="tab-btn mercadolivre" onclick="switchPlatform('mercadolivre')">Mercado Livre</button>
+            <button class="tab-btn amazon" onclick="switchPlatform('amazon')">Amazon</button>
+            <button class="tab-btn fisica" onclick="switchPlatform('fisica')">Loja Física</button>
         </div>
         <div class="actions">
             <button class="btn-action" onclick="salvarRelatorioModal()">💾 Salvar Relatório Semanal</button>
@@ -187,6 +214,9 @@
         </div>
         <div id="shopee-container" class="card-grid"></div>
         <div id="tiktok-container" class="card-grid hidden"></div>
+        <div id="mercadolivre-container" class="card-grid hidden"></div>
+        <div id="amazon-container" class="card-grid hidden"></div>
+        <div id="fisica-container" class="card-grid hidden"></div>
         <div class="consolidated-box">
             <h2>Consolidado da Semana</h2>
             <div class="consolidated-grid">
@@ -198,7 +228,7 @@
                 <div class="con-item"><label>Afiliados</label><span id="res-afiliado-tot" style="color: #f39c12;">R$ 0,00</span></div>
                 <div class="con-item"><label>ADS</label><span id="res-ads">R$ 0,00</span></div>
                 <div class="con-item"><label>Cupons</label><span id="res-cupons">R$ 0,00</span></div>
-                <div class="con-item" style="border: 2px solid #2ecc71;"><label>Margem</label><span id="res-margem" style="color: #27ae60;">R$ 0,00</span></div>
+                <div class="con-item" style="border: 2px solid #2ecc71;"><label>Margem</label><span id="res-margem" style="color: #2ecc71;">R$ 0,00</span></div>
                 <div class="con-item" style="border: 2px solid #f1c40f;"><label>IMC</label><span id="res-imc" style="color: #f1c40f;">0,00%</span></div>
             </div>
         </div>
@@ -215,9 +245,15 @@
         <div class="platform-tabs">
             <button class="tab-btn active shopee" onclick="switchPlatformSub('daily', 'shopee')">Shopee</button>
             <button class="tab-btn tiktok" onclick="switchPlatformSub('daily', 'tiktok')">TikTok Shop</button>
+            <button class="tab-btn mercadolivre" onclick="switchPlatformSub('daily', 'mercadolivre')">Mercado Livre</button>
+            <button class="tab-btn amazon" onclick="switchPlatformSub('daily', 'amazon')">Amazon</button>
+            <button class="tab-btn fisica" onclick="switchPlatformSub('daily', 'fisica')">Loja Física</button>
         </div>
         <div id="daily-prod-shopee-container" class="card-grid"></div>
         <div id="daily-prod-tiktok-container" class="card-grid hidden"></div>
+        <div id="daily-prod-mercadolivre-container" class="card-grid hidden"></div>
+        <div id="daily-prod-amazon-container" class="card-grid hidden"></div>
+        <div id="daily-prod-fisica-container" class="card-grid hidden"></div>
         <div class="consolidated-box">
             <h2>Consolidado Diário de Produtos</h2>
             <div class="consolidated-grid">
@@ -235,7 +271,13 @@
         <div class="panel-box">
             <h3>Precificação</h3>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-top: 15px;">
-                <div><label>Marketplace:</label><select id="price-platform" class="form-control" onchange="calcularPrecoSugerido()"><option value="shopee">Shopee</option><option value="tiktok">TikTok Shop</option></select></div>
+                <div><label>Marketplace:</label><select id="price-platform" class="form-control" onchange="calcularPrecoSugerido()">
+                    <option value="shopee">Shopee</option>
+                    <option value="tiktok">TikTok Shop</option>
+                    <option value="mercadolivre">Mercado Livre</option>
+                    <option value="amazon">Amazon</option>
+                    <option value="fisica">Loja Física</option>
+                </select></div>
                 <div><label>Produto:</label><select id="price-product" class="form-control" onchange="carregarDadosProdutoPreco()"></select></div>
                 <div><label>CMV:</label><input type="number" step="0.01" id="price-cmv" class="form-control" value="0.00" oninput="calcularPrecoSugerido()"></div>
                 <div><label>Afiliado:</label><input type="number" step="0.01" id="price-afiliado" class="form-control" value="0.00" oninput="calcularPrecoSugerido()"></div>
@@ -244,6 +286,7 @@
             </div>
             <div class="pricing-result-card">
                 <h4>Preço Sugerido: <span id="sug-preco-venda" style="font-size: 22px; color: #27ae60;">R$ 0,00</span></h4>
+                <p id="sug-faixa-info" style="margin: 5px 0 0 0; font-size: 12px; color: #555;"></p>
             </div>
         </div>
     </div>
@@ -304,6 +347,18 @@
             <div id="reports-mensais-container"><p style="color: #7f8c8d; font-size:13px;">Nenhum relatório mensal salvo.</p></div>
         </div>
     </div>
+
+    <!-- CONFIGURAÇÕES DE TAXAS (MOVIDO PARA O FINAL) -->
+    <div id="view-config" class="section-view">
+        <div class="panel-box">
+            <h3>⚙️ Configuração de Taxas e Custos por Faixa de Preço</h3>
+            <p style="font-size:12px; color:#666;">Adicione diferentes faixas de preço (ex: de R$ 0 a R$ 100) com suas respectivas comissões e taxas fixas para cada marketplace.</p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 20px; margin-top: 20px;" id="config-platforms-container">
+                <!-- Gerado via JS -->
+            </div>
+            <button class="btn-action" style="margin-top: 20px;" onclick="salvarConfigTaxas()">💾 Salvar Configurações</button>
+        </div>
+    </div>
 </div>
 
 <div id="modalRelatorioFechado" class="modal-overlay">
@@ -326,9 +381,44 @@
     let fornecedoresDividas = [];
     let relatoriosSalvos = [];
     let subInputsData = { daily: {}, monthly: {} };
+    
+    let configuracoesTaxas = {
+        shopee: { vigencia: '2026-01-01', faixas: [{ min: 0, max: 999999, comissaoPct: 20, taxaFixa: 4.50 }] },
+        tiktok: { vigencia: '2026-01-01', faixas: [{ min: 0, max: 999999, comissaoPct: 16, taxaFixa: 4.00 }] },
+        mercadolivre: { vigencia: '2026-01-01', faixas: [{ min: 0, max: 999999, comissaoPct: 15, taxaFixa: 6.00 }] },
+        amazon: { vigencia: '2026-01-01', faixas: [{ min: 0, max: 999999, comissaoPct: 14, taxaFixa: 0.00 }] },
+        fisica: { vigencia: '2026-01-01', faixas: [{ min: 0, max: 999999, comissaoPct: 0, taxaFixa: 0.00 }] }
+    };
+
     let currentPlatform = 'shopee';
     let meuGrafico = null;
     let graficoImcModal = null;
+
+    // Garante que dados antigos na nuvem (sem array de faixas) sejam convertidos automaticamente
+    function normalizarConfigTaxas() {
+        const defaultCfg = {
+            shopee: { vigencia: '2026-01-01', faixas: [{ min: 0, max: 999999, comissaoPct: 20, taxaFixa: 4.50 }] },
+            tiktok: { vigencia: '2026-01-01', faixas: [{ min: 0, max: 999999, comissaoPct: 16, taxaFixa: 4.00 }] },
+            mercadolivre: { vigencia: '2026-01-01', faixas: [{ min: 0, max: 999999, comissaoPct: 15, taxaFixa: 6.00 }] },
+            amazon: { vigencia: '2026-01-01', faixas: [{ min: 0, max: 999999, comissaoPct: 14, taxaFixa: 0.00 }] },
+            fisica: { vigencia: '2026-01-01', faixas: [{ min: 0, max: 999999, comissaoPct: 0, taxaFixa: 0.00 }] }
+        };
+        ['shopee', 'tiktok', 'mercadolivre', 'amazon', 'fisica'].forEach(key => {
+            if (!configuracoesTaxas[key]) {
+                configuracoesTaxas[key] = defaultCfg[key];
+            } else if (!Array.isArray(configuracoesTaxas[key].faixas)) {
+                configuracoesTaxas[key] = {
+                    vigencia: configuracoesTaxas[key].vigencia || '2026-01-01',
+                    faixas: [{
+                        min: 0,
+                        max: 999999,
+                        comissaoPct: configuracoesTaxas[key].comissaoPct !== undefined ? configuracoesTaxas[key].comissaoPct : defaultCfg[key].faixas[0].comissaoPct,
+                        taxaFixa: configuracoesTaxas[key].taxaFixa !== undefined ? configuracoesTaxas[key].taxaFixa : defaultCfg[key].faixas[0].taxaFixa
+                    }]
+                };
+            }
+        });
+    }
 
     window.fazerLoginCloud = async function() {
         const u = document.getElementById('login-user').value.trim().toLowerCase();
@@ -361,9 +451,7 @@
     async function salvarCloud() {
         if (!currentUserId) return;
         const inputsSemana = {};
-        document.querySelectorAll('input[type="number"]').forEach((inp, idx) => { inputsSemana[idx] = inp.value; });
-        
-        // Coleta o estado atual dos inputs das sub-calculadoras (diária e mensal)
+        document.querySelectorAll('#view-calc input[type="number"]').forEach((inp, idx) => { inputsSemana[idx] = inp.value; });
         capturarSubInputsEstado();
 
         try {
@@ -373,20 +461,21 @@
                 fornecedores: fornecedoresDividas,
                 relatorios: relatoriosSalvos,
                 inputsSemana: inputsSemana,
-                subInputsData: subInputsData
+                subInputsData: subInputsData,
+                configTaxas: configuracoesTaxas
             });
         } catch (e) { console.error("Erro ao salvar nuvem: ", e); }
     }
 
     function capturarSubInputsEstado() {
         ['daily', 'monthly'].forEach(tipo => {
-            ['shopee', 'tiktok'].forEach(plat => {
+            ['shopee', 'tiktok', 'mercadolivre', 'amazon', 'fisica'].forEach(plat => {
                 const container = document.getElementById(`${tipo}-prod-${plat}-container`);
                 if (!container) return;
                 if (!subInputsData[tipo]) subInputsData[tipo] = {};
                 if (!subInputsData[tipo][plat]) subInputsData[tipo][plat] = {};
 
-                container.querySelectorAll('.product-card').forEach((card, idx) => {
+                container.querySelectorAll('.product-card').forEach((card) => {
                     const prodId = card.querySelector('.sub-unidades').getAttribute('data-id');
                     subInputsData[tipo][plat][prodId] = {
                         unidades: card.querySelector('.sub-unidades').value,
@@ -404,7 +493,7 @@
         if (!subInputsData) return;
         ['daily', 'monthly'].forEach(tipo => {
             if (!subInputsData[tipo]) return;
-            ['shopee', 'tiktok'].forEach(plat => {
+            ['shopee', 'tiktok', 'mercadolivre', 'amazon', 'fisica'].forEach(plat => {
                 if (!subInputsData[tipo][plat]) return;
                 const container = document.getElementById(`${tipo}-prod-${plat}-container`);
                 if (!container) return;
@@ -427,6 +516,7 @@
 
     async function carregarDadosCloud() {
         if (!currentUserId) return;
+        let savedInputsSemana = null;
         try {
             const docRef = window.doc(window.firebaseDb, "empresas", currentUserId);
             const docSnap = await window.getDoc(docRef);
@@ -437,21 +527,139 @@
                 fornecedoresDividas = data.fornecedores || [];
                 relatoriosSalvos = data.relatorios || [];
                 subInputsData = data.subInputsData || { daily: {}, monthly: {} };
-                
-                if (data.inputsSemana) {
-                    const inp = data.inputsSemana;
-                    document.querySelectorAll('input[type="number"]').forEach((input, idx) => {
-                        if (inp[idx] !== undefined) input.value = inp[idx];
-                    });
-                }
+                if(data.configTaxas) configuracoesTaxas = data.configTaxas;
+                if(data.inputsSemana) savedInputsSemana = data.inputsSemana;
             } else {
                 produtosBase = getDefaultProducts();
             }
         } catch (e) {
             produtosBase = getDefaultProducts();
         }
+        normalizarConfigTaxas();
+        renderizarTelaConfig();
         initAppAfterLoad();
+        if (savedInputsSemana) {
+            document.querySelectorAll('#view-calc input[type="number"]').forEach((input, idx) => {
+                if (savedInputsSemana[idx] !== undefined) input.value = savedInputsSemana[idx];
+            });
+            calcularTudo();
+        }
         restaurarSubInputsEstado();
+    }
+
+    function lerTelaConfigParaObjeto() {
+        Object.keys(configuracoesTaxas).forEach(key => {
+            const vigEl = document.getElementById(`cfg-vig-${key}`);
+            if (!vigEl) return;
+            configuracoesTaxas[key].vigencia = vigEl.value || '2026-01-01';
+            const novasFaixas = [];
+            let idx = 0;
+            while (document.getElementById(`cfg-min-${key}-${idx}`) !== null) {
+                novasFaixas.push({
+                    min: parseFloat(document.getElementById(`cfg-min-${key}-${idx}`).value) || 0,
+                    max: parseFloat(document.getElementById(`cfg-max-${key}-${idx}`).value) || 0,
+                    comissaoPct: parseFloat(document.getElementById(`cfg-pct-${key}-${idx}`).value) || 0,
+                    taxaFixa: parseFloat(document.getElementById(`cfg-fixa-${key}-${idx}`).value) || 0
+                });
+                idx++;
+            }
+            if (novasFaixas.length > 0) {
+                configuracoesTaxas[key].faixas = novasFaixas;
+            }
+        });
+    }
+
+    function renderizarTelaConfig() {
+        const container = document.getElementById('config-platforms-container');
+        if(!container) return;
+        container.innerHTML = '';
+        const nomesPlat = { shopee: 'Shopee', tiktok: 'TikTok Shop', mercadolivre: 'Mercado Livre', amazon: 'Amazon', fisica: 'Loja Física' };
+        
+        Object.keys(configuracoesTaxas).forEach(key => {
+            const cfg = configuracoesTaxas[key];
+            let faixasHtml = '';
+            cfg.faixas.forEach((faixa, idx) => {
+                faixasHtml += `
+                    <div class="faixa-item">
+                        <div class="faixa-header">
+                            <span>Faixa ${idx + 1}</span>
+                            ${cfg.faixas.length > 1 ? `<button class="btn-small" onclick="removerFaixaTaxa('${key}', ${idx})">Excluir</button>` : ''}
+                        </div>
+                        <div class="input-group"><label>De (R$):</label><input type="number" step="0.01" id="cfg-min-${key}-${idx}" value="${faixa.min}"></div>
+                        <div class="input-group"><label>Até (R$):</label><input type="number" step="0.01" id="cfg-max-${key}-${idx}" value="${faixa.max}"></div>
+                        <div class="input-group"><label>Comissão (%):</label><input type="number" step="0.1" id="cfg-pct-${key}-${idx}" value="${faixa.comissaoPct}"></div>
+                        <div class="input-group" style="margin-bottom:0;"><label>Taxa Fixa (R$):</label><input type="number" step="0.01" id="cfg-fixa-${key}-${idx}" value="${faixa.taxaFixa}"></div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML += `
+                <div style="background:#f8f9fa; padding:15px; border-radius:8px; border:1px solid #dcdcdc; display:flex; flex-direction:column; justify-content:space-between;">
+                    <div>
+                        <h4 style="margin-top:0; margin-bottom:10px; color:#2c3e50;">${nomesPlat[key]}</h4>
+                        <div class="input-group" style="margin-bottom:12px;"><label>Vigência a partir de:</label><input type="date" id="cfg-vig-${key}" value="${cfg.vigencia}" style="width:130px; font-size:11px;"></div>
+                        <div id="faixas-list-${key}">${faixasHtml}</div>
+                    </div>
+                    <button class="btn-add-tier" onclick="adicionarFaixaTaxa('${key}')">➕ Adicionar Faixa de Preço</button>
+                </div>
+            `;
+        });
+    }
+
+    window.adicionarFaixaTaxa = function(plat) {
+        lerTelaConfigParaObjeto();
+        const faixas = configuracoesTaxas[plat].faixas;
+        const ultima = faixas[faixas.length - 1];
+        let novoMin = 0;
+        let novoMax = 999999;
+
+        if (ultima) {
+            if (ultima.max >= 999999) {
+                ultima.max = 100;
+                novoMin = 100.01;
+            } else {
+                novoMin = parseFloat((ultima.max + 0.01).toFixed(2));
+                novoMax = parseFloat((ultima.max + 150).toFixed(2));
+            }
+        }
+        faixas.push({
+            min: novoMin,
+            max: novoMax,
+            comissaoPct: ultima ? ultima.comissaoPct : 15,
+            taxaFixa: ultima ? ultima.taxaFixa : 4.00
+        });
+        renderizarTelaConfig();
+    }
+
+    window.removerFaixaTaxa = function(plat, idx) {
+        lerTelaConfigParaObjeto();
+        if (configuracoesTaxas[plat].faixas.length <= 1) return;
+        configuracoesTaxas[plat].faixas.splice(idx, 1);
+        renderizarTelaConfig();
+    }
+
+    window.salvarConfigTaxas = function() {
+        lerTelaConfigParaObjeto();
+        salvarCloud();
+        calcularTudo();
+        calcularSubProd('daily');
+        calcularSubProd('monthly');
+        calcularPrecoSugerido();
+        alert("Configurações de faixas e taxas salvas com sucesso!");
+    }
+
+    function obterRegraTaxa(plat, precoUnitario) {
+        const cfg = configuracoesTaxas[plat];
+        if (!cfg || !Array.isArray(cfg.faixas) || cfg.faixas.length === 0) {
+            return { min: 0, max: 999999, comissaoPct: 20, taxaFixa: 4.50 };
+        }
+        for (let i = 0; i < cfg.faixas.length; i++) {
+            const f = cfg.faixas[i];
+            if (precoUnitario >= f.min && precoUnitario <= f.max) {
+                return f;
+            }
+        }
+        return cfg.faixas[cfg.faixas.length - 1];
     }
 
     function getDefaultProducts() {
@@ -482,12 +690,12 @@
     }
 
     function initAppAfterLoad() {
-        renderCards('shopee');
-        renderCards('tiktok');
-        renderSubCalculators('daily', 'shopee');
-        renderSubCalculators('daily', 'tiktok');
-        renderSubCalculators('monthly', 'shopee');
-        renderSubCalculators('monthly', 'tiktok');
+        const plats = ['shopee', 'tiktok', 'mercadolivre', 'amazon', 'fisica'];
+        plats.forEach(p => {
+            renderCards(p);
+            renderSubCalculators('daily', p);
+            renderSubCalculators('monthly', p);
+        });
         renderProductsTable();
         popularSelectProdutos();
         carregarRelatoriosSalvos();
@@ -574,38 +782,45 @@
     window.switchPlatform = function(plat) {
         currentPlatform = plat;
         document.querySelectorAll('#view-calc .tab-btn').forEach(btn => btn.classList.remove('active'));
-        if(plat === 'shopee') {
-            document.querySelector('#view-calc .tab-btn.shopee').classList.add('active');
-            document.getElementById('shopee-container').classList.remove('hidden');
-            document.getElementById('tiktok-container').classList.add('hidden');
-            document.getElementById('lbl-active-store').innerText = 'Shopee';
-        } else {
-            document.querySelector('#view-calc .tab-btn.tiktok').classList.add('active');
-            document.getElementById('tiktok-container').classList.remove('hidden');
-            document.getElementById('shopee-container').classList.add('hidden');
-            document.getElementById('lbl-active-store').innerText = 'TikTok Shop';
-        }
+        document.querySelector(`#view-calc .tab-btn.${plat}`).classList.add('active');
+        ['shopee', 'tiktok', 'mercadolivre', 'amazon', 'fisica'].forEach(p => {
+            const el = document.getElementById(`${p}-container`);
+            if(el) {
+                if(p === plat) el.classList.remove('hidden');
+                else el.classList.add('hidden');
+            }
+        });
         calcularTudo();
     }
 
     window.switchPlatformSub = function(tipo, plat) {
         const viewDiv = document.getElementById(`view-calc-${tipo}-prod`);
         viewDiv.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        if(plat === 'shopee') {
-            viewDiv.querySelector('.tab-btn.shopee').classList.add('active');
-            document.getElementById(`${tipo}-prod-shopee-container`).classList.remove('hidden');
-            document.getElementById(`${tipo}-prod-tiktok-container`).classList.add('hidden');
-        } else {
-            viewDiv.querySelector('.tab-btn.tiktok').classList.add('active');
-            document.getElementById(`${tipo}-prod-tiktok-container`).classList.remove('hidden');
-            document.getElementById(`${tipo}-prod-shopee-container`).classList.add('hidden');
-        }
+        viewDiv.querySelector(`.tab-btn.${plat}`).classList.add('active');
+        ['shopee', 'tiktok', 'mercadolivre', 'amazon', 'fisica'].forEach(p => {
+            const el = document.getElementById(`${tipo}-prod-${p}-container`);
+            if(el) {
+                if(p === plat) el.classList.remove('hidden');
+                else el.classList.add('hidden');
+            }
+        });
         calcularSubProd(tipo);
+    }
+
+    function calcularDeducoesPlataforma(plat, precoUnitario, unidades) {
+        if (unidades <= 0 || precoUnitario <= 0) return 0;
+        const regra = obterRegraTaxa(plat, precoUnitario);
+        return ((precoUnitario * (regra.comissaoPct / 100)) + regra.taxaFixa) * unidades;
     }
 
     function calcularSubProd(tipo) {
         const viewDiv = document.getElementById(`view-calc-${tipo}-prod`);
-        const activePlat = viewDiv.querySelector('.tab-btn.active').classList.contains('shopee') ? 'shopee' : 'tiktok';
+        const activePlatBtn = viewDiv.querySelector('.tab-btn.active');
+        let activePlat = 'shopee';
+        ['shopee', 'tiktok', 'mercadolivre', 'amazon', 'fisica'].forEach(p => {
+            if(activePlatBtn.classList.contains(p)) activePlat = p;
+        });
+
         let totUn = 0, totFat = 0, totCmv = 0, totAds = 0, totLucro = 0;
         produtosBase.forEach(prod => {
             const un = parseFloat(viewDiv.querySelector(`.sub-unidades[data-id="${prod.id}"][data-tipo="${tipo}"][data-plat="${activePlat}"]`)?.value) || 0;
@@ -615,7 +830,7 @@
             const adsVal = parseFloat(viewDiv.querySelector(`.sub-ads[data-id="${prod.id}"][data-tipo="${tipo}"][data-plat="${activePlat}"]`)?.value) || 0;
 
             const faturamento = un * val;
-            const deducoes = activePlat === 'shopee' ? calcularDeducoesShopee(val, un) : calcularDeducoesTiktok(val, un);
+            const deducoes = calcularDeducoesPlataforma(activePlat, val, un);
             const receitaLiq = faturamento - deducoes;
             const cmvTotal = (un * cmvUnit) + (un * afilUnit);
             const margem = receitaLiq - cmvTotal - adsVal;
@@ -645,19 +860,6 @@
         elLucro.style.color = totLucro >= 0 ? '#2ecc71' : '#e74c3c';
     }
 
-    function calcularDeducoesShopee(precoUnitario, unidades) {
-        if (unidades <= 0 || precoUnitario <= 0) return 0;
-        let comissaoPercentual = precoUnitario <= 99.99 ? 0.25 : 0.19;
-        let taxaFixa = precoUnitario <= 99.99 ? 4.50 : (precoUnitario <= 199.99 ? 20.00 : 26.00);
-        return ((precoUnitario * comissaoPercentual) + taxaFixa) * unidades;
-    }
-
-    function calcularDeducoesTiktok(precoUnitario, unidades) {
-        if (unidades <= 0 || precoUnitario <= 0) return 0;
-        let fat = precoUnitario * unidades;
-        return (fat * 0.10) + (fat * 0.06) + (4.00 * unidades);
-    }
-
     function calcularTudo() {
         let totUn = 0, totFat = 0, totDed = 0, totRecLiq = 0, totCmv = 0, totAfi = 0, totAds = 0, totCup = 0, totMg = 0;
         produtosBase.forEach(prod => {
@@ -669,7 +871,7 @@
             const cupons = parseFloat(document.querySelector(`.inp-cupons[data-id="${prod.id}"][data-plat="${currentPlatform}"]`)?.value) || 0;
 
             const faturamento = un * val;
-            const deducoes = currentPlatform === 'shopee' ? calcularDeducoesShopee(val, un) : calcularDeducoesTiktok(val, un);
+            const deducoes = calcularDeducoesPlataforma(currentPlatform, val, un);
             const receitaLiq = faturamento - deducoes;
             const cmvTotal = un * cmvUnit;
             const afilTotal = un * afilUnit;
@@ -702,7 +904,7 @@
         document.getElementById('res-cupons').innerText = formatBRL(totCup);
         const elResMg = document.getElementById('res-margem');
         elResMg.innerText = formatBRL(totMg);
-        elResMg.style.color = totResMg >= 0 ? '#2ecc71' : '#e74c3c';
+        elResMg.style.color = totMg >= 0 ? '#2ecc71' : '#e74c3c';
         let imc = totFat > 0 ? (totMg / totFat) * 100 : 0;
         document.getElementById('res-imc').innerText = imc.toFixed(2) + '%';
     }
@@ -848,7 +1050,7 @@
                     const afilUnit = parseFloat(document.querySelector(`.inp-afiliado[data-id="${prod.id}"][data-plat="${activePlat}"]`)?.value) || 0;
                     const adsVal = parseFloat(document.querySelector(`.inp-ads[data-id="${prod.id}"][data-plat="${activePlat}"]`)?.value) || 0;
                     const fat = un * val;
-                    const deducoes = activePlat === 'shopee' ? calcularDeducoesShopee(val, un) : calcularDeducoesTiktok(val, un);
+                    const deducoes = calcularDeducoesPlataforma(activePlat, val, un);
                     const recLiq = fat - deducoes;
                     const margemProd = recLiq - (un * cmvUnit) - (un * afilUnit) - adsVal;
                     const imcProd = fat > 0 ? (margemProd / fat) * 100 : 0;
@@ -865,7 +1067,11 @@
             return;
         }
 
-        activePlat = viewDiv.querySelector('.tab-btn.active').classList.contains('shopee') ? 'shopee' : 'tiktok';
+        const activePlatBtn = viewDiv.querySelector('.tab-btn.active');
+        ['shopee', 'tiktok', 'mercadolivre', 'amazon', 'fisica'].forEach(p => {
+            if(activePlatBtn.classList.contains(p)) activePlat = p;
+        });
+
         let somaUn = 0, somaFat = 0, somaMg = 0;
 
         produtosBase.forEach(prod => {
@@ -877,7 +1083,7 @@
                 const adsVal = parseFloat(viewDiv.querySelector(`.sub-ads[data-id="${prod.id}"][data-tipo="${tipo === 'diario' ? 'daily' : 'monthly'}"][data-plat="${activePlat}"]`)?.value) || 0;
 
                 const fat = un * val;
-                const deducoes = activePlat === 'shopee' ? calcularDeducoesShopee(val, un) : calcularDeducoesTiktok(val, un);
+                const deducoes = calcularDeducoesPlataforma(activePlat, val, un);
                 const recLiq = fat - deducoes;
                 const margemProd = recLiq - (un * cmvUnit) - (un * afilUnit) - adsVal;
                 const imcProd = fat > 0 ? (margemProd / fat) * 100 : 0;
@@ -991,7 +1197,7 @@
         if (!select) return;
         select.innerHTML = '';
         produtosBase.forEach(prod => {
-            const opt = document.option ? document.createElement('option') : document.createElement('option');
+            const opt = document.createElement('option');
             opt.value = prod.id; opt.innerText = prod.nome;
             select.appendChild(opt);
         });
@@ -1015,23 +1221,31 @@
         const afiliado = parseFloat(document.getElementById('price-afiliado').value) || 0;
         const adsPct = (parseFloat(document.getElementById('price-ads-pct').value) || 0) / 100;
         const targetMarginPct = (parseFloat(document.getElementById('price-target-margin').value) || 0) / 100;
-        let precoSugerido = 0, deducoesVal = 0;
+        
+        const cfg = configuracoesTaxas[plat];
+        const faixas = (cfg && Array.isArray(cfg.faixas) && cfg.faixas.length > 0) ? cfg.faixas : [{ min: 0, max: 999999, comissaoPct: 20, taxaFixa: 4.50 }];
 
-        if (plat === 'shopee') {
-            let p1 = (cmv + afiliado + 4.50) / (1 - 0.25 - adsPct - targetMarginPct);
-            if (p1 <= 99.99) precoSugerido = p1;
-            else {
-                let p2 = (cmv + afiliado + 20.00) / (1 - 0.19 - adsPct - targetMarginPct);
-                if (p2 <= 199.99) precoSugerido = p2;
-                else precoSugerido = (cmv + afiliado + 26.00) / (1 - 0.19 - adsPct - targetMarginPct);
+        let precoSugerido = 0;
+        let faixaAplicada = faixas[0];
+
+        // Verifica em qual faixa de preço o cálculo se encaixa perfeitamente
+        for (let i = 0; i < faixas.length; i++) {
+            const f = faixas[i];
+            const comissaoDecimal = f.comissaoPct / 100;
+            const denominador = (1 - comissaoDecimal - adsPct - targetMarginPct);
+            const pCalc = denominador > 0 ? (cmv + afiliado + f.taxaFixa) / denominador : (cmv + afiliado) * 2;
+            precoSugerido = pCalc;
+            faixaAplicada = f;
+            if (pCalc >= f.min && pCalc <= f.max) {
+                break;
             }
-            deducoesVal = calcularDeducoesShopee(precoSugerido, 1);
-        } else {
-            let denominador = (0.84 - adsPct - targetMarginPct);
-            precoSugerido = denominador > 0 ? (cmv + afiliado + 4.00) / denominador : (cmv + afiliado) * 2;
-            deducoesVal = calcularDeducoesTiktok(precoSugerido, 1);
         }
+
         document.getElementById('sug-preco-venda').innerText = formatBRL(precoSugerido);
+        const infoEl = document.getElementById('sug-faixa-info');
+        if (infoEl && faixaAplicada) {
+            infoEl.innerText = `Faixa aplicada: R$ ${faixaAplicada.min} até R$ ${faixaAplicada.max} (Comissão: ${faixaAplicada.comissaoPct}% + Taxa Fixa: ${formatBRL(faixaAplicada.taxaFixa)})`;
+        }
     }
 
     window.adicionarDividaFornecedor = function() {
@@ -1056,7 +1270,6 @@
             if (divida.status !== 'Quitado') totalGeralDevido += saldo;
             tbody.innerHTML += `<tr><td>${divida.nome}</td><td>${divida.desc}</td><td>${formatBRL(divida.valorTotal)}</td><td>${formatBRL(divida.valorPago)}</td><td style="color:#c0392b;">${formatBRL(saldo)}</td><td>${divida.vencimento}</td><td>${divida.status}</td><td>${divida.status !== 'Quitado' ? `<button class="btn-pay" onclick="registrarPagamento(${divida.id})">Pagar</button>` : ''}<button class="btn-small" onclick="removerDivida(${divida.id})">Excluir</button></td></tr>`;
         });
-        document.getElementById('total-devido-geral').innerText = formatBRL(totalGeralDevido);
     }
 
     window.registrarPagamento = function(id) {
@@ -1092,7 +1305,13 @@
         const novoId = produtosBase.length > 0 ? Math.max(...produtosBase.map(p => p.id)) + 1 : 1;
         produtosBase.push({ id: novoId, nome, preco, cmv, afiliado, margem });
         salvarCloud();
-        renderCards('shopee'); renderCards('tiktok'); renderSubCalculators('daily', 'shopee'); renderSubCalculators('daily', 'tiktok'); renderSubCalculators('monthly', 'shopee'); renderSubCalculators('monthly', 'tiktok'); renderProductsTable(); popularSelectProdutos(); calcularTudo();
+        const plats = ['shopee', 'tiktok', 'mercadolivre', 'amazon', 'fisica'];
+        plats.forEach(p => {
+            renderCards(p);
+            renderSubCalculators('daily', p);
+            renderSubCalculators('monthly', p);
+        });
+        renderProductsTable(); popularSelectProdutos(); calcularTudo();
     }
 
     function renderProductsTable() {
@@ -1107,7 +1326,13 @@
     window.removerProduto = function(id) {
         produtosBase = produtosBase.filter(p => p.id !== id);
         salvarCloud();
-        renderCards('shopee'); renderCards('tiktok'); renderSubCalculators('daily', 'shopee'); renderSubCalculators('daily', 'tiktok'); renderSubCalculators('monthly', 'shopee'); renderSubCalculators('monthly', 'tiktok'); renderProductsTable(); popularSelectProdutos(); calcularTudo();
+        const plats = ['shopee', 'tiktok', 'mercadolivre', 'amazon', 'fisica'];
+        plats.forEach(p => {
+            renderCards(p);
+            renderSubCalculators('daily', p);
+            renderSubCalculators('monthly', p);
+        });
+        renderProductsTable(); popularSelectProdutos(); calcularTudo();
     }
 </script>
 
