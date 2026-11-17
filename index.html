@@ -72,7 +72,8 @@
         .card-body { padding: 12px 15px; flex-grow: 1; }
         .input-group { margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
         .input-group label { font-size: 12px; color: #555; font-weight: 600; }
-        .input-group input { width: 95px; padding: 4px; border: 1px solid var(--border-color); border-radius: 4px; text-align: right; font-size: 13px; }
+        .input-group input, .input-group select { width: 95px; padding: 4px; border: 1px solid var(--border-color); border-radius: 4px; text-align: right; font-size: 13px; }
+        .input-group select.select-prod-cfg { width: 155px; text-align: left; font-size: 12px; }
         .results-section { border-top: 1px dashed var(--border-color); margin-top: 8px; padding-top: 6px; }
         .result-row { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px; }
         .result-row.highlight { font-weight: bold; font-size: 13px; color: #2c3e50; border-top: 1px solid #eee; padding-top: 4px; margin-top: 4px; }
@@ -102,11 +103,15 @@
         .pricing-result-card h4 { margin-top: 0; color: #16a085; font-size: 16px; }
         .hidden { display: none !important; }
         
-        /* Estilos das Faixas de Comissão */
+        /* Estilos das Faixas de Comissão e Produtos Específicos */
         .faixa-item { background: #ffffff; border: 1px solid #dcdcdc; border-radius: 6px; padding: 10px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+        .faixa-item.prod-especifico { border-left: 4px solid #d1b800; background: #fffdf2; }
         .faixa-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 12px; font-weight: bold; color: #2c3e50; border-bottom: 1px dashed #eee; padding-bottom: 4px; }
         .btn-add-tier { background: #2980b9; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; width: 100%; margin-top: 4px; transition: background 0.2s; }
         .btn-add-tier:hover { background: #1f6391; }
+        .btn-add-prod-tier { background: #d1b800; color: #fff; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; width: 100%; margin-top: 6px; transition: background 0.2s; }
+        .btn-add-prod-tier:hover { background: #b59f00; }
+        .sub-cfg-title { font-size: 12px; font-weight: bold; color: #555; margin: 12px 0 6px 0; border-top: 1px solid #e0e0e0; padding-top: 10px; }
     </style>
 </head>
 <body>
@@ -348,12 +353,12 @@
         </div>
     </div>
 
-    <!-- CONFIGURAÇÕES DE TAXAS (MOVIDO PARA O FINAL) -->
+    <!-- CONFIGURAÇÕES DE TAXAS -->
     <div id="view-config" class="section-view">
         <div class="panel-box">
-            <h3>⚙️ Configuração de Taxas e Custos por Faixa de Preço</h3>
-            <p style="font-size:12px; color:#666;">Adicione diferentes faixas de preço (ex: de R$ 0 a R$ 100) com suas respectivas comissões e taxas fixas para cada marketplace.</p>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 20px; margin-top: 20px;" id="config-platforms-container">
+            <h3>⚙️ Configuração de Taxas e Custos por Plataforma</h3>
+            <p style="font-size:12px; color:#666;">Configure faixas de preço para todos os marketplaces. No <strong>Mercado Livre</strong>, você também pode adicionar taxas específicas por produto cadastrado.</p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-top: 20px;" id="config-platforms-container">
                 <!-- Gerado via JS -->
             </div>
             <button class="btn-action" style="margin-top: 20px;" onclick="salvarConfigTaxas()">💾 Salvar Configurações</button>
@@ -383,39 +388,43 @@
     let subInputsData = { daily: {}, monthly: {} };
     
     let configuracoesTaxas = {
-        shopee: { vigencia: '2026-01-01', faixas: [{ min: 0, max: 999999, comissaoPct: 20, taxaFixa: 4.50 }] },
-        tiktok: { vigencia: '2026-01-01', faixas: [{ min: 0, max: 999999, comissaoPct: 16, taxaFixa: 4.00 }] },
-        mercadolivre: { vigencia: '2026-01-01', faixas: [{ min: 0, max: 999999, comissaoPct: 15, taxaFixa: 6.00 }] },
-        amazon: { vigencia: '2026-01-01', faixas: [{ min: 0, max: 999999, comissaoPct: 14, taxaFixa: 0.00 }] },
-        fisica: { vigencia: '2026-01-01', faixas: [{ min: 0, max: 999999, comissaoPct: 0, taxaFixa: 0.00 }] }
+        shopee: { vigencia: '2026-01-01', faixas: [{ min: 0, max: 999999, comissaoPct: 20, taxaFixa: 4.50 }], produtosEspecificos: [] },
+        tiktok: { vigencia: '2026-01-01', faixas: [{ min: 0, max: 999999, comissaoPct: 16, taxaFixa: 4.00 }], produtosEspecificos: [] },
+        mercadolivre: { vigencia: '2026-01-01', faixas: [{ min: 0, max: 999999, comissaoPct: 15, taxaFixa: 6.00 }], produtosEspecificos: [] },
+        amazon: { vigencia: '2026-01-01', faixas: [{ min: 0, max: 999999, comissaoPct: 14, taxaFixa: 0.00 }], produtosEspecificos: [] },
+        fisica: { vigencia: '2026-01-01', faixas: [{ min: 0, max: 999999, comissaoPct: 0, taxaFixa: 0.00 }], produtosEspecificos: [] }
     };
 
     let currentPlatform = 'shopee';
     let meuGrafico = null;
     let graficoImcModal = null;
 
-    // Garante que dados antigos na nuvem (sem array de faixas) sejam convertidos automaticamente
     function normalizarConfigTaxas() {
         const defaultCfg = {
-            shopee: { vigencia: '2026-01-01', faixas: [{ min: 0, max: 999999, comissaoPct: 20, taxaFixa: 4.50 }] },
-            tiktok: { vigencia: '2026-01-01', faixas: [{ min: 0, max: 999999, comissaoPct: 16, taxaFixa: 4.00 }] },
-            mercadolivre: { vigencia: '2026-01-01', faixas: [{ min: 0, max: 999999, comissaoPct: 15, taxaFixa: 6.00 }] },
-            amazon: { vigencia: '2026-01-01', faixas: [{ min: 0, max: 999999, comissaoPct: 14, taxaFixa: 0.00 }] },
-            fisica: { vigencia: '2026-01-01', faixas: [{ min: 0, max: 999999, comissaoPct: 0, taxaFixa: 0.00 }] }
+            shopee: { vigencia: '2026-01-01', faixas: [{ min: 0, max: 999999, comissaoPct: 20, taxaFixa: 4.50 }], produtosEspecificos: [] },
+            tiktok: { vigencia: '2026-01-01', faixas: [{ min: 0, max: 999999, comissaoPct: 16, taxaFixa: 4.00 }], produtosEspecificos: [] },
+            mercadolivre: { vigencia: '2026-01-01', faixas: [{ min: 0, max: 999999, comissaoPct: 15, taxaFixa: 6.00 }], produtosEspecificos: [] },
+            amazon: { vigencia: '2026-01-01', faixas: [{ min: 0, max: 999999, comissaoPct: 14, taxaFixa: 0.00 }], produtosEspecificos: [] },
+            fisica: { vigencia: '2026-01-01', faixas: [{ min: 0, max: 999999, comissaoPct: 0, taxaFixa: 0.00 }], produtosEspecificos: [] }
         };
         ['shopee', 'tiktok', 'mercadolivre', 'amazon', 'fisica'].forEach(key => {
             if (!configuracoesTaxas[key]) {
                 configuracoesTaxas[key] = defaultCfg[key];
-            } else if (!Array.isArray(configuracoesTaxas[key].faixas)) {
-                configuracoesTaxas[key] = {
-                    vigencia: configuracoesTaxas[key].vigencia || '2026-01-01',
-                    faixas: [{
+            } else {
+                if (!Array.isArray(configuracoesTaxas[key].faixas)) {
+                    configuracoesTaxas[key].faixas = [{
                         min: 0,
                         max: 999999,
                         comissaoPct: configuracoesTaxas[key].comissaoPct !== undefined ? configuracoesTaxas[key].comissaoPct : defaultCfg[key].faixas[0].comissaoPct,
                         taxaFixa: configuracoesTaxas[key].taxaFixa !== undefined ? configuracoesTaxas[key].taxaFixa : defaultCfg[key].faixas[0].taxaFixa
-                    }]
-                };
+                    }];
+                }
+                if (!Array.isArray(configuracoesTaxas[key].produtosEspecificos)) {
+                    configuracoesTaxas[key].produtosEspecificos = [];
+                }
+                if (!configuracoesTaxas[key].vigencia) {
+                    configuracoesTaxas[key].vigencia = '2026-01-01';
+                }
             }
         });
     }
@@ -552,6 +561,8 @@
             const vigEl = document.getElementById(`cfg-vig-${key}`);
             if (!vigEl) return;
             configuracoesTaxas[key].vigencia = vigEl.value || '2026-01-01';
+            
+            // Lê as faixas de preço
             const novasFaixas = [];
             let idx = 0;
             while (document.getElementById(`cfg-min-${key}-${idx}`) !== null) {
@@ -565,6 +576,21 @@
             }
             if (novasFaixas.length > 0) {
                 configuracoesTaxas[key].faixas = novasFaixas;
+            }
+
+            // Lê produtos específicos (Mercado Livre)
+            if (key === 'mercadolivre') {
+                const novosProds = [];
+                let pIdx = 0;
+                while (document.getElementById(`cfg-prod-id-${key}-${pIdx}`) !== null) {
+                    novosProds.push({
+                        prodId: parseInt(document.getElementById(`cfg-prod-id-${key}-${pIdx}`).value) || 0,
+                        comissaoPct: parseFloat(document.getElementById(`cfg-prod-pct-${key}-${pIdx}`).value) || 0,
+                        taxaFixa: parseFloat(document.getElementById(`cfg-prod-fixa-${key}-${pIdx}`).value) || 0
+                    });
+                    pIdx++;
+                }
+                configuracoesTaxas[key].produtosEspecificos = novosProds;
             }
         });
     }
@@ -582,7 +608,7 @@
                 faixasHtml += `
                     <div class="faixa-item">
                         <div class="faixa-header">
-                            <span>Faixa ${idx + 1}</span>
+                            <span>Faixa de Preço ${idx + 1}</span>
                             ${cfg.faixas.length > 1 ? `<button class="btn-small" onclick="removerFaixaTaxa('${key}', ${idx})">Excluir</button>` : ''}
                         </div>
                         <div class="input-group"><label>De (R$):</label><input type="number" step="0.01" id="cfg-min-${key}-${idx}" value="${faixa.min}"></div>
@@ -593,14 +619,52 @@
                 `;
             });
 
+            // Seção exclusiva de produtos para o Mercado Livre
+            let prodsEspecificosSection = '';
+            if (key === 'mercadolivre') {
+                let prodsHtml = '';
+                const listaProds = cfg.produtosEspecificos || [];
+                listaProds.forEach((itemProd, pIdx) => {
+                    let optionsHtml = produtosBase.map(p => 
+                        `<option value="${p.id}" ${p.id === parseInt(itemProd.prodId) ? 'selected' : ''}>${p.nome}</option>`
+                    ).join('');
+
+                    prodsHtml += `
+                        <div class="faixa-item prod-especifico">
+                            <div class="faixa-header">
+                                <span>📦 Produto Específico #${pIdx + 1}</span>
+                                <button class="btn-small" onclick="removerProdutoTaxa('${key}', ${pIdx})">Excluir</button>
+                            </div>
+                            <div class="input-group">
+                                <label>Produto:</label>
+                                <select id="cfg-prod-id-${key}-${pIdx}" class="select-prod-cfg">
+                                    ${optionsHtml}
+                                </select>
+                            </div>
+                            <div class="input-group"><label>Comissão (%):</label><input type="number" step="0.1" id="cfg-prod-pct-${key}-${pIdx}" value="${itemProd.comissaoPct}"></div>
+                            <div class="input-group" style="margin-bottom:0;"><label>Taxa Fixa (R$):</label><input type="number" step="0.01" id="cfg-prod-fixa-${key}-${pIdx}" value="${itemProd.taxaFixa}"></div>
+                        </div>
+                    `;
+                });
+
+                prodsEspecificosSection = `
+                    <div class="sub-cfg-title">Comissões Específicas por Produto (ML):</div>
+                    <div id="prods-list-${key}">
+                        ${prodsHtml || '<p style="font-size:11px; color:#888; margin:4px 0 8px 0;">Nenhum produto específico adicionado (usando faixas gerais).</p>'}
+                    </div>
+                    <button class="btn-add-prod-tier" onclick="adicionarProdutoTaxa('${key}')">➕ Adicionar Produto Específico</button>
+                `;
+            }
+
             container.innerHTML += `
                 <div style="background:#f8f9fa; padding:15px; border-radius:8px; border:1px solid #dcdcdc; display:flex; flex-direction:column; justify-content:space-between;">
                     <div>
                         <h4 style="margin-top:0; margin-bottom:10px; color:#2c3e50;">${nomesPlat[key]}</h4>
                         <div class="input-group" style="margin-bottom:12px;"><label>Vigência a partir de:</label><input type="date" id="cfg-vig-${key}" value="${cfg.vigencia}" style="width:130px; font-size:11px;"></div>
                         <div id="faixas-list-${key}">${faixasHtml}</div>
+                        <button class="btn-add-tier" onclick="adicionarFaixaTaxa('${key}')">➕ Adicionar Faixa de Preço</button>
+                        ${prodsEspecificosSection}
                     </div>
-                    <button class="btn-add-tier" onclick="adicionarFaixaTaxa('${key}')">➕ Adicionar Faixa de Preço</button>
                 </div>
             `;
         });
@@ -638,6 +702,34 @@
         renderizarTelaConfig();
     }
 
+    window.adicionarProdutoTaxa = function(plat) {
+        lerTelaConfigParaObjeto();
+        if (produtosBase.length === 0) {
+            alert("Cadastre pelo menos um produto antes de adicionar uma comissão específica.");
+            return;
+        }
+        if (!Array.isArray(configuracoesTaxas[plat].produtosEspecificos)) {
+            configuracoesTaxas[plat].produtosEspecificos = [];
+        }
+        // Sugere o primeiro produto que ainda não tenha regra específica
+        const jaUsados = configuracoesTaxas[plat].produtosEspecificos.map(p => parseInt(p.prodId));
+        const prodDisponivel = produtosBase.find(p => !jaUsados.includes(p.id)) || produtosBase[0];
+
+        configuracoesTaxas[plat].produtosEspecificos.push({
+            prodId: prodDisponivel.id,
+            comissaoPct: 16,
+            taxaFixa: 6.00
+        });
+        renderizarTelaConfig();
+    }
+
+    window.removerProdutoTaxa = function(plat, idx) {
+        lerTelaConfigParaObjeto();
+        if (!Array.isArray(configuracoesTaxas[plat].produtosEspecificos)) return;
+        configuracoesTaxas[plat].produtosEspecificos.splice(idx, 1);
+        renderizarTelaConfig();
+    }
+
     window.salvarConfigTaxas = function() {
         lerTelaConfigParaObjeto();
         salvarCloud();
@@ -645,21 +737,37 @@
         calcularSubProd('daily');
         calcularSubProd('monthly');
         calcularPrecoSugerido();
-        alert("Configurações de faixas e taxas salvas com sucesso!");
+        alert("Configurações de faixas e produtos salvas com sucesso!");
     }
 
-    function obterRegraTaxa(plat, precoUnitario) {
+    // Prioriza a taxa específica do produto (se existir na plataforma), senão usa a faixa de preço
+    function obterRegraTaxa(plat, precoUnitario, prodId = null) {
         const cfg = configuracoesTaxas[plat];
-        if (!cfg || !Array.isArray(cfg.faixas) || cfg.faixas.length === 0) {
-            return { min: 0, max: 999999, comissaoPct: 20, taxaFixa: 4.50 };
+        if (!cfg) {
+            return { min: 0, max: 999999, comissaoPct: 20, taxaFixa: 4.50, origem: 'padrao' };
+        }
+        if (prodId !== null && Array.isArray(cfg.produtosEspecificos) && cfg.produtosEspecificos.length > 0) {
+            const regraProd = cfg.produtosEspecificos.find(p => parseInt(p.prodId) === parseInt(prodId));
+            if (regraProd) {
+                return {
+                    min: 0,
+                    max: 999999,
+                    comissaoPct: regraProd.comissaoPct,
+                    taxaFixa: regraProd.taxaFixa,
+                    origem: 'produto'
+                };
+            }
+        }
+        if (!Array.isArray(cfg.faixas) || cfg.faixas.length === 0) {
+            return { min: 0, max: 999999, comissaoPct: 20, taxaFixa: 4.50, origem: 'faixa' };
         }
         for (let i = 0; i < cfg.faixas.length; i++) {
             const f = cfg.faixas[i];
             if (precoUnitario >= f.min && precoUnitario <= f.max) {
-                return f;
+                return { ...f, origem: 'faixa' };
             }
         }
-        return cfg.faixas[cfg.faixas.length - 1];
+        return { ...cfg.faixas[cfg.faixas.length - 1], origem: 'faixa' };
     }
 
     function getDefaultProducts() {
@@ -807,9 +915,9 @@
         calcularSubProd(tipo);
     }
 
-    function calcularDeducoesPlataforma(plat, precoUnitario, unidades) {
+    function calcularDeducoesPlataforma(plat, precoUnitario, unidades, prodId = null) {
         if (unidades <= 0 || precoUnitario <= 0) return 0;
-        const regra = obterRegraTaxa(plat, precoUnitario);
+        const regra = obterRegraTaxa(plat, precoUnitario, prodId);
         return ((precoUnitario * (regra.comissaoPct / 100)) + regra.taxaFixa) * unidades;
     }
 
@@ -830,7 +938,7 @@
             const adsVal = parseFloat(viewDiv.querySelector(`.sub-ads[data-id="${prod.id}"][data-tipo="${tipo}"][data-plat="${activePlat}"]`)?.value) || 0;
 
             const faturamento = un * val;
-            const deducoes = calcularDeducoesPlataforma(activePlat, val, un);
+            const deducoes = calcularDeducoesPlataforma(activePlat, val, un, prod.id);
             const receitaLiq = faturamento - deducoes;
             const cmvTotal = (un * cmvUnit) + (un * afilUnit);
             const margem = receitaLiq - cmvTotal - adsVal;
@@ -871,7 +979,7 @@
             const cupons = parseFloat(document.querySelector(`.inp-cupons[data-id="${prod.id}"][data-plat="${currentPlatform}"]`)?.value) || 0;
 
             const faturamento = un * val;
-            const deducoes = calcularDeducoesPlataforma(currentPlatform, val, un);
+            const deducoes = calcularDeducoesPlataforma(currentPlatform, val, un, prod.id);
             const receitaLiq = faturamento - deducoes;
             const cmvTotal = un * cmvUnit;
             const afilTotal = un * afilUnit;
@@ -1050,7 +1158,7 @@
                     const afilUnit = parseFloat(document.querySelector(`.inp-afiliado[data-id="${prod.id}"][data-plat="${activePlat}"]`)?.value) || 0;
                     const adsVal = parseFloat(document.querySelector(`.inp-ads[data-id="${prod.id}"][data-plat="${activePlat}"]`)?.value) || 0;
                     const fat = un * val;
-                    const deducoes = calcularDeducoesPlataforma(activePlat, val, un);
+                    const deducoes = calcularDeducoesPlataforma(activePlat, val, un, prod.id);
                     const recLiq = fat - deducoes;
                     const margemProd = recLiq - (un * cmvUnit) - (un * afilUnit) - adsVal;
                     const imcProd = fat > 0 ? (margemProd / fat) * 100 : 0;
@@ -1083,7 +1191,7 @@
                 const adsVal = parseFloat(viewDiv.querySelector(`.sub-ads[data-id="${prod.id}"][data-tipo="${tipo === 'diario' ? 'daily' : 'monthly'}"][data-plat="${activePlat}"]`)?.value) || 0;
 
                 const fat = un * val;
-                const deducoes = calcularDeducoesPlataforma(activePlat, val, un);
+                const deducoes = calcularDeducoesPlataforma(activePlat, val, un, prod.id);
                 const recLiq = fat - deducoes;
                 const margemProd = recLiq - (un * cmvUnit) - (un * afilUnit) - adsVal;
                 const imcProd = fat > 0 ? (margemProd / fat) * 100 : 0;
@@ -1217,18 +1325,37 @@
 
     window.calcularPrecoSugerido = function() {
         const plat = document.getElementById('price-platform').value;
+        const prodId = parseInt(document.getElementById('price-product').value) || null;
         const cmv = parseFloat(document.getElementById('price-cmv').value) || 0;
         const afiliado = parseFloat(document.getElementById('price-afiliado').value) || 0;
         const adsPct = (parseFloat(document.getElementById('price-ads-pct').value) || 0) / 100;
         const targetMarginPct = (parseFloat(document.getElementById('price-target-margin').value) || 0) / 100;
         
         const cfg = configuracoesTaxas[plat];
+        const infoEl = document.getElementById('sug-faixa-info');
+
+        // 1. Verifica se o produto selecionado possui comissão específica cadastrada
+        if (prodId !== null && cfg && Array.isArray(cfg.produtosEspecificos)) {
+            const regraProd = cfg.produtosEspecificos.find(p => parseInt(p.prodId) === prodId);
+            if (regraProd) {
+                const comissaoDecimal = regraProd.comissaoPct / 100;
+                const denominador = (1 - comissaoDecimal - adsPct - targetMarginPct);
+                const precoSugerido = denominador > 0 ? (cmv + afiliado + regraProd.taxaFixa) / denominador : (cmv + afiliado) * 2;
+                document.getElementById('sug-preco-venda').innerText = formatBRL(precoSugerido);
+                if (infoEl) {
+                    const nomeProd = produtosBase.find(p => p.id === prodId)?.nome || 'Produto';
+                    infoEl.innerText = `Regra específica aplicada (${nomeProd}): Comissão ${regraProd.comissaoPct}% + Taxa Fixa ${formatBRL(regraProd.taxaFixa)}`;
+                }
+                return;
+            }
+        }
+
+        // 2. Caso contrário, calcula pelas faixas de preço gerais da plataforma
         const faixas = (cfg && Array.isArray(cfg.faixas) && cfg.faixas.length > 0) ? cfg.faixas : [{ min: 0, max: 999999, comissaoPct: 20, taxaFixa: 4.50 }];
 
         let precoSugerido = 0;
         let faixaAplicada = faixas[0];
 
-        // Verifica em qual faixa de preço o cálculo se encaixa perfeitamente
         for (let i = 0; i < faixas.length; i++) {
             const f = faixas[i];
             const comissaoDecimal = f.comissaoPct / 100;
@@ -1242,7 +1369,6 @@
         }
 
         document.getElementById('sug-preco-venda').innerText = formatBRL(precoSugerido);
-        const infoEl = document.getElementById('sug-faixa-info');
         if (infoEl && faixaAplicada) {
             infoEl.innerText = `Faixa aplicada: R$ ${faixaAplicada.min} até R$ ${faixaAplicada.max} (Comissão: ${faixaAplicada.comissaoPct}% + Taxa Fixa: ${formatBRL(faixaAplicada.taxaFixa)})`;
         }
@@ -1311,7 +1437,10 @@
             renderSubCalculators('daily', p);
             renderSubCalculators('monthly', p);
         });
-        renderProductsTable(); popularSelectProdutos(); calcularTudo();
+        renderProductsTable();
+        popularSelectProdutos();
+        renderizarTelaConfig();
+        calcularTudo();
     }
 
     function renderProductsTable() {
@@ -1325,6 +1454,9 @@
 
     window.removerProduto = function(id) {
         produtosBase = produtosBase.filter(p => p.id !== id);
+        if (configuracoesTaxas.mercadolivre && Array.isArray(configuracoesTaxas.mercadolivre.produtosEspecificos)) {
+            configuracoesTaxas.mercadolivre.produtosEspecificos = configuracoesTaxas.mercadolivre.produtosEspecificos.filter(p => parseInt(p.prodId) !== id);
+        }
         salvarCloud();
         const plats = ['shopee', 'tiktok', 'mercadolivre', 'amazon', 'fisica'];
         plats.forEach(p => {
@@ -1332,7 +1464,10 @@
             renderSubCalculators('daily', p);
             renderSubCalculators('monthly', p);
         });
-        renderProductsTable(); popularSelectProdutos(); calcularTudo();
+        renderProductsTable();
+        popularSelectProdutos();
+        renderizarTelaConfig();
+        calcularTudo();
     }
 </script>
 
