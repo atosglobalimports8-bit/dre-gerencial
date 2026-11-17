@@ -45,7 +45,7 @@
         header h1 { margin: 0; color: #2c3e50; font-size: 22px; }
         header p { color: #7f8c8d; font-size: 13px; }
         .main-tabs { display: flex; justify-content: center; gap: 4px; margin-bottom: 20px; flex-wrap: wrap; }
-        .main-tab-btn { padding: 8px 10px; font-size: 11px; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; background-color: #34495e; color: white; transition: all 0.3s; }
+        .main-tab-btn { padding: 8px 12px; font-size: 12px; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; background-color: #34495e; color: white; transition: all 0.3s; }
         .main-tab-btn.active { background-color: #2980b9; box-shadow: 0 4px 10px rgba(41, 128, 185, 0.3); }
         .section-view { display: none; }
         .section-view.active { display: block; }
@@ -114,17 +114,16 @@
         <div><button class="btn-small" style="background:#e74c3c; padding: 6px 12px;" onclick="fazerLogoutCloud()">Sair 🚪</button></div>
     </header>
 
+    <!-- NOVA ORDEM DAS ABAS -->
     <div class="main-tabs">
         <button class="main-tab-btn active" onclick="switchMainTab('dashboard', this)">📊 Dashboard</button>
-        <button class="main-tab-btn" onclick="switchMainTab('calc-daily-prod', this)">📅 Lucro Diário (Prod.)</button>
-        <button class="main-tab-btn" onclick="switchMainTab('calc-monthly-prod', this)">🗓️ Lucro Mensal (Prod.)</button>
-        <button class="main-tab-btn" onclick="switchMainTab('monthly-close', this)">📋 Fechamento Mensal</button>
-        <button class="main-tab-btn" onclick="switchMainTab('daily', this)">📈 Fechamento Geral</button>
-        <button class="main-tab-btn" onclick="switchMainTab('calc', this)">Calculadora Semanal</button>
-        <button class="main-tab-btn" onclick="switchMainTab('pricing', this)">Precificação</button>
-        <button class="main-tab-btn" onclick="switchMainTab('suppliers', this)">Fornecedores</button>
-        <button class="main-tab-btn" onclick="switchMainTab('products', this)">Produtos & Afiliado</button>
-        <button class="main-tab-btn" onclick="switchMainTab('reports', this)">Relatórios</button>
+        <button class="main-tab-btn" onclick="switchMainTab('calc-monthly-prod', this)">🗓️ Lucro Mensal</button>
+        <button class="main-tab-btn" onclick="switchMainTab('calc', this)">📊 Lucro Semanal</button>
+        <button class="main-tab-btn" onclick="switchMainTab('calc-daily-prod', this)">📅 Lucro Diário</button>
+        <button class="main-tab-btn" onclick="switchMainTab('pricing', this)">💲 Precificação</button>
+        <button class="main-tab-btn" onclick="switchMainTab('suppliers', this)">🤝 Fornecedores</button>
+        <button class="main-tab-btn" onclick="switchMainTab('products', this)">📦 Cadastro de Produtos</button>
+        <button class="main-tab-btn" onclick="switchMainTab('reports', this)">📋 Relatórios</button>
     </div>
 
     <!-- DASHBOARD -->
@@ -151,31 +150,6 @@
         </div>
     </div>
 
-    <!-- LUCRO DIÁRIO PRODUTO A PRODUTO -->
-    <div id="view-calc-daily-prod" class="section-view">
-        <div class="panel-box">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-                <h3>Calculadora de Lucro Diário (Produto a Produto)</h3>
-                <button class="btn-action" onclick="salvarRelatorioEspecifico('diario')">💾 Salvar Fechamento Diário na Nuvem</button>
-            </div>
-        </div>
-        <div class="platform-tabs">
-            <button class="tab-btn active shopee" onclick="switchPlatformSub('daily', 'shopee')">Shopee</button>
-            <button class="tab-btn tiktok" onclick="switchPlatformSub('daily', 'tiktok')">TikTok Shop</button>
-        </div>
-        <div id="daily-prod-shopee-container" class="card-grid"></div>
-        <div id="daily-prod-tiktok-container" class="card-grid hidden"></div>
-        <div class="consolidated-box">
-            <h2>Consolidado Diário de Produtos</h2>
-            <div class="consolidated-grid">
-                <div class="con-item"><label>Unidades</label><span id="res-daily-unidades">0</span></div>
-                <div class="con-item"><label>Faturamento</label><span id="res-daily-fat">R$ 0,00</span></div>
-                <div class="con-item"><label>CMV</label><span id="res-daily-cmv">R$ 0,00</span></div>
-                <div class="con-item" style="border: 2px solid #2ecc71;"><label>Lucro</label><span id="res-daily-lucro" style="color: #27ae60;">R$ 0,00</span></div>
-            </div>
-        </div>
-    </div>
-
     <!-- LUCRO MENSAL PRODUTO A PRODUTO -->
     <div id="view-calc-monthly-prod" class="section-view">
         <div class="panel-box">
@@ -196,45 +170,9 @@
                 <div class="con-item"><label>Unidades</label><span id="res-monthly-unidades">0</span></div>
                 <div class="con-item"><label>Faturamento</label><span id="res-monthly-fat">R$ 0,00</span></div>
                 <div class="con-item"><label>CMV</label><span id="res-monthly-cmv">R$ 0,00</span></div>
+                <div class="con-item"><label>ADS</label><span id="res-monthly-ads">R$ 0,00</span></div>
                 <div class="con-item" style="border: 2px solid #2ecc71;"><label>Lucro</label><span id="res-monthly-lucro" style="color: #27ae60;">R$ 0,00</span></div>
             </div>
-        </div>
-    </div>
-
-    <!-- FECHAMENTO MENSAL MANUAL -->
-    <div id="view-monthly-close" class="section-view">
-        <div class="panel-box">
-            <h3 style="color: #2c3e50; margin-top: 0;">Fechamento Mensal</h3>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-top: 20px;">
-                <div><label style="font-size:12px; font-weight:600;">Faturamento Bruto:</label><input type="number" step="0.01" id="manual-mc-fat" class="form-control" value="0.00" oninput="salvarCloud()"></div>
-                <div><label style="font-size:12px; font-weight:600;">Deduções:</label><input type="number" step="0.01" id="manual-mc-ded" class="form-control" value="0.00" oninput="salvarCloud()"></div>
-                <div><label style="font-size:12px; font-weight:600;">CMV Total:</label><input type="number" step="0.01" id="manual-mc-cmv" class="form-control" value="0.00" oninput="salvarCloud()"></div>
-                <div><label style="font-size:12px; font-weight:600;">Comissão Afiliados:</label><input type="number" step="0.01" id="manual-mc-afiliado" class="form-control" value="0.00" oninput="salvarCloud()"></div>
-                <div><label style="font-size:12px; font-weight:600;">ADS / Cupons:</label><input type="number" step="0.01" id="manual-mc-ads" class="form-control" value="0.00" oninput="salvarCloud()"></div>
-            </div>
-            <div class="pricing-result-card" style="margin-top: 25px;">
-                <h4 style="margin-top: 0; color: #16a085;">Resultado Líquido: <span id="manual-mc-lucro" style="font-size: 22px; color: #27ae60;">R$ 0,00</span></h4>
-            </div>
-        </div>
-    </div>
-
-    <!-- FECHAMENTO GERAL DIÁRIO -->
-    <div id="view-daily" class="section-view">
-        <div class="panel-box">
-            <h3>Fechamento Geral Diário</h3>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px;">
-                <div><label style="font-size:12px; font-weight:600;">Data do Fechamento (Competência):</label><input type="date" id="day-date" class="form-control"></div>
-                <div><label style="font-size:12px; font-weight:600;">Loja:</label><select id="day-platform" class="form-control"><option value="Shopee">Shopee</option><option value="TikTok Shop">TikTok Shop</option></select></div>
-                <div><label style="font-size:12px; font-weight:600;">Faturamento:</label><input type="number" step="0.01" id="day-fat" class="form-control" value="0.00"></div>
-                <div><label style="font-size:12px; font-weight:600;">Lucro:</label><input type="number" step="0.01" id="day-lucro" class="form-control" value="0.00"></div>
-            </div>
-            <button class="btn-action" style="margin-top: 10px;" onclick="adicionarFechamentoDiario()">➕ Registrar</button>
-        </div>
-        <div class="panel-box">
-            <table>
-                <thead><tr><th>Data (Competência)</th><th>Plataforma</th><th>Faturamento</th><th>Lucro</th><th>IMC</th><th>Ações</th></tr></thead>
-                <tbody id="daily-table-body"></tbody>
-            </table>
         </div>
     </div>
 
@@ -263,6 +201,32 @@
                 <div class="con-item"><label>Cupons</label><span id="res-cupons">R$ 0,00</span></div>
                 <div class="con-item" style="border: 2px solid #2ecc71;"><label>Margem</label><span id="res-margem" style="color: #2ecc71;">R$ 0,00</span></div>
                 <div class="con-item" style="border: 2px solid #f1c40f;"><label>IMC</label><span id="res-imc" style="color: #f1c40f;">0,00%</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LUCRO DIÁRIO PRODUTO A PRODUTO -->
+    <div id="view-calc-daily-prod" class="section-view">
+        <div class="panel-box">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <h3>Calculadora de Lucro Diário (Produto a Produto)</h3>
+                <button class="btn-action" onclick="salvarRelatorioEspecifico('diario')">💾 Salvar Fechamento Diário na Nuvem</button>
+            </div>
+        </div>
+        <div class="platform-tabs">
+            <button class="tab-btn active shopee" onclick="switchPlatformSub('daily', 'shopee')">Shopee</button>
+            <button class="tab-btn tiktok" onclick="switchPlatformSub('daily', 'tiktok')">TikTok Shop</button>
+        </div>
+        <div id="daily-prod-shopee-container" class="card-grid"></div>
+        <div id="daily-prod-tiktok-container" class="card-grid hidden"></div>
+        <div class="consolidated-box">
+            <h2>Consolidado Diário de Produtos</h2>
+            <div class="consolidated-grid">
+                <div class="con-item"><label>Unidades</label><span id="res-daily-unidades">0</span></div>
+                <div class="con-item"><label>Faturamento</label><span id="res-daily-fat">R$ 0,00</span></div>
+                <div class="con-item"><label>CMV</label><span id="res-daily-cmv">R$ 0,00</span></div>
+                <div class="con-item"><label>ADS</label><span id="res-daily-ads">R$ 0,00</span></div>
+                <div class="con-item" style="border: 2px solid #2ecc71;"><label>Lucro</label><span id="res-daily-lucro" style="color: #27ae60;">R$ 0,00</span></div>
             </div>
         </div>
     </div>
@@ -404,14 +368,7 @@
                 diarios: fechamentosDiarios,
                 fornecedores: fornecedoresDividas,
                 relatorios: relatoriosSalvos,
-                inputsSemana: inputsSemana,
-                manual: {
-                    fat: document.getElementById('manual-mc-fat').value,
-                    ded: document.getElementById('manual-mc-ded').value,
-                    cmv: document.getElementById('manual-mc-cmv').value,
-                    afiliado: document.getElementById('manual-mc-afiliado').value,
-                    ads: document.getElementById('manual-mc-ads').value,
-                }
+                inputsSemana: inputsSemana
             });
         } catch (e) { console.error("Erro ao salvar nuvem: ", e); }
     }
@@ -432,14 +389,6 @@
                     document.querySelectorAll('input[type="number"]').forEach((input, idx) => {
                         if (inp[idx] !== undefined) input.value = inp[idx];
                     });
-                }
-                if (data.manual) {
-                    document.getElementById('manual-mc-fat').value = data.manual.fat || 0;
-                    document.getElementById('manual-mc-ded').value = data.manual.ded || 0;
-                    document.getElementById('manual-mc-cmv').value = data.manual.cmv || 0;
-                    document.getElementById('manual-mc-afiliado').value = data.manual.afiliado || 0;
-                    document.getElementById('manual-mc-ads').value = data.manual.ads || 0;
-                    salvarFechamentoManual();
                 }
             } else {
                 produtosBase = getDefaultProducts();
@@ -478,7 +427,6 @@
     }
 
     function initAppAfterLoad() {
-        document.getElementById('day-date').valueAsDate = new Date();
         renderCards('shopee');
         renderCards('tiktok');
         renderSubCalculators('daily', 'shopee');
@@ -489,7 +437,6 @@
         popularSelectProdutos();
         carregarRelatoriosSalvos();
         renderSuppliersTable();
-        renderDailyTable();
         atualizarDashboardMensal();
         calcularTudo();
         calcularSubProd('daily');
@@ -553,9 +500,11 @@
                     <div class="input-group"><label>Valor Unit. (R$):</label><input type="number" step="0.01" min="0" value="${prod.preco.toFixed(2)}" class="sub-valor" data-id="${prod.id}" data-tipo="${tipo}" data-plat="${platform}"></div>
                     <div class="input-group"><label>CMV Unit. (R$):</label><input type="number" step="0.01" min="0" value="${prod.cmv.toFixed(2)}" class="sub-cmv" data-id="${prod.id}" data-tipo="${tipo}" data-plat="${platform}"></div>
                     <div class="input-group"><label>Afiliado Unit. (R$):</label><input type="number" step="0.01" min="0" value="${(prod.afiliado || 0).toFixed(2)}" class="sub-afiliado" data-id="${prod.id}" data-tipo="${tipo}" data-plat="${platform}"></div>
+                    <div class="input-group"><label>ADS Total (R$):</label><input type="number" step="0.01" min="0" value="0.00" class="sub-ads" data-id="${prod.id}" data-tipo="${tipo}" data-plat="${platform}"></div>
                     <div class="results-section">
                         <div class="result-row"><span>Faturamento:</span><span class="sub-out-fat" data-id="${prod.id}" data-tipo="${tipo}" data-plat="${platform}">R$ 0,00</span></div>
                         <div class="result-row"><span>Deduções:</span><span class="sub-out-ded" data-id="${prod.id}" data-tipo="${tipo}" data-plat="${platform}">R$ 0,00</span></div>
+                        <div class="result-row"><span>ADS Total:</span><span class="sub-out-ads" data-id="${prod.id}" data-tipo="${tipo}" data-plat="${platform}">R$ 0,00</span></div>
                         <div class="result-row highlight"><span>Lucro / Margem:</span><span class="sub-out-mg" data-id="${prod.id}" data-tipo="${tipo}" data-plat="${platform}">R$ 0,00</span></div>
                     </div>
                 </div>`;
@@ -601,26 +550,36 @@
     function calcularSubProd(tipo) {
         const viewDiv = document.getElementById(`view-calc-${tipo}-prod`);
         const activePlat = viewDiv.querySelector('.tab-btn.active').classList.contains('shopee') ? 'shopee' : 'tiktok';
-        let totUn = 0, totFat = 0, totCmv = 0, totLucro = 0;
+        let totUn = 0, totFat = 0, totCmv = 0, totAds = 0, totLucro = 0;
         produtosBase.forEach(prod => {
             const un = parseFloat(viewDiv.querySelector(`.sub-unidades[data-id="${prod.id}"][data-tipo="${tipo}"][data-plat="${activePlat}"]`)?.value) || 0;
             const val = parseFloat(viewDiv.querySelector(`.sub-valor[data-id="${prod.id}"][data-tipo="${tipo}"][data-plat="${activePlat}"]`)?.value) || 0;
             const cmvUnit = parseFloat(viewDiv.querySelector(`.sub-cmv[data-id="${prod.id}"][data-tipo="${tipo}"][data-plat="${activePlat}"]`)?.value) || 0;
             const afilUnit = parseFloat(viewDiv.querySelector(`.sub-afiliado[data-id="${prod.id}"][data-tipo="${tipo}"][data-plat="${activePlat}"]`)?.value) || 0;
+            const adsVal = parseFloat(viewDiv.querySelector(`.sub-ads[data-id="${prod.id}"][data-tipo="${tipo}"][data-plat="${activePlat}"]`)?.value) || 0;
+
             const faturamento = un * val;
             const deducoes = activePlat === 'shopee' ? calcularDeducoesShopee(val, un) : calcularDeducoesTiktok(val, un);
             const receitaLiq = faturamento - deducoes;
             const cmvTotal = (un * cmvUnit) + (un * afilUnit);
-            const margem = receitaLiq - cmvTotal;
+            const margem = receitaLiq - cmvTotal - adsVal;
+
             viewDiv.querySelector(`.sub-out-fat[data-id="${prod.id}"][data-tipo="${tipo}"][data-plat="${activePlat}"]`).innerText = formatBRL(faturamento);
             viewDiv.querySelector(`.sub-out-ded[data-id="${prod.id}"][data-tipo="${tipo}"][data-plat="${activePlat}"]`).innerText = formatBRL(deducoes);
+            viewDiv.querySelector(`.sub-out-ads[data-id="${prod.id}"][data-tipo="${tipo}"][data-plat="${activePlat}"]`).innerText = formatBRL(adsVal);
+            
             const elMg = viewDiv.querySelector(`.sub-out-mg[data-id="${prod.id}"][data-tipo="${tipo}"][data-plat="${activePlat}"]`);
             if(elMg) { elMg.innerText = formatBRL(margem); elMg.style.color = margem >= 0 ? '#27ae60' : '#c0392b'; }
-            totUn += un; totFat += faturamento; totCmv += cmvTotal; totLucro += margem;
+            
+            totUn += un; totFat += faturamento; totCmv += cmvTotal; totAds += adsVal; totLucro += margem;
         });
+
         document.getElementById(`res-${tipo}-unidades`).innerText = totUn;
         document.getElementById(`res-${tipo}-fat`).innerText = formatBRL(totFat);
         document.getElementById(`res-${tipo}-cmv`).innerText = formatBRL(totCmv);
+        const elAds = document.getElementById(`res-${tipo}-ads`);
+        if(elAds) elAds.innerText = formatBRL(totAds);
+        
         const elLucro = document.getElementById(`res-${tipo}-lucro`);
         elLucro.innerText = formatBRL(totLucro);
         elLucro.style.color = totLucro >= 0 ? '#2ecc71' : '#e74c3c';
@@ -733,7 +692,6 @@
         const lblMes = document.getElementById('lbl-mes-atual');
         if(lblMes) lblMes.innerText = nomeMesAtual;
 
-        // Pega o mês atual no formato YYYY-MM para comparar com a competência atribuída
         const anoStr = dataAtual.getFullYear();
         const mesStr = String(dataAtual.getMonth() + 1).padStart(2, '0');
         const competenciaMesAtual = `${anoStr}-${mesStr}`;
@@ -741,24 +699,14 @@
         let somaUnidades = 0, somaFaturamento = 0, somaCmv = 0, somaLucro = 0;
 
         relatoriosSalvos.forEach(rel => {
-            // Se for relatório mensal e a competência bater com o mês atual
             if (rel.tipo === 'mensal' && rel.competencia === competenciaMesAtual) {
                 somaUnidades += parseInt(rel.unidades) || 0;
                 somaFaturamento += parseBRL(rel.faturamento);
                 somaLucro += parseBRL(rel.margem);
-            }
-            // Se for semanal ou diário, verifica se a data/competência cai no mês atual
-            else if (rel.competencia && rel.competencia.startsWith(competenciaMesAtual)) {
+            } else if (rel.competencia && rel.competencia.startsWith(competenciaMesAtual)) {
                 somaUnidades += parseInt(rel.unidades) || 0;
                 somaFaturamento += parseBRL(rel.faturamento);
                 somaLucro += parseBRL(rel.margem);
-            }
-        });
-
-        fechamentosDiarios.forEach(dia => {
-            if (dia.data && dia.data.startsWith(competenciaMesAtual)) {
-                somaFaturamento += dia.faturamento;
-                somaLucro += dia.lucro;
             }
         });
 
@@ -772,17 +720,6 @@
         renderizarGraficoHistorico();
     }
 
-    window.salvarFechamentoManual = function() {
-        const fat = parseFloat(document.getElementById('manual-mc-fat').value) || 0;
-        const ded = parseFloat(document.getElementById('manual-mc-ded').value) || 0;
-        const cmv = parseFloat(document.getElementById('manual-mc-cmv').value) || 0;
-        const afiliado = parseFloat(document.getElementById('manual-mc-afiliado').value) || 0;
-        const ads = parseFloat(document.getElementById('manual-mc-ads').value) || 0;
-        const lucroLiquido = fat - ded - cmv - afiliado - ads;
-        document.getElementById('manual-mc-lucro').innerText = formatBRL(lucroLiquido);
-        salvarCloud();
-    }
-
     window.zerarMesAtual = function() {
         if (confirm("Zerar mês?")) {
             relatoriosSalvos = [];
@@ -794,7 +731,6 @@
     }
 
     window.salvarRelatorioModal = function() {
-        // Pergunta a semana de Segunda a Domingo
         let hoje = new Date();
         let sugestaoSemana = obterSemanaSegundaDom(hoje);
         let competenciaSemana = prompt("Atribua a semana (Segunda a Domingo) para este relatório (Ex: 2026-10-19 a 2026-10-25):", sugestaoSemana);
@@ -850,10 +786,11 @@
                     const val = parseFloat(document.querySelector(`.inp-valor[data-id="${prod.id}"][data-plat="${activePlat}"]`)?.value) || 0;
                     const cmvUnit = parseFloat(document.querySelector(`.inp-cmv[data-id="${prod.id}"][data-plat="${activePlat}"]`)?.value) || 0;
                     const afilUnit = parseFloat(document.querySelector(`.inp-afiliado[data-id="${prod.id}"][data-plat="${activePlat}"]`)?.value) || 0;
+                    const adsVal = parseFloat(document.querySelector(`.inp-ads[data-id="${prod.id}"][data-plat="${activePlat}"]`)?.value) || 0;
                     const fat = un * val;
                     const deducoes = activePlat === 'shopee' ? calcularDeducoesShopee(val, un) : calcularDeducoesTiktok(val, un);
                     const recLiq = fat - deducoes;
-                    const margemProd = recLiq - (un * cmvUnit) - (un * afilUnit);
+                    const margemProd = recLiq - (un * cmvUnit) - (un * afilUnit) - adsVal;
                     const imcProd = fat > 0 ? (margemProd / fat) * 100 : 0;
                     produtosRelatorio.push({ nome: prod.nome, unidades: un, faturamento: fat, margem: margemProd, imc: imcProd });
                 }
@@ -868,7 +805,6 @@
             return;
         }
 
-        // Para Diário e Mensal (Produto a Produto)
         activePlat = viewDiv.querySelector('.tab-btn.active').classList.contains('shopee') ? 'shopee' : 'tiktok';
         let somaUn = 0, somaFat = 0, somaMg = 0;
 
@@ -878,10 +814,12 @@
                 const val = parseFloat(viewDiv.querySelector(`.sub-valor[data-id="${prod.id}"][data-tipo="${tipo === 'diario' ? 'daily' : 'monthly'}"][data-plat="${activePlat}"]`)?.value) || 0;
                 const cmvUnit = parseFloat(viewDiv.querySelector(`.sub-cmv[data-id="${prod.id}"][data-tipo="${tipo === 'diario' ? 'daily' : 'monthly'}"][data-plat="${activePlat}"]`)?.value) || 0;
                 const afilUnit = parseFloat(viewDiv.querySelector(`.sub-afiliado[data-id="${prod.id}"][data-tipo="${tipo === 'diario' ? 'daily' : 'monthly'}"][data-plat="${activePlat}"]`)?.value) || 0;
+                const adsVal = parseFloat(viewDiv.querySelector(`.sub-ads[data-id="${prod.id}"][data-tipo="${tipo === 'diario' ? 'daily' : 'monthly'}"][data-plat="${activePlat}"]`)?.value) || 0;
+
                 const fat = un * val;
                 const deducoes = activePlat === 'shopee' ? calcularDeducoesShopee(val, un) : calcularDeducoesTiktok(val, un);
                 const recLiq = fat - deducoes;
-                const margemProd = recLiq - (un * cmvUnit) - (un * afilUnit);
+                const margemProd = recLiq - (un * cmvUnit) - (un * afilUnit) - adsVal;
                 const imcProd = fat > 0 ? (margemProd / fat) * 100 : 0;
                 somaUn += un; somaFat += fat; somaMg += margemProd;
                 produtosRelatorio.push({ nome: prod.nome, unidades: un, faturamento: fat, margem: margemProd, imc: imcProd });
@@ -981,39 +919,6 @@
         salvarCloud();
         carregarRelatoriosSalvos();
         atualizarDashboardMensal();
-    }
-
-    window.adicionarFechamentoDiario = function() {
-        const data = document.getElementById('day-date').value;
-        const plataforma = document.getElementById('day-platform').value;
-        const fat = parseFloat(document.getElementById('day-fat').value) || 0;
-        const lucro = parseFloat(document.getElementById('day-lucro').value) || 0;
-        if (!data) return;
-        fechamentosDiarios.push({ id: Date.now(), data, plataforma, faturamento: fat, lucro });
-        salvarCloud();
-        renderDailyTable();
-        alert("Registrado!");
-    }
-
-    function renderDailyTable() {
-        const tbody = document.getElementById('daily-table-body');
-        if (!tbody) return;
-        tbody.innerHTML = '';
-        let somaFat = 0, somaLucro = 0;
-        if (fechamentosDiarios.length === 0) { tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">Nenhum.</td></tr>`; return; }
-        fechamentosDiarios.forEach(dia => {
-            somaFat += dia.faturamento; somaLucro += dia.lucro;
-            let imc = dia.faturamento > 0 ? (dia.lucro / dia.faturamento) * 100 : 0;
-            tbody.innerHTML += `<tr><td><strong>${dia.data.split('-').reverse().join('/')}</strong></td><td>${dia.plataforma}</td><td>${formatBRL(dia.faturamento)}</td><td style="color:#27ae60;">${formatBRL(dia.lucro)}</td><td>${imc.toFixed(2)}%</td><td><button class="btn-small" onclick="removerFechamentoDiario(${dia.id})">Excluir</button></td></tr>`;
-        });
-        document.getElementById('sum-day-fat').innerText = formatBRL(somaFat);
-        document.getElementById('sum-day-lucro').innerText = formatBRL(somaLucro);
-    }
-
-    window.removerFechamentoDiario = function(id) {
-        fechamentosDiarios = fechamentosDiarios.filter(d => d.id !== id);
-        salvarCloud();
-        renderDailyTable();
     }
 
     function parseBRL(str) {
