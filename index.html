@@ -114,7 +114,6 @@
         <div><button class="btn-small" style="background:#e74c3c; padding: 6px 12px;" onclick="fazerLogoutCloud()">Sair 🚪</button></div>
     </header>
 
-    <!-- NOVA ORDEM DAS ABAS -->
     <div class="main-tabs">
         <button class="main-tab-btn active" onclick="switchMainTab('dashboard', this)">📊 Dashboard</button>
         <button class="main-tab-btn" onclick="switchMainTab('calc-monthly-prod', this)">🗓️ Lucro Mensal</button>
@@ -150,7 +149,7 @@
         </div>
     </div>
 
-    <!-- LUCRO MENSAL PRODUTO A PRODUTO -->
+    <!-- LUCRO MENSAL -->
     <div id="view-calc-monthly-prod" class="section-view">
         <div class="panel-box">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
@@ -205,7 +204,7 @@
         </div>
     </div>
 
-    <!-- LUCRO DIÁRIO PRODUTO A PRODUTO -->
+    <!-- LUCRO DIÁRIO -->
     <div id="view-calc-daily-prod" class="section-view">
         <div class="panel-box">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
@@ -506,6 +505,7 @@
                         <div class="result-row"><span>Deduções:</span><span class="sub-out-ded" data-id="${prod.id}" data-tipo="${tipo}" data-plat="${platform}">R$ 0,00</span></div>
                         <div class="result-row"><span>ADS Total:</span><span class="sub-out-ads" data-id="${prod.id}" data-tipo="${tipo}" data-plat="${platform}">R$ 0,00</span></div>
                         <div class="result-row highlight"><span>Lucro / Margem:</span><span class="sub-out-mg" data-id="${prod.id}" data-tipo="${tipo}" data-plat="${platform}">R$ 0,00</span></div>
+                        <div class="result-row" style="font-size: 11px; color: #2980b9; font-weight: bold;"><span>IMC Indiv.:</span><span class="sub-out-imc" data-id="${prod.id}" data-tipo="${tipo}" data-plat="${platform}">0,00%</span></div>
                     </div>
                 </div>`;
             container.appendChild(card);
@@ -563,6 +563,7 @@
             const receitaLiq = faturamento - deducoes;
             const cmvTotal = (un * cmvUnit) + (un * afilUnit);
             const margem = receitaLiq - cmvTotal - adsVal;
+            const imcIndiv = faturamento > 0 ? (margem / faturamento) * 100 : 0;
 
             viewDiv.querySelector(`.sub-out-fat[data-id="${prod.id}"][data-tipo="${tipo}"][data-plat="${activePlat}"]`).innerText = formatBRL(faturamento);
             viewDiv.querySelector(`.sub-out-ded[data-id="${prod.id}"][data-tipo="${tipo}"][data-plat="${activePlat}"]`).innerText = formatBRL(deducoes);
@@ -570,6 +571,9 @@
             
             const elMg = viewDiv.querySelector(`.sub-out-mg[data-id="${prod.id}"][data-tipo="${tipo}"][data-plat="${activePlat}"]`);
             if(elMg) { elMg.innerText = formatBRL(margem); elMg.style.color = margem >= 0 ? '#27ae60' : '#c0392b'; }
+
+            const elImc = viewDiv.querySelector(`.sub-out-imc[data-id="${prod.id}"][data-tipo="${tipo}"][data-plat="${activePlat}"]`);
+            if(elImc) elImc.innerText = imcIndiv.toFixed(2) + '%';
             
             totUn += un; totFat += faturamento; totCmv += cmvTotal; totAds += adsVal; totLucro += margem;
         });
@@ -642,7 +646,7 @@
         document.getElementById('res-cupons').innerText = formatBRL(totCup);
         const elResMg = document.getElementById('res-margem');
         elResMg.innerText = formatBRL(totMg);
-        elResMg.style.color = totMg >= 0 ? '#2ecc71' : '#e74c3c';
+        elResMg.style.color = totResMg >= 0 ? '#2ecc71' : '#e74c3c';
         let imc = totFat > 0 ? (totMg / totFat) * 100 : 0;
         document.getElementById('res-imc').innerText = imc.toFixed(2) + '%';
     }
@@ -770,7 +774,7 @@
         let containerId = tipo === 'diario' ? 'view-calc-daily-prod' : (tipo === 'mensal' ? 'view-calc-monthly-prod' : 'view-calc');
         let viewDiv = document.getElementById(containerId);
         let activePlat = 'shopee';
-        let unidadesTot = 0, faturamentoTot = 0, margemTot = 0;
+        let unidadesTot = 0, faturamentoTot = 0, margemTot = 0, imcTot = "0,00%";
         let produtosRelatorio = [];
 
         if(tipo === 'semana') {
@@ -778,7 +782,7 @@
             unidadesTot = document.getElementById('res-unidades').innerText;
             faturamentoTot = document.getElementById('res-faturamento').innerText;
             margemTot = document.getElementById('res-margem').innerText;
-            let imcTot = document.getElementById('res-imc').innerText;
+            imcTot = document.getElementById('res-imc').innerText; // CORREÇÃO DO IMC SEMANAL
 
             produtosBase.forEach(prod => {
                 const un = parseFloat(document.querySelector(`.inp-unidades[data-id="${prod.id}"][data-plat="${activePlat}"]`)?.value) || 0;
@@ -837,7 +841,7 @@
             unidades: somaUn,
             faturamento: formatBRL(somaFat),
             margem: formatBRL(somaMg),
-            imc: imcTotCalc.toFixed(2) + '%',
+            imc: imcTotCalc.toFixed(2) + '%', // CORREÇÃO DO IMC DIÁRIO E MENSAL
             detalhesProdutos: produtosRelatorio
         };
 
@@ -886,7 +890,7 @@
         else {
             htmlDiarios = `<table><thead><tr><th>Nome</th><th>Competência (Data)</th><th>Loja</th><th>Unid.</th><th>Faturamento</th><th>Lucro</th><th>IMC</th><th>Ações</th></tr></thead><tbody>`;
             listDiarios.forEach(r => {
-                htmlDiarios += `<tr><td><strong>${r.nome}</strong></td><td style="color:#2980b9; font-weight:bold;">${r.competencia || '-'}</td><td>${r.loja}</td><td>${r.unidades}</td><td>${r.faturamento}</td><td style="color:#27ae60;">${r.margem}</td><td>${r.imc}</td><td><button class="btn-action" style="padding:3px;" onclick="abrirRelatorioDetalhado(${r.id})">Ver</button> <button class="btn-small" onclick="deletarRelatorio(${r.id})">Excluir</button></td></tr>`;
+                htmlDiarios += `<tr><td><strong>${r.nome}</strong></td><td style="color:#2980b9; font-weight:bold;">${r.competencia || '-'}</td><td>${r.loja}</td><td>${r.unidades}</td><td>${r.faturamento}</td><td style="color:#27ae60;">${r.margem}</td><td style="color:#f1c40f; font-weight:bold;">${r.imc || '0,00%'}</td><td><button class="btn-action" style="padding:3px;" onclick="abrirRelatorioDetalhado(${r.id})">Ver</button> <button class="btn-small" onclick="deletarRelatorio(${r.id})">Excluir</button></td></tr>`;
             });
             htmlDiarios += `</tbody></table>`;
         }
@@ -895,7 +899,7 @@
         else {
             htmlSemanais = `<table><thead><tr><th>Nome</th><th>Competência (Seg - Dom)</th><th>Loja</th><th>Unid.</th><th>Faturamento</th><th>Margem</th><th>IMC</th><th>Ações</th></tr></thead><tbody>`;
             listSemanais.forEach(r => {
-                htmlSemanais += `<tr><td><strong>${r.nome}</strong></td><td style="color:#27ae60; font-weight:bold;">${r.competencia || '-'}</td><td>${r.loja}</td><td>${r.unidades}</td><td>${r.faturamento}</td><td style="color:#27ae60;">${r.margem}</td><td>${r.imc}</td><td><button class="btn-action" style="padding:3px;" onclick="abrirRelatorioDetalhado(${r.id})">Ver</button> <button class="btn-small" onclick="deletarRelatorio(${r.id})">Excluir</button></td></tr>`;
+                htmlSemanais += `<tr><td><strong>${r.nome}</strong></td><td style="color:#27ae60; font-weight:bold;">${r.competencia || '-'}</td><td>${r.loja}</td><td>${r.unidades}</td><td>${r.faturamento}</td><td style="color:#27ae60;">${r.margem}</td><td style="color:#f1c40f; font-weight:bold;">${r.imc || '0,00%'}</td><td><button class="btn-action" style="padding:3px;" onclick="abrirRelatorioDetalhado(${r.id})">Ver</button> <button class="btn-small" onclick="deletarRelatorio(${r.id})">Excluir</button></td></tr>`;
             });
             htmlSemanais += `</tbody></table>`;
         }
@@ -904,7 +908,7 @@
         else {
             htmlMensais = `<table><thead><tr><th>Nome</th><th>Competência (Mês/Ano)</th><th>Loja</th><th>Unid.</th><th>Faturamento</th><th>Margem</th><th>IMC</th><th>Ações</th></tr></thead><tbody>`;
             listMensais.forEach(r => {
-                htmlMensais += `<tr><td><strong>${r.nome}</strong></td><td style="color:#e67e22; font-weight:bold;">${r.competencia || '-'}</td><td>${r.loja}</td><td>${r.unidades}</td><td>${r.faturamento}</td><td style="color:#27ae60;">${r.margem}</td><td>${r.imc}</td><td><button class="btn-action" style="padding:3px;" onclick="abrirRelatorioDetalhado(${r.id})">Ver</button> <button class="btn-small" onclick="deletarRelatorio(${r.id})">Excluir</button></td></tr>`;
+                htmlMensais += `<tr><td><strong>${r.nome}</strong></td><td style="color:#e67e22; font-weight:bold;">${r.competencia || '-'}</td><td>${r.loja}</td><td>${r.unidades}</td><td>${r.faturamento}</td><td style="color:#27ae60;">${r.margem}</td><td style="color:#f1c40f; font-weight:bold;">${r.imc || '0,00%'}</td><td><button class="btn-action" style="padding:3px;" onclick="abrirRelatorioDetalhado(${r.id})">Ver</button> <button class="btn-small" onclick="deletarRelatorio(${r.id})">Excluir</button></td></tr>`;
             });
             htmlMensais += `</tbody></table>`;
         }
