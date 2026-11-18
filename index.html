@@ -506,9 +506,66 @@
         .result-row { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px; }
         .result-row.highlight { font-weight: bold; font-size: 13px; color: #2c3e50; border-top: 1px solid #eee; padding-top: 4px; margin-top: 4px; }
 
-        /* CAIXA CONSOLIDADA */
+        /* CAIXA CONSOLIDADA & SELETOR DE MODO (INTEGRADO / NÃO INTEGRADO) */
         .consolidated-box { background: #1b4f72; color: white; border-radius: 6px; padding: 20px; box-shadow: 0 3px 12px rgba(0,0,0,0.12); margin-bottom: 20px; }
-        .consolidated-box h2 { margin-top: 0; font-size: 15px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .consolidated-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding-bottom: 12px;
+            margin-bottom: 14px;
+        }
+        .consolidated-header h2 {
+            margin: 0;
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: none;
+            padding: 0;
+        }
+        .con-mode-selector {
+            display: flex;
+            gap: 6px;
+            background: rgba(0,0,0,0.22);
+            padding: 4px;
+            border-radius: 6px;
+        }
+        .con-mode-btn {
+            border: none;
+            background: transparent;
+            color: rgba(255,255,255,0.75);
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .con-mode-btn:hover {
+            color: #fff;
+            background: rgba(255,255,255,0.1);
+        }
+        .con-mode-btn.active {
+            background: #12a8e3;
+            color: #fff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .con-mode-btn.active.integrado-active {
+            background: #00a65a;
+        }
+        .con-scope-badge {
+            font-size: 11px;
+            background: rgba(255,255,255,0.15);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #f1c40f;
+            margin-left: 8px;
+        }
+
         .consolidated-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
         .con-item { background: rgba(255, 255, 255, 0.09); padding: 10px 12px; border-radius: 5px; }
         .con-item label { display: block; font-size: 11px; color: #d6eaf8; margin-bottom: 3px; }
@@ -743,7 +800,10 @@
                 <div class="panel-box">
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                         <h3 style="margin:0;">Calculadora de Lucro Mensal (Produto a Produto)</h3>
-                        <button class="btn-action" onclick="salvarRelatorioEspecifico('mensal')">💾 Salvar Fechamento Mensal na Nuvem</button>
+                        <div style="display:flex; gap:8px;">
+                            <button class="btn-action" onclick="salvarRelatorioEspecifico('mensal')">💾 Salvar Fechamento Mensal na Nuvem</button>
+                            <button class="btn-reset" onclick="resetSubForm('monthly')">🗑️ Limpar</button>
+                        </div>
                     </div>
                 </div>
                 <div class="platform-tabs">
@@ -759,7 +819,13 @@
                 <div id="monthly-prod-amazon-container" class="card-grid hidden"></div>
                 <div id="monthly-prod-fisica-container" class="card-grid hidden"></div>
                 <div class="consolidated-box">
-                    <h2>Consolidado Mensal de Produtos</h2>
+                    <div class="consolidated-header">
+                        <h2>Consolidado Mensal de Produtos <span id="badge-scope-monthly" class="con-scope-badge">Somente Shopee</span></h2>
+                        <div class="con-mode-selector">
+                            <button type="button" class="con-mode-btn active" id="btn-mode-monthly-nao_integrado" onclick="setModoConsolidado('monthly', 'nao_integrado')">Consolidado Não Integrado</button>
+                            <button type="button" class="con-mode-btn" id="btn-mode-monthly-integrado" onclick="setModoConsolidado('monthly', 'integrado')">Consolidado Integrado (Todos Marketplaces)</button>
+                        </div>
+                    </div>
                     <div class="consolidated-grid">
                         <div class="con-item"><label>Unidades</label><span id="res-monthly-unidades">0</span></div>
                         <div class="con-item"><label>Faturamento</label><span id="res-monthly-fat">R$ 0,00</span></div>
@@ -789,7 +855,13 @@
                 <div id="amazon-container" class="card-grid hidden"></div>
                 <div id="fisica-container" class="card-grid hidden"></div>
                 <div class="consolidated-box">
-                    <h2>Consolidado da Semana</h2>
+                    <div class="consolidated-header">
+                        <h2>Consolidado da Semana <span id="badge-scope-weekly" class="con-scope-badge">Somente Shopee</span></h2>
+                        <div class="con-mode-selector">
+                            <button type="button" class="con-mode-btn active" id="btn-mode-weekly-nao_integrado" onclick="setModoConsolidado('weekly', 'nao_integrado')">Consolidado Não Integrado</button>
+                            <button type="button" class="con-mode-btn" id="btn-mode-weekly-integrado" onclick="setModoConsolidado('weekly', 'integrado')">Consolidado Integrado (Todos Marketplaces)</button>
+                        </div>
+                    </div>
                     <div class="consolidated-grid">
                         <div class="con-item"><label>Unidades</label><span id="res-unidades">0</span></div>
                         <div class="con-item"><label>Faturamento</label><span id="res-faturamento">R$ 0,00</span></div>
@@ -810,7 +882,10 @@
                 <div class="panel-box">
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                         <h3 style="margin:0;">Calculadora de Lucro Diário (Produto a Produto)</h3>
-                        <button class="btn-action" onclick="salvarRelatorioEspecifico('diario')">💾 Salvar Fechamento Diário na Nuvem</button>
+                        <div style="display:flex; gap:8px;">
+                            <button class="btn-action" onclick="salvarRelatorioEspecifico('diario')">💾 Salvar Fechamento Diário na Nuvem</button>
+                            <button class="btn-reset" onclick="resetSubForm('daily')">🗑️ Limpar</button>
+                        </div>
                     </div>
                 </div>
                 <div class="platform-tabs">
@@ -826,7 +901,13 @@
                 <div id="daily-prod-amazon-container" class="card-grid hidden"></div>
                 <div id="daily-prod-fisica-container" class="card-grid hidden"></div>
                 <div class="consolidated-box">
-                    <h2>Consolidado Diário de Produtos</h2>
+                    <div class="consolidated-header">
+                        <h2>Consolidado Diário de Produtos <span id="badge-scope-daily" class="con-scope-badge">Somente Shopee</span></h2>
+                        <div class="con-mode-selector">
+                            <button type="button" class="con-mode-btn active" id="btn-mode-daily-nao_integrado" onclick="setModoConsolidado('daily', 'nao_integrado')">Consolidado Não Integrado</button>
+                            <button type="button" class="con-mode-btn" id="btn-mode-daily-integrado" onclick="setModoConsolidado('daily', 'integrado')">Consolidado Integrado (Todos Marketplaces)</button>
+                        </div>
+                    </div>
                     <div class="consolidated-grid">
                         <div class="con-item"><label>Unidades</label><span id="res-daily-unidades">0</span></div>
                         <div class="con-item"><label>Faturamento</label><span id="res-daily-fat">R$ 0,00</span></div>
@@ -984,6 +1065,22 @@
     let relatoriosSalvos = [];
     let subInputsData = { daily: {}, monthly: {} };
     
+    // Estado do modo de consolidação (nao_integrado vs integrado) para Diário, Semanal e Mensal
+    let modoConsolidado = {
+        daily: 'nao_integrado',
+        weekly: 'nao_integrado',
+        monthly: 'nao_integrado'
+    };
+
+    const listaPlataformas = ['shopee', 'tiktok', 'mercadolivre', 'amazon', 'fisica'];
+    const nomesPlataformas = {
+        shopee: 'Shopee',
+        tiktok: 'TikTok Shop',
+        mercadolivre: 'Mercado Livre',
+        amazon: 'Amazon',
+        fisica: 'Loja Física'
+    };
+
     let configuracoesTaxas = {
         shopee: { vigencia: '2026-01-01', faixas: [{ min: 0, max: 999999, comissaoPct: 20, taxaFixa: 4.50 }], produtosEspecificos: [] },
         tiktok: { vigencia: '2026-01-01', faixas: [{ min: 0, max: 999999, comissaoPct: 16, taxaFixa: 4.00 }], produtosEspecificos: [] },
@@ -1009,15 +1106,39 @@
         });
     }
 
-    // Conversor blindado de Moeda BRL (suporta negativos em qualquer formato, espaços invisíveis e números puros)
+    // Alterna entre "Consolidado Não Integrado" e "Consolidado Integrado"
+    window.setModoConsolidado = function(escopo, modo) {
+        modoConsolidado[escopo] = modo;
+        aplicarBotoesModoConsolidado(escopo);
+        if (escopo === 'weekly') {
+            calcularTudo();
+        } else {
+            calcularSubProd(escopo);
+        }
+        salvarCloud();
+    }
+
+    function aplicarBotoesModoConsolidado(escopo) {
+        const modo = modoConsolidado[escopo] || 'nao_integrado';
+        const btnNaoInt = document.getElementById(`btn-mode-${escopo}-nao_integrado`);
+        const btnInt = document.getElementById(`btn-mode-${escopo}-integrado`);
+        if (btnNaoInt && btnInt) {
+            if (modo === 'integrado') {
+                btnNaoInt.classList.remove('active');
+                btnInt.classList.add('active', 'integrado-active');
+            } else {
+                btnInt.classList.remove('active', 'integrado-active');
+                btnNaoInt.classList.add('active');
+            }
+        }
+    }
+
     function parseBRL(val) {
         if (val === undefined || val === null) return 0;
         if (typeof val === 'number') return isNaN(val) ? 0 : val;
         let s = String(val).trim();
         if (!s) return 0;
-        // Detecta sinal negativo em qualquer posição (ex: "-R$ 50,00", "R$ -50,00", "-50,00")
         const isNeg = s.includes('-');
-        // Mantém apenas dígitos, pontos e vírgulas
         let clean = s.replace(/[^\d.,]/g, '');
         if (!clean) return 0;
         if (clean.includes(',')) {
@@ -1028,17 +1149,14 @@
         return isNeg ? -Math.abs(num) : num;
     }
 
-    // Verifica se um relatório pertence ao ano e mês consultados (aceita AAAA-MM-DD, DD/MM/AAAA, DD/MM, etc.)
     function pertenceAoMesCompetencia(rel, anoNum, mesNum) {
         const mesStr = String(mesNum).padStart(2, '0');
         const anoStr = String(anoNum);
         const comp = String(rel.competencia || '').trim();
         const dataSalva = String(rel.data || '').trim();
 
-        // 1. Formato ISO padrão: "2026-11", "2026-11-01", "2026-11-01 a 2026-11-07"
         if (comp.startsWith(`${anoStr}-${mesStr}`)) return true;
 
-        // 2. Formato Brasileiro com barra: "01/11/2026", "1/11/2026", "01/11" ou "11/2026"
         if (comp.includes('/')) {
             const partes = comp.split(' ')[0].split('/');
             if (partes.length === 3) {
@@ -1048,12 +1166,10 @@
             } else if (partes.length === 2) {
                 const p0 = parseInt(partes[0], 10);
                 const p1 = parseInt(partes[1], 10);
-                // Pode ser DD/MM (ex: 01/11) ou MM/AAAA (ex: 11/2026)
                 if ((p1 === mesNum && p0 <= 31) || (p0 === mesNum && p1 === anoNum)) return true;
             }
         }
 
-        // 3. Formato com traço invertido DD-MM-AAAA (ex: "01-11-2026")
         if (comp.includes('-')) {
             const partes = comp.split(' ')[0].split('-');
             if (partes.length === 3 && partes[0].length <= 2 && parseInt(partes[1], 10) === mesNum && parseInt(partes[2], 10) === anoNum) {
@@ -1061,7 +1177,6 @@
             }
         }
 
-        // 4. Caso a competência esteja vazia, verifica pela data de criação do relatório
         if (!comp && dataSalva.includes(`/${mesStr}/${anoStr}`)) return true;
 
         return false;
@@ -1075,7 +1190,7 @@
             amazon: { vigencia: '2026-01-01', faixas: [{ min: 0, max: 999999, comissaoPct: 14, taxaFixa: 0.00 }], produtosEspecificos: [] },
             fisica: { vigencia: '2026-01-01', faixas: [{ min: 0, max: 999999, comissaoPct: 0, taxaFixa: 0.00 }], produtosEspecificos: [] }
         };
-        ['shopee', 'tiktok', 'mercadolivre', 'amazon', 'fisica'].forEach(key => {
+        listaPlataformas.forEach(key => {
             if (!configuracoesTaxas[key]) {
                 configuracoesTaxas[key] = defaultCfg[key];
             } else {
@@ -1139,14 +1254,15 @@
                 relatorios: relatoriosSalvos,
                 inputsSemana: inputsSemana,
                 subInputsData: subInputsData,
-                configTaxas: configuracoesTaxas
+                configTaxas: configuracoesTaxas,
+                modoConsolidado: modoConsolidado
             });
         } catch (e) { console.error("Erro ao salvar nuvem: ", e); }
     }
 
     function capturarSubInputsEstado() {
         ['daily', 'monthly'].forEach(tipo => {
-            ['shopee', 'tiktok', 'mercadolivre', 'amazon', 'fisica'].forEach(plat => {
+            listaPlataformas.forEach(plat => {
                 const container = document.getElementById(`${tipo}-prod-${plat}-container`);
                 if (!container) return;
                 if (!subInputsData[tipo]) subInputsData[tipo] = {};
@@ -1170,7 +1286,7 @@
         if (!subInputsData) return;
         ['daily', 'monthly'].forEach(tipo => {
             if (!subInputsData[tipo]) return;
-            ['shopee', 'tiktok', 'mercadolivre', 'amazon', 'fisica'].forEach(plat => {
+            listaPlataformas.forEach(plat => {
                 if (!subInputsData[tipo][plat]) return;
                 const container = document.getElementById(`${tipo}-prod-${plat}-container`);
                 if (!container) return;
@@ -1186,8 +1302,8 @@
                         card.querySelector('.sub-ads').value = saved.ads || 0;
                     }
                 });
-                calcularSubProd(tipo);
             });
+            calcularSubProd(tipo);
         });
     }
 
@@ -1206,6 +1322,13 @@
                 subInputsData = data.subInputsData || { daily: {}, monthly: {} };
                 if(data.configTaxas) configuracoesTaxas = data.configTaxas;
                 if(data.inputsSemana) savedInputsSemana = data.inputsSemana;
+                if(data.modoConsolidado) {
+                    modoConsolidado = {
+                        daily: data.modoConsolidado.daily || 'nao_integrado',
+                        weekly: data.modoConsolidado.weekly || 'nao_integrado',
+                        monthly: data.modoConsolidado.monthly || 'nao_integrado'
+                    };
+                }
             } else {
                 produtosBase = getDefaultProducts();
             }
@@ -1214,6 +1337,9 @@
         }
         normalizarConfigTaxas();
         renderizarTelaConfig();
+        aplicarBotoesModoConsolidado('daily');
+        aplicarBotoesModoConsolidado('weekly');
+        aplicarBotoesModoConsolidado('monthly');
         initAppAfterLoad();
         if (savedInputsSemana) {
             document.querySelectorAll('#view-calc input[type="number"]').forEach((input, idx) => {
@@ -1265,7 +1391,6 @@
         const container = document.getElementById('config-platforms-container');
         if(!container) return;
         container.innerHTML = '';
-        const nomesPlat = { shopee: 'Shopee', tiktok: 'TikTok Shop', mercadolivre: 'Mercado Livre', amazon: 'Amazon', fisica: 'Loja Física' };
         
         Object.keys(configuracoesTaxas).forEach(key => {
             const cfg = configuracoesTaxas[key];
@@ -1324,7 +1449,7 @@
             container.innerHTML += `
                 <div style="background:#f8f9fa; padding:15px; border-radius:8px; border:1px solid #dcdcdc; display:flex; flex-direction:column; justify-content:space-between;">
                     <div>
-                        <h4 style="margin-top:0; margin-bottom:10px; color:#2c3e50;">${nomesPlat[key]}</h4>
+                        <h4 style="margin-top:0; margin-bottom:10px; color:#2c3e50;">${nomesPlataformas[key]}</h4>
                         <div class="input-group" style="margin-bottom:12px;"><label>Vigência a partir de:</label><input type="date" id="cfg-vig-${key}" value="${cfg.vigencia}" style="width:130px; font-size:11px;"></div>
                         <div id="faixas-list-${key}">${faixasHtml}</div>
                         <button class="btn-add-tier" onclick="adicionarFaixaTaxa('${key}')">➕ Adicionar Faixa de Preço</button>
@@ -1507,8 +1632,7 @@
     }
 
     function initAppAfterLoad() {
-        const plats = ['shopee', 'tiktok', 'mercadolivre', 'amazon', 'fisica'];
-        plats.forEach(p => {
+        listaPlataformas.forEach(p => {
             renderCards(p);
             renderSubCalculators('daily', p);
             renderSubCalculators('monthly', p);
@@ -1604,7 +1728,7 @@
         currentPlatform = plat;
         document.querySelectorAll('#view-calc .tab-btn').forEach(btn => btn.classList.remove('active'));
         document.querySelector(`#view-calc .tab-btn.${plat}`).classList.add('active');
-        ['shopee', 'tiktok', 'mercadolivre', 'amazon', 'fisica'].forEach(p => {
+        listaPlataformas.forEach(p => {
             const el = document.getElementById(`${p}-container`);
             if(el) {
                 if(p === plat) el.classList.remove('hidden');
@@ -1618,7 +1742,7 @@
         const viewDiv = document.getElementById(`view-calc-${tipo}-prod`);
         viewDiv.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
         viewDiv.querySelector(`.tab-btn.${plat}`).classList.add('active');
-        ['shopee', 'tiktok', 'mercadolivre', 'amazon', 'fisica'].forEach(p => {
+        listaPlataformas.forEach(p => {
             const el = document.getElementById(`${tipo}-prod-${p}-container`);
             if(el) {
                 if(p === plat) el.classList.remove('hidden');
@@ -1634,40 +1758,64 @@
         return ((precoUnitario * (regra.comissaoPct / 100)) + regra.taxaFixa) * unidades;
     }
 
+    // Calcula todos os cards de todas as plataformas para Diário ou Mensal e consolida conforme o modo escolhido
     function calcularSubProd(tipo) {
         const viewDiv = document.getElementById(`view-calc-${tipo}-prod`);
+        if (!viewDiv) return;
         const activePlatBtn = viewDiv.querySelector('.tab-btn.active');
         let activePlat = 'shopee';
-        ['shopee', 'tiktok', 'mercadolivre', 'amazon', 'fisica'].forEach(p => {
-            if(activePlatBtn.classList.contains(p)) activePlat = p;
+        listaPlataformas.forEach(p => {
+            if(activePlatBtn && activePlatBtn.classList.contains(p)) activePlat = p;
         });
 
+        const isIntegrado = modoConsolidado[tipo] === 'integrado';
+        const badgeScope = document.getElementById(`badge-scope-${tipo}`);
+        if (badgeScope) {
+            badgeScope.innerText = isIntegrado
+                ? 'Integrado: Todos os Marketplaces'
+                : `Somente ${nomesPlataformas[activePlat]}`;
+            badgeScope.style.color = isIntegrado ? '#2ecc71' : '#f1c40f';
+        }
+
         let totUn = 0, totFat = 0, totCmv = 0, totAds = 0, totLucro = 0;
-        produtosBase.forEach(prod => {
-            const un = parseFloat(viewDiv.querySelector(`.sub-unidades[data-id="${prod.id}"][data-tipo="${tipo}"][data-plat="${activePlat}"]`)?.value) || 0;
-            const val = parseFloat(viewDiv.querySelector(`.sub-valor[data-id="${prod.id}"][data-tipo="${tipo}"][data-plat="${activePlat}"]`)?.value) || 0;
-            const cmvUnit = parseFloat(viewDiv.querySelector(`.sub-cmv[data-id="${prod.id}"][data-tipo="${tipo}"][data-plat="${activePlat}"]`)?.value) || 0;
-            const afilUnit = parseFloat(viewDiv.querySelector(`.sub-afiliado[data-id="${prod.id}"][data-tipo="${tipo}"][data-plat="${activePlat}"]`)?.value) || 0;
-            const adsVal = parseFloat(viewDiv.querySelector(`.sub-ads[data-id="${prod.id}"][data-tipo="${tipo}"][data-plat="${activePlat}"]`)?.value) || 0;
 
-            const faturamento = un * val;
-            const deducoes = calcularDeducoesPlataforma(activePlat, val, un, prod.id);
-            const receitaLiq = faturamento - deducoes;
-            const cmvTotal = (un * cmvUnit) + (un * afilUnit);
-            const margem = receitaLiq - cmvTotal - adsVal;
-            const imcIndiv = faturamento > 0 ? (margem / faturamento) * 100 : 0;
+        listaPlataformas.forEach(plat => {
+            produtosBase.forEach(prod => {
+                const un = parseFloat(viewDiv.querySelector(`.sub-unidades[data-id="${prod.id}"][data-tipo="${tipo}"][data-plat="${plat}"]`)?.value) || 0;
+                const val = parseFloat(viewDiv.querySelector(`.sub-valor[data-id="${prod.id}"][data-tipo="${tipo}"][data-plat="${plat}"]`)?.value) || 0;
+                const cmvUnit = parseFloat(viewDiv.querySelector(`.sub-cmv[data-id="${prod.id}"][data-tipo="${tipo}"][data-plat="${plat}"]`)?.value) || 0;
+                const afilUnit = parseFloat(viewDiv.querySelector(`.sub-afiliado[data-id="${prod.id}"][data-tipo="${tipo}"][data-plat="${plat}"]`)?.value) || 0;
+                const adsVal = parseFloat(viewDiv.querySelector(`.sub-ads[data-id="${prod.id}"][data-tipo="${tipo}"][data-plat="${plat}"]`)?.value) || 0;
 
-            viewDiv.querySelector(`.sub-out-fat[data-id="${prod.id}"][data-tipo="${tipo}"][data-plat="${activePlat}"]`).innerText = formatBRL(faturamento);
-            viewDiv.querySelector(`.sub-out-ded[data-id="${prod.id}"][data-tipo="${tipo}"][data-plat="${activePlat}"]`).innerText = formatBRL(deducoes);
-            viewDiv.querySelector(`.sub-out-ads[data-id="${prod.id}"][data-tipo="${tipo}"][data-plat="${activePlat}"]`).innerText = formatBRL(adsVal);
-            
-            const elMg = viewDiv.querySelector(`.sub-out-mg[data-id="${prod.id}"][data-tipo="${tipo}"][data-plat="${activePlat}"]`);
-            if(elMg) { elMg.innerText = formatBRL(margem); elMg.style.color = margem >= 0 ? '#00a65a' : '#dd4b39'; }
+                const faturamento = un * val;
+                const deducoes = calcularDeducoesPlataforma(plat, val, un, prod.id);
+                const receitaLiq = faturamento - deducoes;
+                const cmvTotal = (un * cmvUnit) + (un * afilUnit);
+                const margem = receitaLiq - cmvTotal - adsVal;
+                const imcIndiv = faturamento > 0 ? (margem / faturamento) * 100 : 0;
 
-            const elImc = viewDiv.querySelector(`.sub-out-imc[data-id="${prod.id}"][data-tipo="${tipo}"][data-plat="${activePlat}"]`);
-            if(elImc) elImc.innerText = imcIndiv.toFixed(2) + '%';
-            
-            totUn += un; totFat += faturamento; totCmv += cmvTotal; totAds += adsVal; totLucro += margem;
+                const outFat = viewDiv.querySelector(`.sub-out-fat[data-id="${prod.id}"][data-tipo="${tipo}"][data-plat="${plat}"]`);
+                if (outFat) outFat.innerText = formatBRL(faturamento);
+                const outDed = viewDiv.querySelector(`.sub-out-ded[data-id="${prod.id}"][data-tipo="${tipo}"][data-plat="${plat}"]`);
+                if (outDed) outDed.innerText = formatBRL(deducoes);
+                const outAds = viewDiv.querySelector(`.sub-out-ads[data-id="${prod.id}"][data-tipo="${tipo}"][data-plat="${plat}"]`);
+                if (outAds) outAds.innerText = formatBRL(adsVal);
+                
+                const elMg = viewDiv.querySelector(`.sub-out-mg[data-id="${prod.id}"][data-tipo="${tipo}"][data-plat="${plat}"]`);
+                if(elMg) { elMg.innerText = formatBRL(margem); elMg.style.color = margem >= 0 ? '#00a65a' : '#dd4b39'; }
+
+                const elImc = viewDiv.querySelector(`.sub-out-imc[data-id="${prod.id}"][data-tipo="${tipo}"][data-plat="${plat}"]`);
+                if(elImc) elImc.innerText = imcIndiv.toFixed(2) + '%';
+                
+                // Soma no consolidado se estiver no modo Integrado OU se for a plataforma ativa no modo Não Integrado
+                if (isIntegrado || plat === activePlat) {
+                    totUn += un;
+                    totFat += faturamento;
+                    totCmv += cmvTotal;
+                    totAds += adsVal;
+                    totLucro += margem;
+                }
+            });
         });
 
         document.getElementById(`res-${tipo}-unidades`).innerText = totUn;
@@ -1681,37 +1829,64 @@
         elLucro.style.color = totLucro >= 0 ? '#2ecc71' : '#e74c3c';
     }
 
+    // Calcula todos os cards da Calculadora Semanal e consolida conforme o modo escolhido
     function calcularTudo() {
+        const isIntegrado = modoConsolidado.weekly === 'integrado';
+        const badgeScope = document.getElementById('badge-scope-weekly');
+        if (badgeScope) {
+            badgeScope.innerText = isIntegrado
+                ? 'Integrado: Todos os Marketplaces'
+                : `Somente ${nomesPlataformas[currentPlatform]}`;
+            badgeScope.style.color = isIntegrado ? '#2ecc71' : '#f1c40f';
+        }
+
         let totUn = 0, totFat = 0, totDed = 0, totRecLiq = 0, totCmv = 0, totAfi = 0, totAds = 0, totCup = 0, totMg = 0;
-        produtosBase.forEach(prod => {
-            const un = parseFloat(document.querySelector(`.inp-unidades[data-id="${prod.id}"][data-plat="${currentPlatform}"]`)?.value) || 0;
-            const val = parseFloat(document.querySelector(`.inp-valor[data-id="${prod.id}"][data-plat="${currentPlatform}"]`)?.value) || 0;
-            const cmvUnit = parseFloat(document.querySelector(`.inp-cmv[data-id="${prod.id}"][data-plat="${currentPlatform}"]`)?.value) || 0;
-            const afilUnit = parseFloat(document.querySelector(`.inp-afiliado[data-id="${prod.id}"][data-plat="${currentPlatform}"]`)?.value) || 0;
-            const ads = parseFloat(document.querySelector(`.inp-ads[data-id="${prod.id}"][data-plat="${currentPlatform}"]`)?.value) || 0;
-            const cupons = parseFloat(document.querySelector(`.inp-cupons[data-id="${prod.id}"][data-plat="${currentPlatform}"]`)?.value) || 0;
 
-            const faturamento = un * val;
-            const deducoes = calcularDeducoesPlataforma(currentPlatform, val, un, prod.id);
-            const receitaLiq = faturamento - deducoes;
-            const cmvTotal = un * cmvUnit;
-            const afilTotal = un * afilUnit;
-            const margem = receitaLiq - cmvTotal - afilTotal - ads - cupons;
-            const imcIndiv = faturamento > 0 ? (margem / faturamento) * 100 : 0;
+        listaPlataformas.forEach(plat => {
+            produtosBase.forEach(prod => {
+                const un = parseFloat(document.querySelector(`.inp-unidades[data-id="${prod.id}"][data-plat="${plat}"]`)?.value) || 0;
+                const val = parseFloat(document.querySelector(`.inp-valor[data-id="${prod.id}"][data-plat="${plat}"]`)?.value) || 0;
+                const cmvUnit = parseFloat(document.querySelector(`.inp-cmv[data-id="${prod.id}"][data-plat="${plat}"]`)?.value) || 0;
+                const afilUnit = parseFloat(document.querySelector(`.inp-afiliado[data-id="${prod.id}"][data-plat="${plat}"]`)?.value) || 0;
+                const ads = parseFloat(document.querySelector(`.inp-ads[data-id="${prod.id}"][data-plat="${plat}"]`)?.value) || 0;
+                const cupons = parseFloat(document.querySelector(`.inp-cupons[data-id="${prod.id}"][data-plat="${plat}"]`)?.value) || 0;
 
-            document.querySelector(`.out-fat[data-id="${prod.id}"][data-plat="${currentPlatform}"]`).innerText = formatBRL(faturamento);
-            document.querySelector(`.out-ded[data-id="${prod.id}"][data-plat="${currentPlatform}"]`).innerText = formatBRL(deducoes);
-            document.querySelector(`.out-rec[data-id="${prod.id}"][data-plat="${currentPlatform}"]`).innerText = formatBRL(receitaLiq);
-            document.querySelector(`.out-cmvtot[data-id="${prod.id}"][data-plat="${currentPlatform}"]`).innerText = formatBRL(cmvTotal);
-            const elAfiTot = document.querySelector(`.out-afil[data-id="${prod.id}"][data-plat="${currentPlatform}"]`);
-            if(elAfiTot) elAfiTot.innerText = formatBRL(afilTotal);
-            const elMg = document.querySelector(`.out-mg[data-id="${prod.id}"][data-plat="${currentPlatform}"]`);
-            if(elMg) { elMg.innerText = formatBRL(margem); elMg.style.color = margem >= 0 ? '#00a65a' : '#dd4b39'; }
-            const elImc = document.querySelector(`.out-imc-ind[data-id="${prod.id}"][data-plat="${currentPlatform}"]`);
-            if(elImc) elImc.innerText = imcIndiv.toFixed(2) + '%';
+                const faturamento = un * val;
+                const deducoes = calcularDeducoesPlataforma(plat, val, un, prod.id);
+                const receitaLiq = faturamento - deducoes;
+                const cmvTotal = un * cmvUnit;
+                const afilTotal = un * afilUnit;
+                const margem = receitaLiq - cmvTotal - afilTotal - ads - cupons;
+                const imcIndiv = faturamento > 0 ? (margem / faturamento) * 100 : 0;
 
-            totUn += un; totFat += faturamento; totDed += deducoes; totRecLiq += receitaLiq;
-            totCmv += cmvTotal; totAfi += afilTotal; totAds += ads; totCup += cupons; totMg += margem;
+                const outFat = document.querySelector(`.out-fat[data-id="${prod.id}"][data-plat="${plat}"]`);
+                if (outFat) outFat.innerText = formatBRL(faturamento);
+                const outDed = document.querySelector(`.out-ded[data-id="${prod.id}"][data-plat="${plat}"]`);
+                if (outDed) outDed.innerText = formatBRL(deducoes);
+                const outRec = document.querySelector(`.out-rec[data-id="${prod.id}"][data-plat="${plat}"]`);
+                if (outRec) outRec.innerText = formatBRL(receitaLiq);
+                const outCmv = document.querySelector(`.out-cmvtot[data-id="${prod.id}"][data-plat="${plat}"]`);
+                if (outCmv) outCmv.innerText = formatBRL(cmvTotal);
+
+                const elAfiTot = document.querySelector(`.out-afil[data-id="${prod.id}"][data-plat="${plat}"]`);
+                if(elAfiTot) elAfiTot.innerText = formatBRL(afilTotal);
+                const elMg = document.querySelector(`.out-mg[data-id="${prod.id}"][data-plat="${plat}"]`);
+                if(elMg) { elMg.innerText = formatBRL(margem); elMg.style.color = margem >= 0 ? '#00a65a' : '#dd4b39'; }
+                const elImc = document.querySelector(`.out-imc-ind[data-id="${prod.id}"][data-plat="${plat}"]`);
+                if(elImc) elImc.innerText = imcIndiv.toFixed(2) + '%';
+
+                if (isIntegrado || plat === currentPlatform) {
+                    totUn += un;
+                    totFat += faturamento;
+                    totDed += deducoes;
+                    totRecLiq += receitaLiq;
+                    totCmv += cmvTotal;
+                    totAfi += afilTotal;
+                    totAds += ads;
+                    totCup += cupons;
+                    totMg += margem;
+                }
+            });
         });
 
         document.getElementById('res-unidades').innerText = totUn;
@@ -1731,11 +1906,46 @@
     }
 
     window.resetForm = function() {
-        const container = document.getElementById(`${currentPlatform}-container`);
-        if (!container) return;
-        container.querySelectorAll('.inp-unidades, .inp-ads, .inp-cupons').forEach(inp => inp.value = 0);
+        const isIntegrado = modoConsolidado.weekly === 'integrado';
+        const msg = isIntegrado
+            ? "Limpar os lançamentos semanais de TODOS os marketplaces?"
+            : `Limpar os lançamentos semanais de ${nomesPlataformas[currentPlatform]}?`;
+        if (!confirm(msg)) return;
+
+        const platsAlvo = isIntegrado ? listaPlataformas : [currentPlatform];
+        platsAlvo.forEach(p => {
+            const container = document.getElementById(`${p}-container`);
+            if (container) {
+                container.querySelectorAll('.inp-unidades, .inp-ads, .inp-cupons').forEach(inp => inp.value = 0);
+            }
+        });
         salvarCloud();
         calcularTudo();
+    }
+
+    window.resetSubForm = function(tipo) {
+        const viewDiv = document.getElementById(`view-calc-${tipo}-prod`);
+        const activePlatBtn = viewDiv.querySelector('.tab-btn.active');
+        let activePlat = 'shopee';
+        listaPlataformas.forEach(p => {
+            if(activePlatBtn && activePlatBtn.classList.contains(p)) activePlat = p;
+        });
+
+        const isIntegrado = modoConsolidado[tipo] === 'integrado';
+        const msg = isIntegrado
+            ? "Limpar os valores preenchidos de TODOS os marketplaces?"
+            : `Limpar os valores preenchidos de ${nomesPlataformas[activePlat]}?`;
+        if (!confirm(msg)) return;
+
+        const platsAlvo = isIntegrado ? listaPlataformas : [activePlat];
+        platsAlvo.forEach(p => {
+            const container = document.getElementById(`${tipo}-prod-${p}-container`);
+            if (container) {
+                container.querySelectorAll('.sub-unidades, .sub-ads').forEach(inp => inp.value = 0);
+            }
+        });
+        calcularSubProd(tipo);
+        salvarCloud();
     }
 
     window.exportarDadosCSV = function() {
@@ -1777,14 +1987,12 @@
         });
     }
 
-    // Recalcula o lucro exato de um relatório (caso o relatório tenha sido salvo com string antiga ou detalhe interno)
     function extrairValoresRelatorio(rel) {
         let un = parseInt(rel.unidades, 10) || 0;
         let fat = parseBRL(rel.faturamento);
         let lucro = parseBRL(rel.margem);
         let cmv = rel.cmv !== undefined ? parseBRL(rel.cmv) : 0;
 
-        // Se houver detalhesProdutos salvos e o lucro parseado for 0 mas houver itens com margem negativa/positiva, garante a soma fiel
         if (Array.isArray(rel.detalhesProdutos) && rel.detalhesProdutos.length > 0) {
             let somaMargemDetalhes = 0;
             let somaFatDetalhes = 0;
@@ -1792,7 +2000,6 @@
                 somaMargemDetalhes += (typeof p.margem === 'number' ? p.margem : parseBRL(p.margem));
                 somaFatDetalhes += (typeof p.faturamento === 'number' ? p.faturamento : parseBRL(p.faturamento));
             });
-            // Se a string principal perdeu o sinal negativo no passado, usa a soma real dos produtos
             if (Math.abs(somaMargemDetalhes - lucro) > 0.05) {
                 lucro = somaMargemDetalhes;
             }
@@ -1817,15 +2024,12 @@
         const anoNum = dataAtual.getFullYear();
         const mesNum = dataAtual.getMonth() + 1;
 
-        // Filtra todos os relatórios que pertencem ao mês atual (independente se foi digitado 2026-11-01 ou 01/11/2026)
         const relsDoMes = relatoriosSalvos.filter(rel => pertenceAoMesCompetencia(rel, anoNum, mesNum));
 
-        // Separa por tipo para não duplicar caso o usuário salve diários e depois um mensal/semanal
         const diariosMes = relsDoMes.filter(r => r.tipo === 'diario');
         const semanaisMes = relsDoMes.filter(r => r.tipo === 'semana');
         const mensaisMes = relsDoMes.filter(r => r.tipo === 'mensal');
 
-        // Prioriza a soma de todos os relatórios diários do mês (ex: 01/11, 02/11...); se não houver diários, usa semanais ou mensais
         let listaParaSomar = [];
         if (diariosMes.length > 0) {
             listaParaSomar = diariosMes;
@@ -1855,7 +2059,6 @@
         document.getElementById('dash-lucro').innerText = formatBRL(somaLucro);
         document.getElementById('dash-imc').innerText = imcMensal.toFixed(2) + '%';
 
-        // Atualiza a lista lateral esquerda do Dashboard mostrando cada dia/lançamento do mês e destacando prejuízos em vermelho
         const miniListEl = document.getElementById('dash-mini-sales-list');
         if (miniListEl) {
             miniListEl.innerHTML = '';
@@ -1908,7 +2111,9 @@
         let sugestaoSemana = obterSemanaSegundaDom(hoje);
         let competenciaSemana = prompt("Atribua a semana (Segunda a Domingo) para este relatório (Ex: 2026-11-02 a 2026-11-08):", sugestaoSemana);
         if (!competenciaSemana) return;
-        salvarRelatorioGenerico('semana', 'Relatório Semanal', competenciaSemana);
+        const isIntegrado = modoConsolidado.weekly === 'integrado';
+        const titulo = isIntegrado ? 'Relatório Semanal Integrado (Loja Toda)' : `Relatório Semanal - ${nomesPlataformas[currentPlatform]}`;
+        salvarRelatorioGenerico('semana', titulo, competenciaSemana);
     }
 
     window.salvarRelatorioEspecifico = function(tipo) {
@@ -1916,13 +2121,17 @@
             let dataHoje = new Date().toISOString().split('T')[0];
             let competenciaDia = prompt("Atribua a data (Dia) do fechamento (AAAA-MM-DD ou DD/MM/AAAA):", dataHoje);
             if (!competenciaDia) return;
-            salvarRelatorioGenerico('diario', 'Fechamento Diário (Prod)', competenciaDia);
+            const isIntegrado = modoConsolidado.daily === 'integrado';
+            const titulo = isIntegrado ? 'Fechamento Diário Integrado (Loja Toda)' : 'Fechamento Diário (Individual)';
+            salvarRelatorioGenerico('diario', titulo, competenciaDia);
         } else if(tipo === 'mensal') {
             let anoAtual = new Date().getFullYear();
             let mesAtual = String(new Date().getMonth() + 1).padStart(2, '0');
             let competenciaMes = prompt("Atribua o mês de competência (AAAA-MM):", `${anoAtual}-${mesAtual}`);
             if (!competenciaMes) return;
-            salvarRelatorioGenerico('mensal', 'Fechamento Mensal (Prod)', competenciaMes);
+            const isIntegrado = modoConsolidado.monthly === 'integrado';
+            const titulo = isIntegrado ? 'Fechamento Mensal Integrado (Loja Toda)' : 'Fechamento Mensal (Individual)';
+            salvarRelatorioGenerico('mensal', titulo, competenciaMes);
         }
     }
 
@@ -1942,46 +2151,49 @@
 
         let containerId = tipo === 'diario' ? 'view-calc-daily-prod' : (tipo === 'mensal' ? 'view-calc-monthly-prod' : 'view-calc');
         let viewDiv = document.getElementById(containerId);
-        let activePlat = 'shopee';
         let produtosRelatorio = [];
 
         if(tipo === 'semana') {
-            activePlat = currentPlatform;
+            const isIntegrado = modoConsolidado.weekly === 'integrado';
+            const plataformasAlvo = isIntegrado ? listaPlataformas : [currentPlatform];
             let somaUnSem = 0, somaFatSem = 0, somaMgSem = 0, somaCmvSem = 0;
 
-            produtosBase.forEach(prod => {
-                const un = parseFloat(document.querySelector(`.inp-unidades[data-id="${prod.id}"][data-plat="${activePlat}"]`)?.value) || 0;
-                const adsVal = parseFloat(document.querySelector(`.inp-ads[data-id="${prod.id}"][data-plat="${activePlat}"]`)?.value) || 0;
-                const cuponsVal = parseFloat(document.querySelector(`.inp-cupons[data-id="${prod.id}"][data-plat="${activePlat}"]`)?.value) || 0;
+            plataformasAlvo.forEach(plat => {
+                produtosBase.forEach(prod => {
+                    const un = parseFloat(document.querySelector(`.inp-unidades[data-id="${prod.id}"][data-plat="${plat}"]`)?.value) || 0;
+                    const adsVal = parseFloat(document.querySelector(`.inp-ads[data-id="${prod.id}"][data-plat="${plat}"]`)?.value) || 0;
+                    const cuponsVal = parseFloat(document.querySelector(`.inp-cupons[data-id="${prod.id}"][data-plat="${plat}"]`)?.value) || 0;
 
-                // Contabiliza mesmo que un === 0 caso tenha havido gasto de ADS ou Cupons (prejuízo)
-                if (un > 0 || adsVal > 0 || cuponsVal > 0) {
-                    const val = parseFloat(document.querySelector(`.inp-valor[data-id="${prod.id}"][data-plat="${activePlat}"]`)?.value) || 0;
-                    const cmvUnit = parseFloat(document.querySelector(`.inp-cmv[data-id="${prod.id}"][data-plat="${activePlat}"]`)?.value) || 0;
-                    const afilUnit = parseFloat(document.querySelector(`.inp-afiliado[data-id="${prod.id}"][data-plat="${activePlat}"]`)?.value) || 0;
-                    const fat = un * val;
-                    const deducoes = calcularDeducoesPlataforma(activePlat, val, un, prod.id);
-                    const recLiq = fat - deducoes;
-                    const cmvProd = (un * cmvUnit) + (un * afilUnit);
-                    const margemProd = recLiq - cmvProd - adsVal - cuponsVal;
-                    const imcProd = fat > 0 ? (margemProd / fat) * 100 : 0;
+                    if (un > 0 || adsVal > 0 || cuponsVal > 0) {
+                        const val = parseFloat(document.querySelector(`.inp-valor[data-id="${prod.id}"][data-plat="${plat}"]`)?.value) || 0;
+                        const cmvUnit = parseFloat(document.querySelector(`.inp-cmv[data-id="${prod.id}"][data-plat="${plat}"]`)?.value) || 0;
+                        const afilUnit = parseFloat(document.querySelector(`.inp-afiliado[data-id="${prod.id}"][data-plat="${plat}"]`)?.value) || 0;
+                        const fat = un * val;
+                        const deducoes = calcularDeducoesPlataforma(plat, val, un, prod.id);
+                        const recLiq = fat - deducoes;
+                        const cmvProd = (un * cmvUnit) + (un * afilUnit);
+                        const margemProd = recLiq - cmvProd - adsVal - cuponsVal;
+                        const imcProd = fat > 0 ? (margemProd / fat) * 100 : 0;
 
-                    somaUnSem += un;
-                    somaFatSem += fat;
-                    somaCmvSem += cmvProd;
-                    somaMgSem += margemProd;
-                    produtosRelatorio.push({ nome: prod.nome, unidades: un, faturamento: fat, margem: margemProd, imc: imcProd });
-                }
+                        somaUnSem += un;
+                        somaFatSem += fat;
+                        somaCmvSem += cmvProd;
+                        somaMgSem += margemProd;
+                        const nomeExibicao = isIntegrado ? `${prod.nome} (${nomesPlataformas[plat]})` : prod.nome;
+                        produtosRelatorio.push({ nome: nomeExibicao, unidades: un, faturamento: fat, margem: margemProd, imc: imcProd });
+                    }
+                });
             });
 
             const imcSemCalc = somaFatSem > 0 ? (somaMgSem / somaFatSem) * 100 : 0;
+            const lojaLabel = isIntegrado ? 'INTEGRADO (LOJA TODA)' : currentPlatform.toUpperCase();
             const novoRel = {
                 id: Date.now(),
                 tipo: 'semana',
                 nome: nomeRelatorio,
                 competencia: competenciaAtribuida,
                 data: new Date().toLocaleString(),
-                loja: activePlat.toUpperCase(),
+                loja: lojaLabel,
                 unidades: somaUnSem,
                 faturamento: formatBRL(somaFatSem),
                 cmv: formatBRL(somaCmvSem),
@@ -1997,47 +2209,54 @@
             return;
         }
 
+        const subTipo = tipo === 'diario' ? 'daily' : 'monthly';
+        const isIntegrado = modoConsolidado[subTipo] === 'integrado';
+
+        let activePlat = 'shopee';
         const activePlatBtn = viewDiv.querySelector('.tab-btn.active');
-        ['shopee', 'tiktok', 'mercadolivre', 'amazon', 'fisica'].forEach(p => {
-            if(activePlatBtn.classList.contains(p)) activePlat = p;
+        listaPlataformas.forEach(p => {
+            if(activePlatBtn && activePlatBtn.classList.contains(p)) activePlat = p;
         });
 
+        const plataformasAlvo = isIntegrado ? listaPlataformas : [activePlat];
         let somaUn = 0, somaFat = 0, somaCmv = 0, somaMg = 0;
-        const subTipo = tipo === 'diario' ? 'daily' : 'monthly';
 
-        produtosBase.forEach(prod => {
-            const un = parseFloat(viewDiv.querySelector(`.sub-unidades[data-id="${prod.id}"][data-tipo="${subTipo}"][data-plat="${activePlat}"]`)?.value) || 0;
-            const adsVal = parseFloat(viewDiv.querySelector(`.sub-ads[data-id="${prod.id}"][data-tipo="${subTipo}"][data-plat="${activePlat}"]`)?.value) || 0;
+        plataformasAlvo.forEach(plat => {
+            produtosBase.forEach(prod => {
+                const un = parseFloat(viewDiv.querySelector(`.sub-unidades[data-id="${prod.id}"][data-tipo="${subTipo}"][data-plat="${plat}"]`)?.value) || 0;
+                const adsVal = parseFloat(viewDiv.querySelector(`.sub-ads[data-id="${prod.id}"][data-tipo="${subTipo}"][data-plat="${plat}"]`)?.value) || 0;
 
-            // Contabiliza qualquer produto com venda OU com despesa de ADS (garantindo que dias com prejuízo por ADS sejam somados integralmente)
-            if (un > 0 || adsVal > 0) {
-                const val = parseFloat(viewDiv.querySelector(`.sub-valor[data-id="${prod.id}"][data-tipo="${subTipo}"][data-plat="${activePlat}"]`)?.value) || 0;
-                const cmvUnit = parseFloat(viewDiv.querySelector(`.sub-cmv[data-id="${prod.id}"][data-tipo="${subTipo}"][data-plat="${activePlat}"]`)?.value) || 0;
-                const afilUnit = parseFloat(viewDiv.querySelector(`.sub-afiliado[data-id="${prod.id}"][data-tipo="${subTipo}"][data-plat="${activePlat}"]`)?.value) || 0;
+                if (un > 0 || adsVal > 0) {
+                    const val = parseFloat(viewDiv.querySelector(`.sub-valor[data-id="${prod.id}"][data-tipo="${subTipo}"][data-plat="${plat}"]`)?.value) || 0;
+                    const cmvUnit = parseFloat(viewDiv.querySelector(`.sub-cmv[data-id="${prod.id}"][data-tipo="${subTipo}"][data-plat="${plat}"]`)?.value) || 0;
+                    const afilUnit = parseFloat(viewDiv.querySelector(`.sub-afiliado[data-id="${prod.id}"][data-tipo="${subTipo}"][data-plat="${plat}"]`)?.value) || 0;
 
-                const fat = un * val;
-                const deducoes = calcularDeducoesPlataforma(activePlat, val, un, prod.id);
-                const recLiq = fat - deducoes;
-                const cmvProd = (un * cmvUnit) + (un * afilUnit);
-                const margemProd = recLiq - cmvProd - adsVal;
-                const imcProd = fat > 0 ? (margemProd / fat) * 100 : 0;
+                    const fat = un * val;
+                    const deducoes = calcularDeducoesPlataforma(plat, val, un, prod.id);
+                    const recLiq = fat - deducoes;
+                    const cmvProd = (un * cmvUnit) + (un * afilUnit);
+                    const margemProd = recLiq - cmvProd - adsVal;
+                    const imcProd = fat > 0 ? (margemProd / fat) * 100 : 0;
 
-                somaUn += un;
-                somaFat += fat;
-                somaCmv += cmvProd;
-                somaMg += margemProd;
-                produtosRelatorio.push({ nome: prod.nome, unidades: un, faturamento: fat, margem: margemProd, imc: imcProd });
-            }
+                    somaUn += un;
+                    somaFat += fat;
+                    somaCmv += cmvProd;
+                    somaMg += margemProd;
+                    const nomeExibicao = isIntegrado ? `${prod.nome} (${nomesPlataformas[plat]})` : prod.nome;
+                    produtosRelatorio.push({ nome: nomeExibicao, unidades: un, faturamento: fat, margem: margemProd, imc: imcProd });
+                }
+            });
         });
 
         let imcTotCalc = somaFat > 0 ? (somaMg / somaFat) * 100 : 0;
+        const lojaLabel = isIntegrado ? 'INTEGRADO (LOJA TODA)' : activePlat.toUpperCase();
         const novoRel = {
             id: Date.now(),
             tipo: tipo,
             nome: nomeRelatorio,
             competencia: competenciaAtribuida,
             data: new Date().toLocaleString(),
-            loja: activePlat.toUpperCase(),
+            loja: lojaLabel,
             unidades: somaUn,
             faturamento: formatBRL(somaFat),
             cmv: formatBRL(somaCmv),
@@ -2186,8 +2405,7 @@
         if (!tbody) return;
         tbody.innerHTML = '';
 
-        const nomesPlat = { shopee: 'Shopee', tiktok: 'TikTok Shop', mercadolivre: 'Mercado Livre', amazon: 'Amazon', fisica: 'Loja Física' };
-        document.getElementById('lbl-plat-tabela').innerText = nomesPlat[plat] || plat;
+        document.getElementById('lbl-plat-tabela').innerText = nomesPlataformas[plat] || plat;
         document.getElementById('lbl-margem-tabela').innerText = targetMarginVal.toFixed(1) + '%';
         document.getElementById('lbl-ads-tabela').innerText = adsPctVal.toFixed(1) + '%';
         document.getElementById('th-ads-pct').innerText = adsPctVal.toFixed(1);
@@ -2284,8 +2502,7 @@
         const novoId = produtosBase.length > 0 ? Math.max(...produtosBase.map(p => p.id)) + 1 : 1;
         produtosBase.push({ id: novoId, nome, preco, cmv, afiliado, margem });
         salvarCloud();
-        const plats = ['shopee', 'tiktok', 'mercadolivre', 'amazon', 'fisica'];
-        plats.forEach(p => {
+        listaPlataformas.forEach(p => {
             renderCards(p);
             renderSubCalculators('daily', p);
             renderSubCalculators('monthly', p);
@@ -2312,8 +2529,7 @@
             configuracoesTaxas.mercadolivre.produtosEspecificos = configuracoesTaxas.mercadolivre.produtosEspecificos.filter(p => parseInt(p.prodId) !== id);
         }
         salvarCloud();
-        const plats = ['shopee', 'tiktok', 'mercadolivre', 'amazon', 'fisica'];
-        plats.forEach(p => {
+        listaPlataformas.forEach(p => {
             renderCards(p);
             renderSubCalculators('daily', p);
             renderSubCalculators('monthly', p);
