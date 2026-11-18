@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GESTÃO ONLINE - Painel E-commerce</title>
+    <title>ATOS 8 - Painel de Gestão E-commerce</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module">
@@ -45,6 +45,7 @@
             --kpi-orange: #f39c12;
             --kpi-green: #00a65a;
             --kpi-red: #dd4b39;
+            --kpi-purple: #8e44ad;
         }
 
         * { box-sizing: border-box; }
@@ -77,7 +78,8 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.35);
             text-align: center;
         }
-        .login-card h2 { margin-top: 0; color: #1b4f72; font-size: 20px; }
+        .login-card h2 { margin: 6px 0 2px 0; color: #1b3a5c; font-size: 22px; font-weight: 800; letter-spacing: 1px; }
+        .login-card .sub-brand { font-size: 10px; color: #7f8c8d; font-weight: 700; letter-spacing: 2px; margin-bottom: 18px; display: block; }
 
         /* ESTRUTURA PRINCIPAL COM SIDEBAR E TOPBAR */
         .app-layout {
@@ -86,7 +88,7 @@
             width: 100%;
         }
 
-        /* SIDEBAR ESTILO GESTÃO ONLINE */
+        /* SIDEBAR ESTILO ATOS 8 */
         .sidebar {
             width: 245px;
             min-width: 245px;
@@ -105,18 +107,50 @@
         .sidebar-brand {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 18px 20px;
-            font-size: 16px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            border-bottom: 1px solid rgba(255,255,255,0.12);
-            background: rgba(0,0,0,0.12);
+            gap: 12px;
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.14);
+            background: rgba(0,0,0,0.18);
+            cursor: pointer;
+            position: relative;
         }
-        .sidebar-brand i {
-            font-size: 22px;
+        .brand-logo-box {
+            width: 46px;
+            height: 46px;
+            min-width: 46px;
+            border-radius: 8px;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+            overflow: hidden;
+        }
+        .brand-logo-box img, .brand-logo-box svg {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        .brand-text-wrap {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.15;
+        }
+        .brand-title {
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: 1px;
             color: #ffffff;
         }
+        .brand-subtitle {
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 1.4px;
+            color: #cbd5e1;
+            text-transform: uppercase;
+        }
+
         .sidebar-search {
             padding: 14px 14px 8px 14px;
         }
@@ -207,7 +241,7 @@
             background-color: var(--bg-color);
         }
 
-        /* TOPBAR ESTILO GESTÃO ONLINE */
+        /* TOPBAR */
         .topbar {
             background: #ffffff;
             height: 56px;
@@ -287,8 +321,8 @@
         /* CARDS KPI DO DASHBOARD */
         .kpi-row {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-            gap: 18px;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 15px;
             margin-bottom: 22px;
         }
         .kpi-card {
@@ -306,36 +340,37 @@
         .kpi-card.orange { background-color: var(--kpi-orange); }
         .kpi-card.green { background-color: var(--kpi-green); }
         .kpi-card.red { background-color: var(--kpi-red); }
+        .kpi-card.purple { background-color: var(--kpi-purple); }
 
         .kpi-body {
-            padding: 16px 18px 10px 18px;
+            padding: 16px 16px 10px 16px;
             position: relative;
             z-index: 2;
         }
         .kpi-value {
-            font-size: 26px;
+            font-size: 24px;
             font-weight: 800;
             line-height: 1.1;
             margin-bottom: 6px;
             display: block;
         }
         .kpi-label {
-            font-size: 13px;
+            font-size: 12.5px;
             font-weight: 500;
             opacity: 0.95;
         }
         .kpi-icon {
             position: absolute;
-            right: 16px;
+            right: 14px;
             top: 14px;
-            font-size: 54px;
+            font-size: 50px;
             opacity: 0.22;
             z-index: 1;
         }
         .kpi-footer {
-            background: rgba(0,0,0,0.12);
-            padding: 6px 14px;
-            font-size: 11.5px;
+            background: rgba(0,0,0,0.14);
+            padding: 6px 12px;
+            font-size: 11px;
             text-align: center;
             color: rgba(255,255,255,0.92);
             z-index: 2;
@@ -365,13 +400,99 @@
             box-shadow: 0 1px 6px rgba(0,0,0,0.06);
             border: 1px solid #e8ecef;
         }
+        .dash-card-header-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
         .dash-card-title {
             font-size: 15px;
             color: #333;
-            margin: 0 0 12px 0;
-            font-weight: 500;
-            text-align: center;
+            margin: 0;
+            font-weight: 600;
         }
+
+        /* SELETOR DE PERÍODO POR COMPETÊNCIA */
+        .period-selector-wrap {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #f1f5f9;
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+        }
+        .period-selector-wrap label {
+            font-size: 11.5px;
+            font-weight: 700;
+            color: #1b4f72;
+            white-space: nowrap;
+        }
+        .period-selector-wrap select {
+            border: none;
+            background: transparent;
+            font-size: 12px;
+            font-weight: 700;
+            color: #2c3e50;
+            cursor: pointer;
+            outline: none;
+            padding: 2px 4px;
+        }
+
+        /* CAIXA DE SELEÇÃO DE MÉTRICAS DO GRÁFICO */
+        .chart-metrics-box {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+        }
+        .chart-metrics-box .metrics-title {
+            font-size: 11.5px;
+            font-weight: 700;
+            color: #475569;
+            margin-right: 4px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .metric-chk-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s;
+        }
+        .metric-chk-label:hover {
+            border-color: #94a3b8;
+            background: #f1f5f9;
+        }
+        .metric-chk-label input[type="checkbox"] {
+            accent-color: #1b4f72;
+            cursor: pointer;
+            margin: 0;
+        }
+        .metric-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
         .mini-list-table {
             width: 100%;
             border-collapse: collapse;
@@ -609,23 +730,32 @@
 </head>
 <body>
 
+<!-- Input oculto caso queira subir o arquivo PNG original da logo para ficar salvo no Firebase -->
+<input type="file" id="logo-file-input" accept="image/*" style="display:none;" onchange="carregarLogoCustomizada(event)">
+
 <div id="login-screen">
     <div class="login-card">
-        <div style="font-size: 36px; color: #1b4f72; margin-bottom: 8px;"><i class="fa-solid fa-cloud"></i></div>
-        <h2>GESTÃO ONLINE</h2>
+        <div style="width: 82px; height: 82px; margin: 0 auto 6px auto;" id="login-logo-container"></div>
+        <h2>ATOS 8</h2>
+        <span class="sub-brand">GLOBAL IMPORTS</span>
         <p style="font-size:12px; color:#666; margin-bottom:20px;">Digite o seu usuário e senha para carregar seus dados da nuvem.</p>
-        <input type="text" id="login-user" class="form-control" placeholder="Usuário (ex: atos8 ou joao)">
+        <input type="text" id="login-user" class="form-control" placeholder="Usuário (ex: atos8)">
         <input type="password" id="login-pass" class="form-control" placeholder="Sua senha">
-        <button class="btn-action" style="width: 100%; padding: 10px; background: #12a8e3;" onclick="fazerLoginCloud()">Entrar no Sistema</button>
+        <button class="btn-action" style="width: 100%; padding: 10px; background: #1b4f72;" onclick="fazerLoginCloud()">Entrar no Sistema</button>
     </div>
 </div>
 
 <div class="app-layout" id="main-app" style="display: none;">
-    <!-- BARRA LATERAL (SIDEBAR) -->
+    <!-- BARRA LATERAL (SIDEBAR) COM LOGO ATOS 8 -->
     <aside class="sidebar" id="app-sidebar">
-        <div class="sidebar-brand">
-            <i class="fa-solid fa-cloud"></i>
-            <span>GESTÃO ONLINE</span>
+        <div class="sidebar-brand" onclick="document.getElementById('logo-file-input').click()" title="Clique se quiser alterar/enviar a imagem da logo">
+            <div class="brand-logo-box" id="sidebar-logo-container">
+                <!-- SVG fiel da Logo ATOS 8 Global Imports (ou imagem enviada) -->
+            </div>
+            <div class="brand-text-wrap">
+                <span class="brand-title">ATOS 8</span>
+                <span class="brand-subtitle">GLOBAL IMPORTS</span>
+            </div>
         </div>
         <div class="sidebar-search">
             <div class="search-box-wrapper">
@@ -683,8 +813,8 @@
                 <span class="topbar-title" id="topbar-section-title">Painel</span>
             </div>
             <div class="topbar-right">
-                <span>Manual Sistema Gestão Online</span>
-                <span id="user-logged-email" style="font-weight: 600; color: #1b4f72;"></span>
+                <span style="font-weight: 600; color: #475569;">Sistema de Gestão ATOS 8</span>
+                <span id="user-logged-email" style="font-weight: 700; color: #1b4f72;"></span>
                 <i class="fa-solid fa-user" style="color: #555; font-size: 15px;"></i>
                 <div class="notif-circle" title="Sincronizado na Nuvem"><i class="fa-solid fa-bell"></i></div>
                 <button class="logout-top-btn" onclick="fazerLogoutCloud()">Sair <i class="fa-solid fa-right-from-bracket"></i></button>
@@ -694,7 +824,7 @@
         <div class="content-area">
             <!-- DASHBOARD -->
             <div id="view-dashboard" class="section-view active">
-                <!-- 4 CARDS COLORIDOS DO TOPO -->
+                <!-- 5 CARDS COLORIDOS DO TOPO -->
                 <div class="kpi-row">
                     <div class="kpi-card cyan">
                         <div class="kpi-body">
@@ -703,7 +833,7 @@
                         </div>
                         <i class="fa-solid fa-cart-shopping kpi-icon"></i>
                         <div class="kpi-footer">
-                            <span>Unidades Vendidas: <strong id="dash-unidades">0</strong> (<span id="dash-qtd-lancamentos">0</span> lançamentos)</span>
+                            <span>Unid.: <strong id="dash-unidades">0</strong> (<span id="dash-qtd-lancamentos">0</span> lanç.)</span>
                         </div>
                     </div>
 
@@ -714,7 +844,7 @@
                         </div>
                         <i class="fa-solid fa-chart-column kpi-icon"></i>
                         <div class="kpi-footer">
-                            <span>Margem sobre Faturamento Consolidado</span>
+                            <span>Margem / Faturamento</span>
                         </div>
                     </div>
 
@@ -739,6 +869,17 @@
                             <span>Fornecedores <i class="fa-solid fa-circle-arrow-right"></i></span>
                         </div>
                     </div>
+
+                    <div class="kpi-card purple">
+                        <div class="kpi-body">
+                            <span class="kpi-value" id="dash-ads-dia">R$ 0,00</span>
+                            <span class="kpi-label">Gasto ADS no Dia (Todos Mkts)</span>
+                        </div>
+                        <i class="fa-solid fa-bullhorn kpi-icon"></i>
+                        <div class="kpi-footer" style="cursor:pointer;" onclick="switchMainTab('calc-daily-prod', document.querySelectorAll('.main-tab-btn')[1], 'Lucro Diário')">
+                            <span>ADS Mês: <strong id="dash-ads-mes">R$ 0,00</strong> <i class="fa-solid fa-circle-arrow-right"></i></span>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- GRADE CENTRAL DE 3 COLUNAS -->
@@ -759,17 +900,71 @@
                         </table>
                     </div>
 
-                    <!-- COLUNA CENTRAL: GRÁFICO -->
+                    <!-- COLUNA CENTRAL: GRÁFICO COM SELETOR DE PERÍODO POR COMPETÊNCIA E MÉTRICAS -->
                     <div class="dash-card">
-                        <h3 class="dash-card-title">Vendas e Lucro (Últimos Lançamentos)</h3>
-                        <div style="position: relative; height: 290px; width: 100%;"><canvas id="graficoHistorico"></canvas></div>
+                        <div class="dash-card-header-flex">
+                            <div>
+                                <h3 class="dash-card-title">Análise por Competência</h3>
+                                <span id="chart-period-subtitle" style="font-size: 11px; color: #64748b;">Agrupado dia a dia pela data de competência</span>
+                            </div>
+                            <div class="period-selector-wrap">
+                                <label for="chart-period-filter"><i class="fa-regular fa-calendar-check"></i> Período:</label>
+                                <select id="chart-period-filter" onchange="atualizarPeriodoGrafico()">
+                                    <optgroup label="Análise Diária (Dia a Dia)">
+                                        <option value="3d">Últimos 3 Dias</option>
+                                        <option value="7d" selected>Últimos 7 Dias</option>
+                                        <option value="14d">Últimos 14 Dias</option>
+                                        <option value="30d">Últimos 30 Dias</option>
+                                    </optgroup>
+                                    <optgroup label="Análise Mensal (Mês a Mês Fechado)">
+                                        <option value="2m">2 Meses (Mês a Mês)</option>
+                                        <option value="3m">3 Meses (Mês a Mês)</option>
+                                        <option value="4m">4 Meses (Mês a Mês)</option>
+                                        <option value="5m">5 Meses (Mês a Mês)</option>
+                                        <option value="6m">6 Meses (Mês a Mês)</option>
+                                        <option value="12m">12 Meses (Mês a Mês)</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- CAIXA DE SELEÇÃO DE MÉTRICAS -->
+                        <div class="chart-metrics-box">
+                            <span class="metrics-title"><i class="fa-solid fa-sliders"></i> Métricas:</span>
+                            <label class="metric-chk-label">
+                                <input type="checkbox" id="chk-metric-faturamento" checked onchange="alternarMetricaGrafico('faturamento', this.checked)">
+                                <span class="metric-dot" style="background:#3498db;"></span> Faturamento (R$)
+                            </label>
+                            <label class="metric-chk-label">
+                                <input type="checkbox" id="chk-metric-lucro" checked onchange="alternarMetricaGrafico('lucro', this.checked)">
+                                <span class="metric-dot" style="background:#00a65a;"></span> Lucro Líquido (R$)
+                            </label>
+                            <label class="metric-chk-label">
+                                <input type="checkbox" id="chk-metric-ads" onchange="alternarMetricaGrafico('ads', this.checked)">
+                                <span class="metric-dot" style="background:#e67e22;"></span> ADS Total (R$)
+                            </label>
+                            <label class="metric-chk-label">
+                                <input type="checkbox" id="chk-metric-cmv" onchange="alternarMetricaGrafico('cmv', this.checked)">
+                                <span class="metric-dot" style="background:#dd4b39;"></span> CMV Total (R$)
+                            </label>
+                            <label class="metric-chk-label">
+                                <input type="checkbox" id="chk-metric-unidades" onchange="alternarMetricaGrafico('unidades', this.checked)">
+                                <span class="metric-dot" style="background:#8e44ad;"></span> Unidades Vendidas
+                            </label>
+                            <label class="metric-chk-label">
+                                <input type="checkbox" id="chk-metric-imc" onchange="alternarMetricaGrafico('imc', this.checked)">
+                                <span class="metric-dot" style="background:#f1c40f;"></span> IMC (%)
+                            </label>
+                        </div>
+
+                        <div style="position: relative; height: 265px; width: 100%;"><canvas id="graficoHistorico"></canvas></div>
                     </div>
 
                     <!-- COLUNA DIREITA: CARD E-COMMERCE & AÇÕES RÁPIDAS -->
                     <div class="dash-card promo-mkt-card">
                         <div>
-                            <p style="font-size: 12.5px; color: #666; margin: 0;">Seus produtos integrados nos</p>
-                            <p style="font-size: 14px; font-weight: 700; color: #2c3e50; margin: 4px 0 0 0;">maiores e-commerces do Brasil</p>
+                            <p style="font-size: 12.5px; color: #666; margin: 0;">Operação Multicanal</p>
+                            <p style="font-size: 14px; font-weight: 800; color: #1b4f72; margin: 4px 0 0 0;">ATOS 8 GLOBAL IMPORTS</p>
                         </div>
 
                         <div class="promo-wheel">
@@ -1049,7 +1244,7 @@
         <h2 id="modal-titulo-rel">Relatório Detalhado</h2>
         <div style="position: relative; height: 220px; width: 100%; margin-bottom: 15px;"><canvas id="graficoImcProdutos"></canvas></div>
         <table>
-            <thead><tr><th>Produto</th><th>Unid.</th><th>Faturamento</th><th>Margem</th><th>IMC</th></tr></thead>
+            <thead><tr><th>Produto</th><th>Unid.</th><th>Faturamento</th><th>ADS</th><th>Margem</th><th>IMC</th></tr></thead>
             <tbody id="modal-tabela-produtos"></tbody>
         </table>
         <br>
@@ -1064,12 +1259,24 @@
     let fornecedoresDividas = [];
     let relatoriosSalvos = [];
     let subInputsData = { daily: {}, monthly: {} };
+    let customLogoDataUrl = null;
     
-    // Estado do modo de consolidação (nao_integrado vs integrado) para Diário, Semanal e Mensal
+    // Estado do modo de consolidação (nao_integrado vs integrado)
     let modoConsolidado = {
         daily: 'nao_integrado',
         weekly: 'nao_integrado',
         monthly: 'nao_integrado'
+    };
+
+    // Estado das métricas e do período selecionado no gráfico do Dashboard
+    let metricasGrafico = {
+        faturamento: true,
+        lucro: true,
+        ads: false,
+        cmv: false,
+        unidades: false,
+        imc: false,
+        periodo: '7d'
     };
 
     const listaPlataformas = ['shopee', 'tiktok', 'mercadolivre', 'amazon', 'fisica'];
@@ -1093,6 +1300,74 @@
     let meuGrafico = null;
     let graficoImcModal = null;
 
+    // Vetor SVG fiel da logo ATOS 8 GLOBAL IMPORTS
+    function getAtos8LogoSVG() {
+        return `
+        <svg viewBox="0 0 120 110" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="atosNavy" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#4b6cb7"/>
+                    <stop offset="100%" stop-color="#182848"/>
+                </linearGradient>
+                <linearGradient id="atosSilver" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#f1f5f9"/>
+                    <stop offset="50%" stop-color="#94a3b8"/>
+                    <stop offset="100%" stop-color="#475569"/>
+                </linearGradient>
+                <linearGradient id="atosBoxLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#94a3b8"/>
+                    <stop offset="100%" stop-color="#475569"/>
+                </linearGradient>
+                <linearGradient id="atosBoxRight" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#e2e8f0"/>
+                    <stop offset="100%" stop-color="#64748b"/>
+                </linearGradient>
+            </defs>
+            <path d="M 58 18 C 32 18, 16 32, 18 52 C 18 76, 30 92, 46 88" fill="none" stroke="url(#atosNavy)" stroke-width="6.5" stroke-linecap="round"/>
+            <polygon points="15,36 24,33 21,44" fill="url(#atosNavy)"/>
+            <g stroke="#4b6cb7" stroke-width="2.5" fill="none" opacity="0.85">
+                <rect x="78" y="48" width="12" height="22" rx="2" fill="#cbd5e1"/>
+                <path d="M 90 52 L 95 52 L 95 66 L 90 66"/>
+                <line x1="81" y1="53" x2="87" y2="53"/>
+                <line x1="81" y1="59" x2="87" y2="59"/>
+                <line x1="81" y1="65" x2="87" y2="65"/>
+            </g>
+            <polygon points="22,48 48,36 74,48 48,60" fill="#1e293b"/>
+            <polygon points="22,48 48,36 39,28 13,40" fill="url(#atosSilver)" stroke="#334155" stroke-width="0.8"/>
+            <polygon points="48,36 74,48 83,40 57,28" fill="#cbd5e1" stroke="#334155" stroke-width="0.8"/>
+            <path d="M 44 56 L 62 15 C 65 9, 70 9, 73 15 L 86 45 L 77 49 L 67 24 L 52 58 Z" fill="url(#atosNavy)"/>
+            <path d="M 67 24 L 86 82 L 75 82 L 62 42 Z" fill="url(#atosSilver)" stroke="#334155" stroke-width="0.7"/>
+            <polygon points="68,48 114,14 73,56" fill="url(#atosNavy)"/>
+            <polygon points="22,48 48,60 48,92 22,78" fill="url(#atosBoxLeft)" stroke="#e2e8f0" stroke-width="0.8"/>
+            <polygon points="48,60 74,48 74,78 48,92" fill="url(#atosBoxRight)" stroke="#e2e8f0" stroke-width="0.8"/>
+            <polygon points="22,48 48,60 37,71 11,58" fill="url(#atosSilver)" stroke="#334155" stroke-width="0.8"/>
+            <polygon points="48,60 74,48 85,58 59,71" fill="#e2e8f0" stroke="#334155" stroke-width="0.8"/>
+        </svg>`;
+    }
+
+    function renderizarLogoMarca() {
+        const sideBox = document.getElementById('sidebar-logo-container');
+        const loginBox = document.getElementById('login-logo-container');
+        const htmlLogo = customLogoDataUrl
+            ? `<img src="${customLogoDataUrl}" alt="ATOS 8">`
+            : getAtos8LogoSVG();
+        if (sideBox) sideBox.innerHTML = htmlLogo;
+        if (loginBox) loginBox.innerHTML = htmlLogo;
+    }
+
+    window.carregarLogoCustomizada = function(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            customLogoDataUrl = e.target.result;
+            localStorage.setItem('atos8_custom_logo', customLogoDataUrl);
+            renderizarLogoMarca();
+            salvarCloud();
+        };
+        reader.readAsDataURL(file);
+    }
+
     window.toggleSidebar = function() {
         const sb = document.getElementById('app-sidebar');
         if (sb) sb.classList.toggle('collapsed');
@@ -1106,7 +1381,28 @@
         });
     }
 
-    // Alterna entre "Consolidado Não Integrado" e "Consolidado Integrado"
+    window.alternarMetricaGrafico = function(metrica, ativo) {
+        metricasGrafico[metrica] = ativo;
+        renderizarGraficoHistorico();
+        salvarCloud();
+    }
+
+    window.atualizarPeriodoGrafico = function() {
+        const sel = document.getElementById('chart-period-filter');
+        if (sel) metricasGrafico.periodo = sel.value;
+        renderizarGraficoHistorico();
+        salvarCloud();
+    }
+
+    function sincronizarCheckboxesGraficoUI() {
+        ['faturamento', 'lucro', 'ads', 'cmv', 'unidades', 'imc'].forEach(m => {
+            const el = document.getElementById(`chk-metric-${m}`);
+            if (el) el.checked = !!metricasGrafico[m];
+        });
+        const sel = document.getElementById('chart-period-filter');
+        if (sel && metricasGrafico.periodo) sel.value = metricasGrafico.periodo;
+    }
+
     window.setModoConsolidado = function(escopo, modo) {
         modoConsolidado[escopo] = modo;
         aplicarBotoesModoConsolidado(escopo);
@@ -1149,36 +1445,69 @@
         return isNeg ? -Math.abs(num) : num;
     }
 
-    function pertenceAoMesCompetencia(rel, anoNum, mesNum) {
-        const mesStr = String(mesNum).padStart(2, '0');
-        const anoStr = String(anoNum);
+    // Extrai um objeto Date preciso a partir da competência do relatório ("2026-11-01", "01/11/2026", "01/11", "2026-11", etc.)
+    function extrairDataCompetenciaRelatorio(rel) {
         const comp = String(rel.competencia || '').trim();
-        const dataSalva = String(rel.data || '').trim();
+        const anoAtual = new Date().getFullYear();
 
-        if (comp.startsWith(`${anoStr}-${mesStr}`)) return true;
+        if (comp) {
+            const token = comp.split(' ')[0].trim();
 
-        if (comp.includes('/')) {
-            const partes = comp.split(' ')[0].split('/');
-            if (partes.length === 3) {
-                const m = parseInt(partes[1], 10);
-                const y = partes[2].length === 2 ? parseInt('20' + partes[2], 10) : parseInt(partes[2], 10);
-                if (m === mesNum && y === anoNum) return true;
-            } else if (partes.length === 2) {
-                const p0 = parseInt(partes[0], 10);
-                const p1 = parseInt(partes[1], 10);
-                if ((p1 === mesNum && p0 <= 31) || (p0 === mesNum && p1 === anoNum)) return true;
+            // 1. Formato ISO AAAA-MM-DD
+            let m = token.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+            if (m) return new Date(parseInt(m[1], 10), parseInt(m[2], 10) - 1, parseInt(m[3], 10), 12, 0, 0);
+
+            // 2. Formato Brasileiro DD/MM/AAAA ou DD/MM/AA
+            m = token.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
+            if (m) {
+                let y = parseInt(m[3], 10);
+                if (y < 100) y += 2000;
+                return new Date(y, parseInt(m[2], 10) - 1, parseInt(m[1], 10), 12, 0, 0);
+            }
+
+            // 3. Formato DD-MM-AAAA
+            m = token.match(/^(\d{1,2})-(\d{1,2})-(\d{4})$/);
+            if (m) return new Date(parseInt(m[3], 10), parseInt(m[2], 10) - 1, parseInt(m[1], 10), 12, 0, 0);
+
+            // 4. Formato Mensal ISO AAAA-MM
+            m = token.match(/^(\d{4})-(\d{1,2})$/);
+            if (m) return new Date(parseInt(m[1], 10), parseInt(m[2], 10) - 1, 1, 12, 0, 0);
+
+            // 5. Formato curto DD/MM ou MM/AAAA
+            m = token.match(/^(\d{1,2})\/(\d{1,4})$/);
+            if (m) {
+                const p1 = parseInt(m[1], 10);
+                const p2 = parseInt(m[2], 10);
+                if (p2 > 1000) return new Date(p2, p1 - 1, 1, 12, 0, 0);
+                return new Date(anoAtual, p2 - 1, p1, 12, 0, 0);
             }
         }
 
-        if (comp.includes('-')) {
-            const partes = comp.split(' ')[0].split('-');
-            if (partes.length === 3 && partes[0].length <= 2 && parseInt(partes[1], 10) === mesNum && parseInt(partes[2], 10) === anoNum) {
-                return true;
-            }
+        // Fallback: data de criação do relatório
+        const dataStr = String(rel.data || '').trim();
+        if (dataStr) {
+            const m = dataStr.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+            if (m) return new Date(parseInt(m[3], 10), parseInt(m[2], 10) - 1, parseInt(m[1], 10), 12, 0, 0);
         }
 
-        if (!comp && dataSalva.includes(`/${mesStr}/${anoStr}`)) return true;
+        if (rel.id && typeof rel.id === 'number' && rel.id > 1000000000000) {
+            return new Date(rel.id);
+        }
+        return null;
+    }
 
+    function formatarChaveDataISO(d) {
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+    }
+
+    function pertenceAoMesCompetencia(rel, anoNum, mesNum) {
+        const d = extrairDataCompetenciaRelatorio(rel);
+        if (d) {
+            return d.getFullYear() === anoNum && (d.getMonth() + 1) === mesNum;
+        }
         return false;
     }
 
@@ -1230,6 +1559,10 @@
     }
 
     document.addEventListener("DOMContentLoaded", () => {
+        const savedLocalLogo = localStorage.getItem('atos8_custom_logo');
+        if (savedLocalLogo) customLogoDataUrl = savedLocalLogo;
+        renderizarLogoMarca();
+
         const savedUser = localStorage.getItem('dre_cloud_user');
         if (savedUser) {
             currentUserId = savedUser;
@@ -1255,7 +1588,9 @@
                 inputsSemana: inputsSemana,
                 subInputsData: subInputsData,
                 configTaxas: configuracoesTaxas,
-                modoConsolidado: modoConsolidado
+                modoConsolidado: modoConsolidado,
+                metricasGrafico: metricasGrafico,
+                customLogoDataUrl: customLogoDataUrl
             });
         } catch (e) { console.error("Erro ao salvar nuvem: ", e); }
     }
@@ -1305,6 +1640,7 @@
             });
             calcularSubProd(tipo);
         });
+        atualizarDashboardMensal();
     }
 
     async function carregarDadosCloud() {
@@ -1329,17 +1665,36 @@
                         monthly: data.modoConsolidado.monthly || 'nao_integrado'
                     };
                 }
+                if(data.metricasGrafico) {
+                    const perSalvo = data.metricasGrafico.periodo;
+                    const periodosValidos = ['3d', '7d', '14d', '30d', '2m', '3m', '4m', '5m', '6m', '12m'];
+                    metricasGrafico = {
+                        faturamento: data.metricasGrafico.faturamento !== undefined ? data.metricasGrafico.faturamento : true,
+                        lucro: data.metricasGrafico.lucro !== undefined ? data.metricasGrafico.lucro : true,
+                        ads: !!data.metricasGrafico.ads,
+                        cmv: !!data.metricasGrafico.cmv,
+                        unidades: !!data.metricasGrafico.unidades,
+                        imc: !!data.metricasGrafico.imc,
+                        periodo: periodosValidos.includes(perSalvo) ? perSalvo : '7d'
+                    };
+                }
+                if(data.customLogoDataUrl) {
+                    customLogoDataUrl = data.customLogoDataUrl;
+                    localStorage.setItem('atos8_custom_logo', customLogoDataUrl);
+                }
             } else {
                 produtosBase = getDefaultProducts();
             }
         } catch (e) {
             produtosBase = getDefaultProducts();
         }
+        renderizarLogoMarca();
         normalizarConfigTaxas();
         renderizarTelaConfig();
         aplicarBotoesModoConsolidado('daily');
         aplicarBotoesModoConsolidado('weekly');
         aplicarBotoesModoConsolidado('monthly');
+        sincronizarCheckboxesGraficoUI();
         initAppAfterLoad();
         if (savedInputsSemana) {
             document.querySelectorAll('#view-calc input[type="number"]').forEach((input, idx) => {
@@ -1641,10 +1996,10 @@
         popularSelectProdutos();
         carregarRelatoriosSalvos();
         renderSuppliersTable();
-        atualizarDashboardMensal();
         calcularTudo();
         calcularSubProd('daily');
         calcularSubProd('monthly');
+        atualizarDashboardMensal();
         calcularPrecoSugerido();
     }
 
@@ -1720,8 +2075,54 @@
             container.appendChild(card);
         });
         container.querySelectorAll('input').forEach(input => {
-            input.addEventListener('input', () => { calcularSubProd(tipo); salvarCloud(); });
+            input.addEventListener('input', () => {
+                calcularSubProd(tipo);
+                if (tipo === 'daily') atualizarCardAdsDiaPainel();
+                salvarCloud();
+            });
         });
+    }
+
+    function obterAdsTotalDiaTodosMarketplaces() {
+        let adsInputsDaily = 0;
+        const viewDaily = document.getElementById('view-calc-daily-prod');
+        if (viewDaily) {
+            listaPlataformas.forEach(plat => {
+                produtosBase.forEach(prod => {
+                    const val = parseFloat(viewDaily.querySelector(`.sub-ads[data-id="${prod.id}"][data-tipo="daily"][data-plat="${plat}"]`)?.value) || 0;
+                    adsInputsDaily += val;
+                });
+            });
+        }
+
+        if (adsInputsDaily > 0) return adsInputsDaily;
+
+        const hojeISO = formatarChaveDataISO(new Date());
+        const diariosHoje = relatoriosSalvos.filter(r => {
+            if (r.tipo !== 'diario') return false;
+            const d = extrairDataCompetenciaRelatorio(r);
+            return d && formatarChaveDataISO(d) === hojeISO;
+        });
+        if (diariosHoje.length > 0) {
+            return diariosHoje.reduce((acc, r) => acc + extrairValoresRelatorio(r).ads, 0);
+        }
+
+        const todosDiarios = relatoriosSalvos.filter(r => r.tipo === 'diario');
+        if (todosDiarios.length > 0) {
+            const ultimaComp = todosDiarios[todosDiarios.length - 1].competencia;
+            return todosDiarios
+                .filter(r => r.competencia === ultimaComp)
+                .reduce((acc, r) => acc + extrairValoresRelatorio(r).ads, 0);
+        }
+
+        return 0;
+    }
+
+    function atualizarCardAdsDiaPainel() {
+        const elAdsDia = document.getElementById('dash-ads-dia');
+        if (elAdsDia) {
+            elAdsDia.innerText = formatBRL(obterAdsTotalDiaTodosMarketplaces());
+        }
     }
 
     window.switchPlatform = function(plat) {
@@ -1758,7 +2159,6 @@
         return ((precoUnitario * (regra.comissaoPct / 100)) + regra.taxaFixa) * unidades;
     }
 
-    // Calcula todos os cards de todas as plataformas para Diário ou Mensal e consolida conforme o modo escolhido
     function calcularSubProd(tipo) {
         const viewDiv = document.getElementById(`view-calc-${tipo}-prod`);
         if (!viewDiv) return;
@@ -1807,7 +2207,6 @@
                 const elImc = viewDiv.querySelector(`.sub-out-imc[data-id="${prod.id}"][data-tipo="${tipo}"][data-plat="${plat}"]`);
                 if(elImc) elImc.innerText = imcIndiv.toFixed(2) + '%';
                 
-                // Soma no consolidado se estiver no modo Integrado OU se for a plataforma ativa no modo Não Integrado
                 if (isIntegrado || plat === activePlat) {
                     totUn += un;
                     totFat += faturamento;
@@ -1829,7 +2228,6 @@
         elLucro.style.color = totLucro >= 0 ? '#2ecc71' : '#e74c3c';
     }
 
-    // Calcula todos os cards da Calculadora Semanal e consolida conforme o modo escolhido
     function calcularTudo() {
         const isIntegrado = modoConsolidado.weekly === 'integrado';
         const badgeScope = document.getElementById('badge-scope-weekly');
@@ -1945,45 +2343,250 @@
             }
         });
         calcularSubProd(tipo);
+        if (tipo === 'daily') atualizarCardAdsDiaPainel();
         salvarCloud();
     }
 
     window.exportarDadosCSV = function() {
         if (relatoriosSalvos.length === 0) { alert("Não há relatórios salvos."); return; }
         let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
-        csvContent += "Tipo,Identificação,Competência Atribuída,Plataforma,Unidades,Faturamento Bruto,Lucro (Margem),IMC\r\n";
+        csvContent += "Tipo,Identificação,Competência Atribuída,Plataforma,Unidades,Faturamento Bruto,Gasto ADS,Lucro (Margem),IMC\r\n";
         relatoriosSalvos.forEach(r => {
-            csvContent += `"${r.tipo}","${r.nome}","${r.competencia}","${r.loja}","${r.unidades}","${r.faturamento}","${r.margem}","${r.imc}"\r\n`;
+            const v = extrairValoresRelatorio(r);
+            csvContent += `"${r.tipo}","${r.nome}","${r.competencia}","${r.loja}","${r.unidades}","${r.faturamento}","${formatBRL(v.ads)}","${r.margem}","${r.imc}"\r\n`;
         });
         const encodedUri = encodeURI(csvContent);
         const link = document.createElement("a");
         link.setAttribute("href", encodedUri);
-        link.setAttribute("download", "relatorios_dre_ecommerce.csv");
+        link.setAttribute("download", "relatorios_dre_atos8.csv");
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
     }
 
+    // Constrói as séries do gráfico relacionando diretamente as datas às competências (Dias ou Meses Fechados)
+    function construirSeriesPorPeriodoCompetencia(periodoStr) {
+        const tipoUnidade = periodoStr.slice(-1); // 'd' (dias) ou 'm' (meses fechados)
+        const qtd = parseInt(periodoStr.slice(0, -1), 10) || 7;
+        const subEl = document.getElementById('chart-period-subtitle');
+
+        const labels = [];
+        const valoresExtraidos = [];
+
+        if (tipoUnidade === 'd') {
+            if (subEl) subEl.innerText = `Análise diária dos últimos ${qtd} dias (consolidando competências dia a dia)`;
+
+            // Agrupa todos os relatórios diários por data de competência (YYYY-MM-DD)
+            const mapaPorDia = {};
+            let maiorDataEncontrada = null;
+
+            relatoriosSalvos.forEach(rel => {
+                if (rel.tipo !== 'diario') return;
+                const d = extrairDataCompetenciaRelatorio(rel);
+                if (!d) return;
+                const chaveDia = formatarChaveDataISO(d);
+                if (!mapaPorDia[chaveDia]) {
+                    mapaPorDia[chaveDia] = { fat: 0, lucro: 0, ads: 0, cmv: 0, un: 0 };
+                }
+                const vals = extrairValoresRelatorio(rel);
+                mapaPorDia[chaveDia].fat += vals.fat;
+                mapaPorDia[chaveDia].lucro += vals.lucro;
+                mapaPorDia[chaveDia].ads += vals.ads;
+                mapaPorDia[chaveDia].cmv += vals.cmv;
+                mapaPorDia[chaveDia].un += vals.un;
+
+                if (!maiorDataEncontrada || d > maiorDataEncontrada) {
+                    maiorDataEncontrada = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12, 0, 0);
+                }
+            });
+
+            // Usa como data final a maior competência lançada (ou a data atual caso não haja lançamentos)
+            const dataBaseFim = maiorDataEncontrada || new Date();
+
+            for (let i = qtd - 1; i >= 0; i--) {
+                const diaAlvo = new Date(dataBaseFim.getFullYear(), dataBaseFim.getMonth(), dataBaseFim.getDate() - i, 12, 0, 0);
+                const chave = formatarChaveDataISO(diaAlvo);
+                const labelDiaMes = `${String(diaAlvo.getDate()).padStart(2, '0')}/${String(diaAlvo.getMonth() + 1).padStart(2, '0')}`;
+                labels.push(labelDiaMes);
+
+                const acumulado = mapaPorDia[chave] || { fat: 0, lucro: 0, ads: 0, cmv: 0, un: 0 };
+                const imcNum = acumulado.fat > 0 ? parseFloat(((acumulado.lucro / acumulado.fat) * 100).toFixed(2)) : 0;
+                valoresExtraidos.push({ ...acumulado, imcNum });
+            }
+        } else {
+            // Análise Mês a Mês Fechado (2m, 3m, 4m, 5m, 6m, 12m)
+            if (subEl) subEl.innerText = `Análise mês a mês fechado dos últimos ${qtd} meses por competência`;
+
+            let maiorDataMes = null;
+            relatoriosSalvos.forEach(rel => {
+                const d = extrairDataCompetenciaRelatorio(rel);
+                if (d && (!maiorDataMes || d > maiorDataMes)) {
+                    maiorDataMes = d;
+                }
+            });
+
+            const refMesBase = maiorDataMes || new Date();
+            const nomesMesesAbrev = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+
+            for (let i = qtd - 1; i >= 0; i--) {
+                const dMes = new Date(refMesBase.getFullYear(), refMesBase.getMonth() - i, 1, 12, 0, 0);
+                const anoAlvo = dMes.getFullYear();
+                const mesAlvo = dMes.getMonth() + 1;
+
+                labels.push(`${nomesMesesAbrev[mesAlvo - 1]}/${anoAlvo}`);
+
+                // Filtra todos os relatórios que pertencem a este mês/ano de competência
+                const relsDesseMes = relatoriosSalvos.filter(r => pertenceAoMesCompetencia(r, anoAlvo, mesAlvo));
+                const diarios = relsDesseMes.filter(r => r.tipo === 'diario');
+                const semanais = relsDesseMes.filter(r => r.tipo === 'semana');
+                const mensais = relsDesseMes.filter(r => r.tipo === 'mensal');
+
+                // Prioriza a soma dos diários daquele mês fechado (ou semanais/mensais caso o mês tenha sido lançado direto no mensal)
+                let listaParaSomarNoMes = [];
+                if (diarios.length > 0) listaParaSomarNoMes = diarios;
+                else if (semanais.length > 0) listaParaSomarNoMes = semanais;
+                else listaParaSomarNoMes = mensais;
+
+                let fat = 0, lucro = 0, ads = 0, cmv = 0, un = 0;
+                listaParaSomarNoMes.forEach(r => {
+                    const v = extrairValoresRelatorio(r);
+                    fat += v.fat;
+                    lucro += v.lucro;
+                    ads += v.ads;
+                    cmv += v.cmv;
+                    un += v.un;
+                });
+
+                const imcNum = fat > 0 ? parseFloat(((lucro / fat) * 100).toFixed(2)) : 0;
+                valoresExtraidos.push({ fat, lucro, ads, cmv, un, imcNum });
+            }
+        }
+
+        return { labels, valoresExtraidos };
+    }
+
     function renderizarGraficoHistorico() {
-        const semanais = relatoriosSalvos.filter(r => r.tipo === 'semana');
-        const fonteGrafico = semanais.length > 0 ? semanais.slice(-4) : relatoriosSalvos.slice(-6);
-        const labels = fonteGrafico.map(r => r.competencia || r.nome);
-        const dadosFat = fonteGrafico.map(r => parseBRL(r.faturamento));
-        const dadosLucro = fonteGrafico.map(r => parseBRL(r.margem));
+        const periodo = metricasGrafico.periodo || '7d';
+        const { labels, valoresExtraidos } = construirSeriesPorPeriodoCompetencia(periodo);
+
+        const datasets = [];
+        let usaEixoMoeda = false;
+        let usaEixoSecundario = false;
+
+        if (metricasGrafico.faturamento) {
+            usaEixoMoeda = true;
+            datasets.push({
+                label: 'Faturamento Bruto (R$)',
+                data: valoresExtraidos.map(v => v.fat),
+                backgroundColor: 'rgba(52, 152, 219, 0.65)',
+                borderColor: '#2980b9',
+                borderWidth: 1.5,
+                yAxisID: 'y'
+            });
+        }
+        if (metricasGrafico.lucro) {
+            usaEixoMoeda = true;
+            datasets.push({
+                label: 'Lucro Líquido (R$)',
+                data: valoresExtraidos.map(v => v.lucro),
+                backgroundColor: 'rgba(0, 166, 90, 0.70)',
+                borderColor: '#008d4c',
+                borderWidth: 1.5,
+                yAxisID: 'y'
+            });
+        }
+        if (metricasGrafico.ads) {
+            usaEixoMoeda = true;
+            datasets.push({
+                label: 'Gasto com ADS Total (R$)',
+                data: valoresExtraidos.map(v => v.ads),
+                backgroundColor: 'rgba(230, 126, 34, 0.72)',
+                borderColor: '#d35400',
+                borderWidth: 1.5,
+                yAxisID: 'y'
+            });
+        }
+        if (metricasGrafico.cmv) {
+            usaEixoMoeda = true;
+            datasets.push({
+                label: 'CMV Total (R$)',
+                data: valoresExtraidos.map(v => v.cmv),
+                backgroundColor: 'rgba(221, 75, 57, 0.65)',
+                borderColor: '#c23321',
+                borderWidth: 1.5,
+                yAxisID: 'y'
+            });
+        }
+        if (metricasGrafico.unidades) {
+            usaEixoSecundario = true;
+            datasets.push({
+                type: 'line',
+                label: 'Unidades Vendidas',
+                data: valoresExtraidos.map(v => v.un),
+                backgroundColor: 'rgba(142, 68, 173, 0.2)',
+                borderColor: '#8e44ad',
+                borderWidth: 2.5,
+                pointRadius: 4,
+                tension: 0.25,
+                yAxisID: 'y1'
+            });
+        }
+        if (metricasGrafico.imc) {
+            usaEixoSecundario = true;
+            datasets.push({
+                type: 'line',
+                label: 'IMC (%)',
+                data: valoresExtraidos.map(v => v.imcNum),
+                backgroundColor: 'rgba(241, 196, 15, 0.2)',
+                borderColor: '#f1c40f',
+                borderWidth: 2.5,
+                pointRadius: 4,
+                tension: 0.25,
+                yAxisID: 'y1'
+            });
+        }
+
         const canvasEl = document.getElementById('graficoHistorico');
         if (!canvasEl) return;
         const ctx = canvasEl.getContext('2d');
         if (meuGrafico) meuGrafico.destroy();
+
         meuGrafico = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: labels.length > 0 ? labels : ['Período 1', 'Período 2', 'Período 3', 'Período 4'],
-                datasets: [
-                    { label: 'Faturamento Bruto', data: dadosFat.length > 0 ? dadosFat : [0,0,0,0], backgroundColor: '#85c1e9', borderColor: '#3498db', borderWidth: 1 },
-                    { label: 'Lucro Líquido (Margem)', data: dadosLucro.length > 0 ? dadosLucro : [0,0,0,0], backgroundColor: '#7dcea0', borderColor: '#27ae60', borderWidth: 1 }
-                ]
+                labels: labels,
+                datasets: datasets
             },
-            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { callback: function(value) { return 'R$ ' + value; } } } } }
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: usaEixoMoeda || !usaEixoSecundario,
+                        position: 'left',
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) { return 'R$ ' + value; }
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: usaEixoSecundario,
+                        position: 'right',
+                        beginAtZero: true,
+                        grid: { drawOnChartArea: !usaEixoMoeda },
+                        ticks: {
+                            callback: function(value) {
+                                if (metricasGrafico.imc && !metricasGrafico.unidades) return value + '%';
+                                if (metricasGrafico.unidades && !metricasGrafico.imc) return value + ' un';
+                                return value;
+                            }
+                        }
+                    }
+                }
+            }
         });
     }
 
@@ -1992,13 +2595,18 @@
         let fat = parseBRL(rel.faturamento);
         let lucro = parseBRL(rel.margem);
         let cmv = rel.cmv !== undefined ? parseBRL(rel.cmv) : 0;
+        let ads = rel.ads !== undefined ? parseBRL(rel.ads) : 0;
 
         if (Array.isArray(rel.detalhesProdutos) && rel.detalhesProdutos.length > 0) {
             let somaMargemDetalhes = 0;
             let somaFatDetalhes = 0;
+            let somaAdsDetalhes = 0;
             rel.detalhesProdutos.forEach(p => {
                 somaMargemDetalhes += (typeof p.margem === 'number' ? p.margem : parseBRL(p.margem));
                 somaFatDetalhes += (typeof p.faturamento === 'number' ? p.faturamento : parseBRL(p.faturamento));
+                if (p.ads !== undefined) {
+                    somaAdsDetalhes += (typeof p.ads === 'number' ? p.ads : parseBRL(p.ads));
+                }
             });
             if (Math.abs(somaMargemDetalhes - lucro) > 0.05) {
                 lucro = somaMargemDetalhes;
@@ -2006,13 +2614,16 @@
             if (fat === 0 && somaFatDetalhes > 0) {
                 fat = somaFatDetalhes;
             }
+            if (ads === 0 && somaAdsDetalhes > 0) {
+                ads = somaAdsDetalhes;
+            }
         }
 
         if (cmv === 0 && fat > 0) {
             cmv = Math.max(0, (fat - lucro) * 0.70);
         }
 
-        return { un, fat, lucro, cmv };
+        return { un, fat, lucro, cmv, ads };
     }
 
     function atualizarDashboardMensal() {
@@ -2039,7 +2650,7 @@
             listaParaSomar = mensaisMes;
         }
 
-        let somaUnidades = 0, somaFaturamento = 0, somaCmv = 0, somaLucro = 0;
+        let somaUnidades = 0, somaFaturamento = 0, somaCmv = 0, somaLucro = 0, somaAdsMes = 0;
 
         listaParaSomar.forEach(rel => {
             const vals = extrairValoresRelatorio(rel);
@@ -2047,6 +2658,7 @@
             somaFaturamento += vals.fat;
             somaLucro += vals.lucro;
             somaCmv += vals.cmv;
+            somaAdsMes += vals.ads;
         });
 
         let imcMensal = somaFaturamento > 0 ? (somaLucro / somaFaturamento) * 100 : 0;
@@ -2058,6 +2670,10 @@
         document.getElementById('dash-cmv').innerText = formatBRL(somaCmv);
         document.getElementById('dash-lucro').innerText = formatBRL(somaLucro);
         document.getElementById('dash-imc').innerText = imcMensal.toFixed(2) + '%';
+
+        atualizarCardAdsDiaPainel();
+        const elAdsMes = document.getElementById('dash-ads-mes');
+        if (elAdsMes) elAdsMes.innerText = formatBRL(somaAdsMes);
 
         const miniListEl = document.getElementById('dash-mini-sales-list');
         if (miniListEl) {
@@ -2074,7 +2690,7 @@
 
                     miniListEl.innerHTML += `
                         <tr style="cursor:pointer;" onclick="abrirRelatorioDetalhado(${r.id})">
-                            <td><strong>${r.competencia || r.nome}</strong><br><span style="font-size:11px; color:#777;">${r.loja} • Fat: ${formatBRL(vals.fat)}</span></td>
+                            <td><strong>${r.competencia || r.nome}</strong><br><span style="font-size:11px; color:#777;">${r.loja} • Fat: ${formatBRL(vals.fat)} • ADS: ${formatBRL(vals.ads)}</span></td>
                             <td style="text-align:right; font-weight:700; color:${corLucro};">${formatBRL(vals.lucro)}</td>
                             <td style="text-align:right;">${badgeHtml}</td>
                         </tr>
@@ -2156,7 +2772,7 @@
         if(tipo === 'semana') {
             const isIntegrado = modoConsolidado.weekly === 'integrado';
             const plataformasAlvo = isIntegrado ? listaPlataformas : [currentPlatform];
-            let somaUnSem = 0, somaFatSem = 0, somaMgSem = 0, somaCmvSem = 0;
+            let somaUnSem = 0, somaFatSem = 0, somaMgSem = 0, somaCmvSem = 0, somaAdsSem = 0;
 
             plataformasAlvo.forEach(plat => {
                 produtosBase.forEach(prod => {
@@ -2178,9 +2794,10 @@
                         somaUnSem += un;
                         somaFatSem += fat;
                         somaCmvSem += cmvProd;
+                        somaAdsSem += adsVal;
                         somaMgSem += margemProd;
                         const nomeExibicao = isIntegrado ? `${prod.nome} (${nomesPlataformas[plat]})` : prod.nome;
-                        produtosRelatorio.push({ nome: nomeExibicao, unidades: un, faturamento: fat, margem: margemProd, imc: imcProd });
+                        produtosRelatorio.push({ nome: nomeExibicao, unidades: un, faturamento: fat, ads: adsVal, margem: margemProd, imc: imcProd });
                     }
                 });
             });
@@ -2197,6 +2814,7 @@
                 unidades: somaUnSem,
                 faturamento: formatBRL(somaFatSem),
                 cmv: formatBRL(somaCmvSem),
+                ads: formatBRL(somaAdsSem),
                 margem: formatBRL(somaMgSem),
                 imc: imcSemCalc.toFixed(2) + '%',
                 detalhesProdutos: produtosRelatorio
@@ -2219,7 +2837,7 @@
         });
 
         const plataformasAlvo = isIntegrado ? listaPlataformas : [activePlat];
-        let somaUn = 0, somaFat = 0, somaCmv = 0, somaMg = 0;
+        let somaUn = 0, somaFat = 0, somaCmv = 0, somaAds = 0, somaMg = 0;
 
         plataformasAlvo.forEach(plat => {
             produtosBase.forEach(prod => {
@@ -2241,9 +2859,10 @@
                     somaUn += un;
                     somaFat += fat;
                     somaCmv += cmvProd;
+                    somaAds += adsVal;
                     somaMg += margemProd;
                     const nomeExibicao = isIntegrado ? `${prod.nome} (${nomesPlataformas[plat]})` : prod.nome;
-                    produtosRelatorio.push({ nome: nomeExibicao, unidades: un, faturamento: fat, margem: margemProd, imc: imcProd });
+                    produtosRelatorio.push({ nome: nomeExibicao, unidades: un, faturamento: fat, ads: adsVal, margem: margemProd, imc: imcProd });
                 }
             });
         });
@@ -2260,6 +2879,7 @@
             unidades: somaUn,
             faturamento: formatBRL(somaFat),
             cmv: formatBRL(somaCmv),
+            ads: formatBRL(somaAds),
             margem: formatBRL(somaMg),
             imc: imcTotCalc.toFixed(2) + '%',
             detalhesProdutos: produtosRelatorio
@@ -2281,11 +2901,11 @@
         tbody.innerHTML = '';
         let nomes = [], imcs = [];
         if (!rel.detalhesProdutos || rel.detalhesProdutos.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Nenhum produto detalhado.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">Nenhum produto detalhado.</td></tr>`;
         } else {
             rel.detalhesProdutos.forEach(p => {
                 nomes.push(p.nome); imcs.push(p.imc.toFixed(2));
-                tbody.innerHTML += `<tr><td><strong>${p.nome}</strong></td><td>${p.unidades}</td><td>${formatBRL(p.faturamento)}</td><td style="color:${p.margem >= 0 ? '#00a65a' : '#dd4b39'}; font-weight:bold;">${formatBRL(p.margem)}</td><td>${p.imc.toFixed(2)}%</td></tr>`;
+                tbody.innerHTML += `<tr><td><strong>${p.nome}</strong></td><td>${p.unidades}</td><td>${formatBRL(p.faturamento)}</td><td style="color:#d35400;">${formatBRL(p.ads || 0)}</td><td style="color:${p.margem >= 0 ? '#00a65a' : '#dd4b39'}; font-weight:bold;">${formatBRL(p.margem)}</td><td>${p.imc.toFixed(2)}%</td></tr>`;
             });
         }
         const ctxModal = document.getElementById('graficoImcProdutos').getContext('2d');
@@ -2308,33 +2928,33 @@
 
         if (listDiarios.length === 0) htmlDiarios = '<p style="color: #7f8c8d; font-size: 13px;">Nenhum relatório diário salvo.</p>';
         else {
-            htmlDiarios = `<table><thead><tr><th>Nome</th><th>Competência (Data)</th><th>Loja</th><th>Unid.</th><th>Faturamento</th><th>Lucro</th><th>IMC</th><th>Ações</th></tr></thead><tbody>`;
+            htmlDiarios = `<table><thead><tr><th>Nome</th><th>Competência (Data)</th><th>Loja</th><th>Unid.</th><th>Faturamento</th><th>ADS</th><th>Lucro</th><th>IMC</th><th>Ações</th></tr></thead><tbody>`;
             listDiarios.forEach(r => {
                 const vals = extrairValoresRelatorio(r);
                 const corMg = vals.lucro >= 0 ? '#00a65a' : '#dd4b39';
-                htmlDiarios += `<tr><td><strong>${r.nome}</strong></td><td style="color:#12a8e3; font-weight:bold;">${r.competencia || '-'}</td><td>${r.loja}</td><td>${r.unidades}</td><td>${formatBRL(vals.fat)}</td><td style="color:${corMg}; font-weight:bold;">${formatBRL(vals.lucro)}</td><td style="color:#f39c12; font-weight:bold;">${r.imc || '0,00%'}</td><td><button class="btn-action" style="padding:4px 8px;" onclick="abrirRelatorioDetalhado(${r.id})">Ver</button> <button class="btn-small" onclick="deletarRelatorio(${r.id})">Excluir</button></td></tr>`;
+                htmlDiarios += `<tr><td><strong>${r.nome}</strong></td><td style="color:#12a8e3; font-weight:bold;">${r.competencia || '-'}</td><td>${r.loja}</td><td>${r.unidades}</td><td>${formatBRL(vals.fat)}</td><td style="color:#d35400; font-weight:bold;">${formatBRL(vals.ads)}</td><td style="color:${corMg}; font-weight:bold;">${formatBRL(vals.lucro)}</td><td style="color:#f39c12; font-weight:bold;">${r.imc || '0,00%'}</td><td><button class="btn-action" style="padding:4px 8px;" onclick="abrirRelatorioDetalhado(${r.id})">Ver</button> <button class="btn-small" onclick="deletarRelatorio(${r.id})">Excluir</button></td></tr>`;
             });
             htmlDiarios += `</tbody></table>`;
         }
 
         if (listSemanais.length === 0) htmlSemanais = '<p style="color: #7f8c8d; font-size: 13px;">Nenhum relatório semanal salvo.</p>';
         else {
-            htmlSemanais = `<table><thead><tr><th>Nome</th><th>Competência (Seg - Dom)</th><th>Loja</th><th>Unid.</th><th>Faturamento</th><th>Margem</th><th>IMC</th><th>Ações</th></tr></thead><tbody>`;
+            htmlSemanais = `<table><thead><tr><th>Nome</th><th>Competência (Seg - Dom)</th><th>Loja</th><th>Unid.</th><th>Faturamento</th><th>ADS</th><th>Margem</th><th>IMC</th><th>Ações</th></tr></thead><tbody>`;
             listSemanais.forEach(r => {
                 const vals = extrairValoresRelatorio(r);
                 const corMg = vals.lucro >= 0 ? '#00a65a' : '#dd4b39';
-                htmlSemanais += `<tr><td><strong>${r.nome}</strong></td><td style="color:#00a65a; font-weight:bold;">${r.competencia || '-'}</td><td>${r.loja}</td><td>${r.unidades}</td><td>${formatBRL(vals.fat)}</td><td style="color:${corMg}; font-weight:bold;">${formatBRL(vals.lucro)}</td><td style="color:#f39c12; font-weight:bold;">${r.imc || '0,00%'}</td><td><button class="btn-action" style="padding:4px 8px;" onclick="abrirRelatorioDetalhado(${r.id})">Ver</button> <button class="btn-small" onclick="deletarRelatorio(${r.id})">Excluir</button></td></tr>`;
+                htmlSemanais += `<tr><td><strong>${r.nome}</strong></td><td style="color:#00a65a; font-weight:bold;">${r.competencia || '-'}</td><td>${r.loja}</td><td>${r.unidades}</td><td>${formatBRL(vals.fat)}</td><td style="color:#d35400; font-weight:bold;">${formatBRL(vals.ads)}</td><td style="color:${corMg}; font-weight:bold;">${formatBRL(vals.lucro)}</td><td style="color:#f39c12; font-weight:bold;">${r.imc || '0,00%'}</td><td><button class="btn-action" style="padding:4px 8px;" onclick="abrirRelatorioDetalhado(${r.id})">Ver</button> <button class="btn-small" onclick="deletarRelatorio(${r.id})">Excluir</button></td></tr>`;
             });
             htmlSemanais += `</tbody></table>`;
         }
 
         if (listMensais.length === 0) htmlMensais = '<p style="color: #7f8c8d; font-size: 13px;">Nenhum relatório mensal salvo.</p>';
         else {
-            htmlMensais = `<table><thead><tr><th>Nome</th><th>Competência (Mês/Ano)</th><th>Loja</th><th>Unid.</th><th>Faturamento</th><th>Margem</th><th>IMC</th><th>Ações</th></tr></thead><tbody>`;
+            htmlMensais = `<table><thead><tr><th>Nome</th><th>Competência (Mês/Ano)</th><th>Loja</th><th>Unid.</th><th>Faturamento</th><th>ADS</th><th>Margem</th><th>IMC</th><th>Ações</th></tr></thead><tbody>`;
             listMensais.forEach(r => {
                 const vals = extrairValoresRelatorio(r);
                 const corMg = vals.lucro >= 0 ? '#00a65a' : '#dd4b39';
-                htmlMensais += `<tr><td><strong>${r.nome}</strong></td><td style="color:#f39c12; font-weight:bold;">${r.competencia || '-'}</td><td>${r.loja}</td><td>${r.unidades}</td><td>${formatBRL(vals.fat)}</td><td style="color:${corMg}; font-weight:bold;">${formatBRL(vals.lucro)}</td><td style="color:#f39c12; font-weight:bold;">${r.imc || '0,00%'}</td><td><button class="btn-action" style="padding:4px 8px;" onclick="abrirRelatorioDetalhado(${r.id})">Ver</button> <button class="btn-small" onclick="deletarRelatorio(${r.id})">Excluir</button></td></tr>`;
+                htmlMensais += `<tr><td><strong>${r.nome}</strong></td><td style="color:#f39c12; font-weight:bold;">${r.competencia || '-'}</td><td>${r.loja}</td><td>${r.unidades}</td><td>${formatBRL(vals.fat)}</td><td style="color:#d35400; font-weight:bold;">${formatBRL(vals.ads)}</td><td style="color:${corMg}; font-weight:bold;">${formatBRL(vals.lucro)}</td><td style="color:#f39c12; font-weight:bold;">${r.imc || '0,00%'}</td><td><button class="btn-action" style="padding:4px 8px;" onclick="abrirRelatorioDetalhado(${r.id})">Ver</button> <button class="btn-small" onclick="deletarRelatorio(${r.id})">Excluir</button></td></tr>`;
             });
             htmlMensais += `</tbody></table>`;
         }
