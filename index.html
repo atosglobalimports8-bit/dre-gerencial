@@ -284,6 +284,25 @@
             font-size: 12.5px;
             color: #666;
         }
+        .sync-status-badge {
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: #e8f8f5;
+            color: #008d4c;
+            font-weight: 700;
+            border: 1px solid #a3e4d7;
+        }
+        .sync-status-badge.saving {
+            background: #fef9e7;
+            color: #b7950b;
+            border-color: #f9e79f;
+        }
+        .sync-status-badge.error {
+            background: #fdedec;
+            color: #c0392b;
+            border-color: #f5b7b1;
+        }
         .notif-circle {
             width: 34px;
             height: 34px;
@@ -730,7 +749,6 @@
 </head>
 <body>
 
-<!-- Input oculto caso queira subir o arquivo PNG original da logo para ficar salvo no Firebase -->
 <input type="file" id="logo-file-input" accept="image/*" style="display:none;" onchange="carregarLogoCustomizada(event)">
 
 <div id="login-screen">
@@ -748,10 +766,8 @@
 <div class="app-layout" id="main-app" style="display: none;">
     <!-- BARRA LATERAL (SIDEBAR) COM LOGO ATOS 8 -->
     <aside class="sidebar" id="app-sidebar">
-        <div class="sidebar-brand" onclick="document.getElementById('logo-file-input').click()" title="Clique se quiser alterar/enviar a imagem da logo">
-            <div class="brand-logo-box" id="sidebar-logo-container">
-                <!-- SVG fiel da Logo ATOS 8 Global Imports (ou imagem enviada) -->
-            </div>
+        <div class="sidebar-brand" onclick="document.getElementById('logo-file-input').click()" title="Clique se quiser alterar a logo neste navegador">
+            <div class="brand-logo-box" id="sidebar-logo-container"></div>
             <div class="brand-text-wrap">
                 <span class="brand-title">ATOS 8</span>
                 <span class="brand-subtitle">GLOBAL IMPORTS</span>
@@ -813,10 +829,9 @@
                 <span class="topbar-title" id="topbar-section-title">Painel</span>
             </div>
             <div class="topbar-right">
-                <span style="font-weight: 600; color: #475569;">Sistema de Gestão ATOS 8</span>
+                <span id="cloud-sync-badge" class="sync-status-badge"><i class="fa-solid fa-cloud-check"></i> Nuvem Sincronizada</span>
                 <span id="user-logged-email" style="font-weight: 700; color: #1b4f72;"></span>
                 <i class="fa-solid fa-user" style="color: #555; font-size: 15px;"></i>
-                <div class="notif-circle" title="Sincronizado na Nuvem"><i class="fa-solid fa-bell"></i></div>
                 <button class="logout-top-btn" onclick="fazerLogoutCloud()">Sair <i class="fa-solid fa-right-from-bracket"></i></button>
             </div>
         </header>
@@ -824,7 +839,6 @@
         <div class="content-area">
             <!-- DASHBOARD -->
             <div id="view-dashboard" class="section-view active">
-                <!-- 5 CARDS COLORIDOS DO TOPO -->
                 <div class="kpi-row">
                     <div class="kpi-card cyan">
                         <div class="kpi-body">
@@ -884,7 +898,6 @@
 
                 <!-- GRADE CENTRAL DE 3 COLUNAS -->
                 <div class="dash-middle-grid">
-                    <!-- COLUNA ESQUERDA: LISTA RÁPIDA DE RELATÓRIOS/VENDAS DO MÊS -->
                     <div class="dash-card">
                         <table class="mini-list-table">
                             <thead>
@@ -894,13 +907,10 @@
                                     <th style="text-align:right;">Status</th>
                                 </tr>
                             </thead>
-                            <tbody id="dash-mini-sales-list">
-                                <!-- Preenchido via JS -->
-                            </tbody>
+                            <tbody id="dash-mini-sales-list"></tbody>
                         </table>
                     </div>
 
-                    <!-- COLUNA CENTRAL: GRÁFICO COM SELETOR DE PERÍODO POR COMPETÊNCIA E MÉTRICAS -->
                     <div class="dash-card">
                         <div class="dash-card-header-flex">
                             <div>
@@ -928,7 +938,6 @@
                             </div>
                         </div>
 
-                        <!-- CAIXA DE SELEÇÃO DE MÉTRICAS -->
                         <div class="chart-metrics-box">
                             <span class="metrics-title"><i class="fa-solid fa-sliders"></i> Métricas:</span>
                             <label class="metric-chk-label">
@@ -960,7 +969,6 @@
                         <div style="position: relative; height: 265px; width: 100%;"><canvas id="graficoHistorico"></canvas></div>
                     </div>
 
-                    <!-- COLUNA DIREITA: CARD E-COMMERCE & AÇÕES RÁPIDAS -->
                     <div class="dash-card promo-mkt-card">
                         <div>
                             <p style="font-size: 12.5px; color: #666; margin: 0;">Operação Multicanal</p>
@@ -983,7 +991,6 @@
                     </div>
                 </div>
 
-                <!-- ABAS INFERIORES DE ATALHO -->
                 <div class="dash-bottom-pills">
                     <button class="pill-coral" onclick="switchMainTab('reports', document.querySelectorAll('.main-tab-btn')[7], 'Relatórios')">Lançamentos (Período)</button>
                     <button class="pill-blue" onclick="switchMainTab('calc', document.querySelectorAll('.main-tab-btn')[2], 'Lucro Semanal')">Vendas ( Simulador Online )</button>
@@ -996,7 +1003,7 @@
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                         <h3 style="margin:0;">Calculadora de Lucro Mensal (Produto a Produto)</h3>
                         <div style="display:flex; gap:8px;">
-                            <button class="btn-action" onclick="salvarRelatorioEspecifico('mensal')">💾 Salvar Fechamento Mensal na Nuvem</button>
+                            <button class="btn-action" onclick="abrirModalSalvarRelatorio('mensal')">💾 Salvar Fechamento Mensal na Nuvem</button>
                             <button class="btn-reset" onclick="resetSubForm('monthly')">🗑️ Limpar</button>
                         </div>
                     </div>
@@ -1041,7 +1048,7 @@
                     <button class="tab-btn fisica" onclick="switchPlatform('fisica')">Loja Física</button>
                 </div>
                 <div class="actions">
-                    <button class="btn-action" onclick="salvarRelatorioModal()">💾 Salvar Relatório Semanal</button>
+                    <button class="btn-action" onclick="abrirModalSalvarRelatorio('semana')">💾 Salvar Relatório Semanal</button>
                     <button class="btn-reset" onclick="resetForm()">🗑️ Limpar</button>
                 </div>
                 <div id="shopee-container" class="card-grid"></div>
@@ -1078,7 +1085,7 @@
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                         <h3 style="margin:0;">Calculadora de Lucro Diário (Produto a Produto)</h3>
                         <div style="display:flex; gap:8px;">
-                            <button class="btn-action" onclick="salvarRelatorioEspecifico('diario')">💾 Salvar Fechamento Diário na Nuvem</button>
+                            <button class="btn-action" onclick="abrirModalSalvarRelatorio('diario')">💾 Salvar Fechamento Diário na Nuvem</button>
                             <button class="btn-reset" onclick="resetSubForm('daily')">🗑️ Limpar</button>
                         </div>
                     </div>
@@ -1239,6 +1246,34 @@
     </div>
 </div>
 
+<!-- MODAL DE SALVAMENTO DE RELATÓRIO (COM SELETOR DE DATA E ATALHO ONTEM) -->
+<div id="modalSalvarRelatorio" class="modal-overlay">
+    <div class="modal-content" style="max-width: 460px;">
+        <h3 id="modal-save-title" style="margin-top:0; color:#1b4f72;">💾 Salvar Fechamento na Nuvem</h3>
+        <div id="modal-save-date-group">
+            <label style="font-size:12.5px; font-weight:700; color:#333;">Data de Competência:</label>
+            <div style="display:flex; gap:8px; margin-top:4px; margin-bottom:12px;">
+                <input type="date" id="modal-save-date-input" class="form-control" style="margin-bottom:0; flex:1;" onchange="atualizarNomeSugeridoModal()">
+                <button type="button" class="btn-export" style="white-space:nowrap;" onclick="selecionarDataOntemModal()">Ontem</button>
+                <button type="button" class="btn-action" style="background:#12a8e3; white-space:nowrap;" onclick="selecionarDataHojeModal()">Hoje</button>
+            </div>
+        </div>
+        <div id="modal-save-text-group" style="display:none;">
+            <label id="modal-save-text-label" style="font-size:12.5px; font-weight:700; color:#333;">Competência:</label>
+            <input type="text" id="modal-save-text-input" class="form-control" style="margin-top:4px;" oninput="atualizarNomeSugeridoModal()">
+        </div>
+        <div>
+            <label style="font-size:12.5px; font-weight:700; color:#333;">Nome de Identificação:</label>
+            <input type="text" id="modal-save-name-input" class="form-control" style="margin-top:4px;">
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:15px;">
+            <button type="button" class="btn-small" style="padding:8px 14px; font-size:12.5px; background:#7f8c8d;" onclick="fecharModalSalvarRelatorio()">Cancelar</button>
+            <button type="button" class="btn-action" style="padding:8px 16px;" onclick="confirmarSalvarRelatorioModal()">💾 Confirmar e Salvar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DE VISUALIZAÇÃO DE RELATÓRIO -->
 <div id="modalRelatorioFechado" class="modal-overlay">
     <div class="modal-content">
         <h2 id="modal-titulo-rel">Relatório Detalhado</h2>
@@ -1260,15 +1295,14 @@
     let relatoriosSalvos = [];
     let subInputsData = { daily: {}, monthly: {} };
     let customLogoDataUrl = null;
+    let tipoSalvamentoPendente = 'diario';
     
-    // Estado do modo de consolidação (nao_integrado vs integrado)
     let modoConsolidado = {
         daily: 'nao_integrado',
         weekly: 'nao_integrado',
         monthly: 'nao_integrado'
     };
 
-    // Estado das métricas e do período selecionado no gráfico do Dashboard
     let metricasGrafico = {
         faturamento: true,
         lucro: true,
@@ -1300,7 +1334,6 @@
     let meuGrafico = null;
     let graficoImcModal = null;
 
-    // Vetor SVG fiel da logo ATOS 8 GLOBAL IMPORTS
     function getAtos8LogoSVG() {
         return `
         <svg viewBox="0 0 120 110" xmlns="http://www.w3.org/2000/svg">
@@ -1355,15 +1388,19 @@
         if (loginBox) loginBox.innerHTML = htmlLogo;
     }
 
+    // Salva a logo customizada apenas localmente para nunca estourar o limite de 1 MB do Firestore
     window.carregarLogoCustomizada = function(event) {
         const file = event.target.files[0];
         if (!file) return;
         const reader = new FileReader();
         reader.onload = function(e) {
             customLogoDataUrl = e.target.result;
-            localStorage.setItem('atos8_custom_logo', customLogoDataUrl);
+            try {
+                localStorage.setItem('atos8_custom_logo', customLogoDataUrl);
+            } catch (err) {
+                alert("Imagem muito grande para armazenar localmente.");
+            }
             renderizarLogoMarca();
-            salvarCloud();
         };
         reader.readAsDataURL(file);
     }
@@ -1445,7 +1482,6 @@
         return isNeg ? -Math.abs(num) : num;
     }
 
-    // Extrai um objeto Date preciso a partir da competência do relatório ("2026-11-01", "01/11/2026", "01/11", "2026-11", etc.)
     function extrairDataCompetenciaRelatorio(rel) {
         const comp = String(rel.competencia || '').trim();
         const anoAtual = new Date().getFullYear();
@@ -1453,11 +1489,9 @@
         if (comp) {
             const token = comp.split(' ')[0].trim();
 
-            // 1. Formato ISO AAAA-MM-DD
             let m = token.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
             if (m) return new Date(parseInt(m[1], 10), parseInt(m[2], 10) - 1, parseInt(m[3], 10), 12, 0, 0);
 
-            // 2. Formato Brasileiro DD/MM/AAAA ou DD/MM/AA
             m = token.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
             if (m) {
                 let y = parseInt(m[3], 10);
@@ -1465,15 +1499,12 @@
                 return new Date(y, parseInt(m[2], 10) - 1, parseInt(m[1], 10), 12, 0, 0);
             }
 
-            // 3. Formato DD-MM-AAAA
             m = token.match(/^(\d{1,2})-(\d{1,2})-(\d{4})$/);
             if (m) return new Date(parseInt(m[3], 10), parseInt(m[2], 10) - 1, parseInt(m[1], 10), 12, 0, 0);
 
-            // 4. Formato Mensal ISO AAAA-MM
             m = token.match(/^(\d{4})-(\d{1,2})$/);
             if (m) return new Date(parseInt(m[1], 10), parseInt(m[2], 10) - 1, 1, 12, 0, 0);
 
-            // 5. Formato curto DD/MM ou MM/AAAA
             m = token.match(/^(\d{1,2})\/(\d{1,4})$/);
             if (m) {
                 const p1 = parseInt(m[1], 10);
@@ -1483,7 +1514,6 @@
             }
         }
 
-        // Fallback: data de criação do relatório
         const dataStr = String(rel.data || '').trim();
         if (dataStr) {
             const m = dataStr.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
@@ -1541,6 +1571,13 @@
         });
     }
 
+    function setSyncBadge(estado, texto) {
+        const badge = document.getElementById('cloud-sync-badge');
+        if (!badge) return;
+        badge.className = 'sync-status-badge ' + (estado || '');
+        badge.innerHTML = texto;
+    }
+
     window.fazerLoginCloud = async function() {
         const u = document.getElementById('login-user').value.trim().toLowerCase();
         const p = document.getElementById('login-pass').value.trim();
@@ -1573,11 +1610,14 @@
         }
     });
 
-    async function salvarCloud() {
-        if (!currentUserId) return;
+    // Salva no Firestore sem enviar a imagem Base64 pesada (evita erro de limite 1 MB do Firestore)
+    async function salvarCloud(mostrarAlertaErro = false) {
+        if (!currentUserId) return false;
         const inputsSemana = {};
         document.querySelectorAll('#view-calc input[type="number"]').forEach((inp, idx) => { inputsSemana[idx] = inp.value; });
         capturarSubInputsEstado();
+
+        setSyncBadge('saving', '<i class="fa-solid fa-rotate fa-spin"></i> Salvando na Nuvem...');
 
         try {
             await window.setDoc(window.doc(window.firebaseDb, "empresas", currentUserId), {
@@ -1589,10 +1629,18 @@
                 subInputsData: subInputsData,
                 configTaxas: configuracoesTaxas,
                 modoConsolidado: modoConsolidado,
-                metricasGrafico: metricasGrafico,
-                customLogoDataUrl: customLogoDataUrl
+                metricasGrafico: metricasGrafico
             });
-        } catch (e) { console.error("Erro ao salvar nuvem: ", e); }
+            setSyncBadge('', '<i class="fa-solid fa-cloud-check"></i> Salvo na Nuvem');
+            return true;
+        } catch (e) {
+            console.error("Erro ao salvar nuvem: ", e);
+            setSyncBadge('error', '<i class="fa-solid fa-triangle-exclamation"></i> Erro ao Salvar');
+            if (mostrarAlertaErro) {
+                alert("Erro ao salvar na nuvem: " + (e.message || e));
+            }
+            return false;
+        }
     }
 
     function capturarSubInputsEstado() {
@@ -1678,14 +1726,11 @@
                         periodo: periodosValidos.includes(perSalvo) ? perSalvo : '7d'
                     };
                 }
-                if(data.customLogoDataUrl) {
-                    customLogoDataUrl = data.customLogoDataUrl;
-                    localStorage.setItem('atos8_custom_logo', customLogoDataUrl);
-                }
             } else {
                 produtosBase = getDefaultProducts();
             }
         } catch (e) {
+            console.error("Erro ao carregar nuvem:", e);
             produtosBase = getDefaultProducts();
         }
         renderizarLogoMarca();
@@ -1874,14 +1919,14 @@
         renderizarTelaConfig();
     }
 
-    window.salvarConfigTaxas = function() {
+    window.salvarConfigTaxas = async function() {
         lerTelaConfigParaObjeto();
-        salvarCloud();
+        const ok = await salvarCloud(true);
         calcularTudo();
         calcularSubProd('daily');
         calcularSubProd('monthly');
         calcularPrecoSugerido();
-        alert("Configurações de faixas e produtos salvas com sucesso!");
+        if (ok) alert("Configurações de faixas e produtos salvas com sucesso!");
     }
 
     function obterRegraTaxa(plat, precoUnitario, prodId = null) {
@@ -2045,7 +2090,7 @@
             container.appendChild(card);
         });
         container.querySelectorAll('input').forEach(input => {
-            input.addEventListener('input', () => { salvarCloud(); calcularTudo(); });
+            input.addEventListener('input', () => { calcularTudo(); salvarCloud(); });
         });
     }
 
@@ -2364,9 +2409,8 @@
         document.body.removeChild(link);
     }
 
-    // Constrói as séries do gráfico relacionando diretamente as datas às competências (Dias ou Meses Fechados)
     function construirSeriesPorPeriodoCompetencia(periodoStr) {
-        const tipoUnidade = periodoStr.slice(-1); // 'd' (dias) ou 'm' (meses fechados)
+        const tipoUnidade = periodoStr.slice(-1);
         const qtd = parseInt(periodoStr.slice(0, -1), 10) || 7;
         const subEl = document.getElementById('chart-period-subtitle');
 
@@ -2376,7 +2420,6 @@
         if (tipoUnidade === 'd') {
             if (subEl) subEl.innerText = `Análise diária dos últimos ${qtd} dias (consolidando competências dia a dia)`;
 
-            // Agrupa todos os relatórios diários por data de competência (YYYY-MM-DD)
             const mapaPorDia = {};
             let maiorDataEncontrada = null;
 
@@ -2400,7 +2443,6 @@
                 }
             });
 
-            // Usa como data final a maior competência lançada (ou a data atual caso não haja lançamentos)
             const dataBaseFim = maiorDataEncontrada || new Date();
 
             for (let i = qtd - 1; i >= 0; i--) {
@@ -2414,7 +2456,6 @@
                 valoresExtraidos.push({ ...acumulado, imcNum });
             }
         } else {
-            // Análise Mês a Mês Fechado (2m, 3m, 4m, 5m, 6m, 12m)
             if (subEl) subEl.innerText = `Análise mês a mês fechado dos últimos ${qtd} meses por competência`;
 
             let maiorDataMes = null;
@@ -2435,13 +2476,11 @@
 
                 labels.push(`${nomesMesesAbrev[mesAlvo - 1]}/${anoAlvo}`);
 
-                // Filtra todos os relatórios que pertencem a este mês/ano de competência
                 const relsDesseMes = relatoriosSalvos.filter(r => pertenceAoMesCompetencia(r, anoAlvo, mesAlvo));
                 const diarios = relsDesseMes.filter(r => r.tipo === 'diario');
                 const semanais = relsDesseMes.filter(r => r.tipo === 'semana');
                 const mensais = relsDesseMes.filter(r => r.tipo === 'mensal');
 
-                // Prioriza a soma dos diários daquele mês fechado (ou semanais/mensais caso o mês tenha sido lançado direto no mensal)
                 let listaParaSomarNoMes = [];
                 if (diarios.length > 0) listaParaSomarNoMes = diarios;
                 else if (semanais.length > 0) listaParaSomarNoMes = semanais;
@@ -2715,39 +2754,10 @@
     window.zerarMesAtual = function() {
         if (confirm("Zerar todos os relatórios do mês?")) {
             relatoriosSalvos = [];
-            salvarCloud();
+            salvarCloud(true);
             atualizarDashboardMensal();
             carregarRelatoriosSalvos();
             alert("Reiniciado!");
-        }
-    }
-
-    window.salvarRelatorioModal = function() {
-        let hoje = new Date();
-        let sugestaoSemana = obterSemanaSegundaDom(hoje);
-        let competenciaSemana = prompt("Atribua a semana (Segunda a Domingo) para este relatório (Ex: 2026-11-02 a 2026-11-08):", sugestaoSemana);
-        if (!competenciaSemana) return;
-        const isIntegrado = modoConsolidado.weekly === 'integrado';
-        const titulo = isIntegrado ? 'Relatório Semanal Integrado (Loja Toda)' : `Relatório Semanal - ${nomesPlataformas[currentPlatform]}`;
-        salvarRelatorioGenerico('semana', titulo, competenciaSemana);
-    }
-
-    window.salvarRelatorioEspecifico = function(tipo) {
-        if(tipo === 'diario') {
-            let dataHoje = new Date().toISOString().split('T')[0];
-            let competenciaDia = prompt("Atribua a data (Dia) do fechamento (AAAA-MM-DD ou DD/MM/AAAA):", dataHoje);
-            if (!competenciaDia) return;
-            const isIntegrado = modoConsolidado.daily === 'integrado';
-            const titulo = isIntegrado ? 'Fechamento Diário Integrado (Loja Toda)' : 'Fechamento Diário (Individual)';
-            salvarRelatorioGenerico('diario', titulo, competenciaDia);
-        } else if(tipo === 'mensal') {
-            let anoAtual = new Date().getFullYear();
-            let mesAtual = String(new Date().getMonth() + 1).padStart(2, '0');
-            let competenciaMes = prompt("Atribua o mês de competência (AAAA-MM):", `${anoAtual}-${mesAtual}`);
-            if (!competenciaMes) return;
-            const isIntegrado = modoConsolidado.monthly === 'integrado';
-            const titulo = isIntegrado ? 'Fechamento Mensal Integrado (Loja Toda)' : 'Fechamento Mensal (Individual)';
-            salvarRelatorioGenerico('mensal', titulo, competenciaMes);
         }
     }
 
@@ -2758,13 +2768,98 @@
         let segunda = new Date(data.setDate(diffParaSegunda));
         let domingo = new Date(segunda);
         domingo.setDate(segunda.getDate() + 6);
-        return `${segunda.toISOString().split('T')[0]} a ${domingo.toISOString().split('T')[0]}`;
+        return `${formatarChaveDataISO(segunda)} a ${formatarChaveDataISO(domingo)}`;
     }
 
-    function salvarRelatorioGenerico(tipo, tituloPadrao, competenciaAtribuida) {
-        const nomeRelatorio = prompt("Nome de identificação do relatório:", `${tituloPadrao} (${competenciaAtribuida})`);
-        if (!nomeRelatorio) return;
+    // Abre modal dedicado para salvar relatório com seletor de data (com botão rápido "Ontem")
+    window.abrirModalSalvarRelatorio = function(tipo) {
+        tipoSalvamentoPendente = tipo;
+        const modal = document.getElementById('modalSalvarRelatorio');
+        const dateGroup = document.getElementById('modal-save-date-group');
+        const textGroup = document.getElementById('modal-save-text-group');
+        const titleEl = document.getElementById('modal-save-title');
 
+        if (tipo === 'diario') {
+            titleEl.innerText = '💾 Salvar Fechamento Diário';
+            dateGroup.style.display = 'block';
+            textGroup.style.display = 'none';
+            // Sugere a data de ontem por padrão se for de manhã, ou hoje
+            const ontem = new Date();
+            ontem.setDate(ontem.getDate() - 1);
+            document.getElementById('modal-save-date-input').value = formatarChaveDataISO(ontem);
+        } else if (tipo === 'semana') {
+            titleEl.innerText = '💾 Salvar Relatório Semanal';
+            dateGroup.style.display = 'none';
+            textGroup.style.display = 'block';
+            document.getElementById('modal-save-text-label').innerText = 'Período da Semana (Seg a Dom):';
+            document.getElementById('modal-save-text-input').value = obterSemanaSegundaDom(new Date());
+        } else {
+            titleEl.innerText = '💾 Salvar Fechamento Mensal';
+            dateGroup.style.display = 'none';
+            textGroup.style.display = 'block';
+            document.getElementById('modal-save-text-label').innerText = 'Mês de Competência (AAAA-MM):';
+            const hoje = new Date();
+            document.getElementById('modal-save-text-input').value = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
+        }
+
+        atualizarNomeSugeridoModal();
+        modal.style.display = 'flex';
+    }
+
+    window.selecionarDataOntemModal = function() {
+        const ontem = new Date();
+        ontem.setDate(ontem.getDate() - 1);
+        document.getElementById('modal-save-date-input').value = formatarChaveDataISO(ontem);
+        atualizarNomeSugeridoModal();
+    }
+
+    window.selecionarDataHojeModal = function() {
+        document.getElementById('modal-save-date-input').value = formatarChaveDataISO(new Date());
+        atualizarNomeSugeridoModal();
+    }
+
+    window.atualizarNomeSugeridoModal = function() {
+        let comp = '';
+        let tituloBase = '';
+        if (tipoSalvamentoPendente === 'diario') {
+            comp = document.getElementById('modal-save-date-input').value;
+            const isInt = modoConsolidado.daily === 'integrado';
+            tituloBase = isInt ? 'Fechamento Diário Integrado (Loja Toda)' : 'Fechamento Diário';
+        } else if (tipoSalvamentoPendente === 'semana') {
+            comp = document.getElementById('modal-save-text-input').value;
+            const isInt = modoConsolidado.weekly === 'integrado';
+            tituloBase = isInt ? 'Relatório Semanal Integrado (Loja Toda)' : `Relatório Semanal - ${nomesPlataformas[currentPlatform]}`;
+        } else {
+            comp = document.getElementById('modal-save-text-input').value;
+            const isInt = modoConsolidado.monthly === 'integrado';
+            tituloBase = isInt ? 'Fechamento Mensal Integrado (Loja Toda)' : 'Fechamento Mensal';
+        }
+        document.getElementById('modal-save-name-input').value = `${tituloBase} (${comp})`;
+    }
+
+    window.fecharModalSalvarRelatorio = function() {
+        document.getElementById('modalSalvarRelatorio').style.display = 'none';
+    }
+
+    window.confirmarSalvarRelatorioModal = async function() {
+        let competenciaAtribuida = '';
+        if (tipoSalvamentoPendente === 'diario') {
+            competenciaAtribuida = document.getElementById('modal-save-date-input').value.trim();
+        } else {
+            competenciaAtribuida = document.getElementById('modal-save-text-input').value.trim();
+        }
+
+        const nomeRelatorio = document.getElementById('modal-save-name-input').value.trim();
+        if (!competenciaAtribuida || !nomeRelatorio) {
+            alert("Preencha a data de competência e o nome do relatório.");
+            return;
+        }
+
+        fecharModalSalvarRelatorio();
+        await salvarRelatorioGenerico(tipoSalvamentoPendente, nomeRelatorio, competenciaAtribuida);
+    }
+
+    async function salvarRelatorioGenerico(tipo, nomeRelatorio, competenciaAtribuida) {
         let containerId = tipo === 'diario' ? 'view-calc-daily-prod' : (tipo === 'mensal' ? 'view-calc-monthly-prod' : 'view-calc');
         let viewDiv = document.getElementById(containerId);
         let produtosRelatorio = [];
@@ -2820,10 +2915,10 @@
                 detalhesProdutos: produtosRelatorio
             };
             relatoriosSalvos.push(novoRel);
-            salvarCloud();
+            const salvoOk = await salvarCloud(true);
             carregarRelatoriosSalvos();
             atualizarDashboardMensal();
-            abrirRelatorioDetalhado(novoRel.id);
+            if (salvoOk) abrirRelatorioDetalhado(novoRel.id);
             return;
         }
 
@@ -2886,10 +2981,10 @@
         };
 
         relatoriosSalvos.push(novoRel);
-        salvarCloud();
+        const salvoOk = await salvarCloud(true);
         carregarRelatoriosSalvos();
         atualizarDashboardMensal();
-        abrirRelatorioDetalhado(novoRel.id);
+        if (salvoOk) abrirRelatorioDetalhado(novoRel.id);
     }
 
     window.abrirRelatorioDetalhado = function(id) {
@@ -2966,7 +3061,7 @@
 
     window.deletarRelatorio = function(id) {
         relatoriosSalvos = relatoriosSalvos.filter(r => r.id !== id);
-        salvarCloud();
+        salvarCloud(true);
         carregarRelatoriosSalvos();
         atualizarDashboardMensal();
     }
@@ -3072,7 +3167,7 @@
         const vencimento = document.getElementById('sup-duedate').value;
         if (!nome || valor <= 0) return;
         fornecedoresDividas.push({ id: Date.now(), nome, desc: desc || 'Compra', valorTotal: valor, valorPago: 0, vencimento: vencimento || 'Sem data', status: 'Pendente' });
-        salvarCloud();
+        salvarCloud(true);
         renderSuppliersTable();
     }
 
@@ -3098,13 +3193,13 @@
         divida.valorPago += pago;
         if (divida.valorPago >= divida.valorTotal) { divida.valorPago = divida.valorTotal; divida.status = 'Quitado'; }
         else { divida.status = 'Parcial'; }
-        salvarCloud();
+        salvarCloud(true);
         renderSuppliersTable();
     }
 
     window.removerDivida = function(id) {
         fornecedoresDividas = fornecedoresDividas.filter(d => d.id !== id);
-        salvarCloud();
+        salvarCloud(true);
         renderSuppliersTable();
     }
 
@@ -3121,7 +3216,7 @@
         if(!nome) return;
         const novoId = produtosBase.length > 0 ? Math.max(...produtosBase.map(p => p.id)) + 1 : 1;
         produtosBase.push({ id: novoId, nome, preco, cmv, afiliado, margem });
-        salvarCloud();
+        salvarCloud(true);
         listaPlataformas.forEach(p => {
             renderCards(p);
             renderSubCalculators('daily', p);
@@ -3148,7 +3243,7 @@
         if (configuracoesTaxas.mercadolivre && Array.isArray(configuracoesTaxas.mercadolivre.produtosEspecificos)) {
             configuracoesTaxas.mercadolivre.produtosEspecificos = configuracoesTaxas.mercadolivre.produtosEspecificos.filter(p => parseInt(p.prodId) !== id);
         }
-        salvarCloud();
+        salvarCloud(true);
         listaPlataformas.forEach(p => {
             renderCards(p);
             renderSubCalculators('daily', p);
